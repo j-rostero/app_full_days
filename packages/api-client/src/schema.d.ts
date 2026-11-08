@@ -21,20 +21,361 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/entrar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Entra con correo y contraseña */
+        post: operations["signIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Entra con un token de Google; crea la cuenta la primera vez */
+        post: operations["signInWithGoogle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/recuperar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Envía un código para elegir una contraseña nueva (responde igual exista o no la cuenta) */
+        post: operations["recoverPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/registrar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crea la cuenta (sin confirmar) y envía un código al correo */
+        post: operations["register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/renovar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cambia un token de renovación por un par nuevo */
+        post: operations["renewSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/restablecer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fija la contraseña nueva con el código, cierra las demás sesiones y abre una */
+        post: operations["resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/salir": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cierra la sesión de este dispositivo */
+        post: operations["signOut"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/salir-de-todos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cierra las sesiones de todos los dispositivos de la persona */
+        post: operations["signOutEverywhere"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/verificar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirma el correo con el código y abre sesión */
+        post: operations["verifyEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/auditoria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Todos los cambios de agencias y de Central, del más reciente al más antiguo */
+        get: operations["listAudit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/equipo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Personas de Central y sus roles */
+        get: operations["listStaff"];
+        /** Fija los roles de Central de una persona por su correo (una lista vacía la saca de Central) */
+        put: operations["setStaffRoles"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/auditoria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Cambios hechos en la agencia, del más reciente al más antiguo */
+        get: operations["listProviderAudit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/equipo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Personas del equipo de la agencia y su rol */
+        get: operations["listTeam"];
+        put?: never;
+        /** Suma a una persona por su correo. Si aún no tiene cuenta, la tendrá al registrarse con ese correo */
+        post: operations["addTeamMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/equipo/{memberId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Quita a una persona del equipo */
+        delete: operations["removeTeamMember"];
+        options?: never;
+        head?: never;
+        /** Cambia el rol de una persona del equipo */
+        patch: operations["changeTeamRole"];
+        trace?: never;
+    };
+    "/v1/yo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Mi cuenta, mis agencias con su rol y mis roles de Central */
+        get: operations["getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cambia mi nombre o mi teléfono */
+        patch: operations["updateMe"];
+        trace?: never;
+    };
+    "/v1/yo/pasajeros": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Mis pasajeros frecuentes */
+        get: operations["listPassengers"];
+        put?: never;
+        /** Guarda un pasajero frecuente */
+        post: operations["createPassenger"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/yo/pasajeros/{passengerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Cambia un pasajero frecuente */
+        put: operations["updatePassenger"];
+        post?: never;
+        /** Borra un pasajero frecuente */
+        delete: operations["deletePassenger"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Account: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+            name: string | null;
+            phone: string | null;
+        };
+        AddTeamMemberInput: {
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "operations" | "finance" | "guide";
+        };
         /** @description Forma única de error. */
         ApiError: {
             statusCode: number;
             /** @enum {string} */
-            code: "bad_request" | "validation_failed" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "too_many_requests" | "internal_error";
+            code: "bad_request" | "validation_error" | "unauthorized" | "forbidden" | "email_not_verified" | "not_found" | "conflict" | "rate_limited" | "internal_error";
             message: string;
             issues?: {
                 path: string[];
                 message: string;
             }[];
+        };
+        AuditEntry: {
+            /** Format: uuid */
+            id: string;
+            actor: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+            };
+            /** @enum {string} */
+            scope: "provider" | "central";
+            /** Format: uuid */
+            providerId: string | null;
+            action: string;
+            params: unknown;
+            input: unknown;
+            before: unknown;
+            after: unknown;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AuditPage: {
+            items: components["schemas"]["AuditEntry"][];
+            /** Format: uuid */
+            nextCursor: string | null;
+        };
+        ChangeTeamRoleInput: {
+            /** @enum {string} */
+            role: "owner" | "operations" | "finance" | "guide";
+        };
+        GoogleInput: {
+            idToken: string;
         };
         /** @description Estado de la API y de los servicios de los que depende. */
         Health: {
@@ -46,6 +387,132 @@ export interface components {
                 /** @enum {string} */
                 redis: "ok" | "down";
             };
+        };
+        Me: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+            name: string | null;
+            phone: string | null;
+            hasPassword: boolean;
+            hasGoogle: boolean;
+            memberships: components["schemas"]["Membership"][];
+            staff: {
+                roles: components["schemas"]["StaffRole"][];
+                permissions: components["schemas"]["StaffPermission"][];
+            };
+        };
+        Membership: {
+            /** Format: uuid */
+            providerId: string;
+            providerName: string;
+            role: components["schemas"]["ProviderRole"];
+            permissions: components["schemas"]["ProviderPermission"][];
+        };
+        Passenger: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            cedula: string | null;
+            /** @description AAAA-MM-DD */
+            birthDate: string;
+            restrictions: string | null;
+        };
+        PassengerInput: {
+            name: string;
+            /** @default null */
+            cedula: unknown;
+            /** Format: date */
+            birthDate: string;
+            /** @default null */
+            restrictions: string | null;
+        };
+        PassengerList: {
+            items: components["schemas"]["Passenger"][];
+        };
+        ProfileUpdateInput: {
+            name?: string;
+            phone?: unknown;
+        };
+        /** @enum {string} */
+        ProviderPermission: "team" | "company" | "fulldays" | "departures" | "bookings" | "notices" | "payments" | "settlements" | "reports" | "checkin";
+        /** @enum {string} */
+        ProviderRole: "owner" | "operations" | "finance" | "guide";
+        RecoverInput: {
+            /** Format: email */
+            email: string;
+        };
+        RegisterInput: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        RenewInput: {
+            refreshToken: string;
+        };
+        ResetInput: {
+            /** Format: email */
+            email: string;
+            code: string;
+            password: string;
+        };
+        SetStaffRolesInput: {
+            /** Format: email */
+            email: string;
+            roles: ("super" | "support" | "moderation" | "content" | "finance")[];
+        };
+        SignedIn: {
+            accessToken: string;
+            refreshToken: string;
+            expiresIn: number;
+            user: components["schemas"]["Account"];
+        };
+        SignInInput: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        StaffList: {
+            items: components["schemas"]["StaffPerson"][];
+        };
+        /** @enum {string} */
+        StaffPermission: "staff" | "audit" | "providers" | "users" | "bookings" | "claims" | "reviews" | "content" | "fulldays" | "catalogs" | "themes" | "commissions" | "payments" | "refunds" | "settlements" | "rates" | "settings" | "metrics";
+        StaffPerson: {
+            user: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+            };
+            roles: components["schemas"]["StaffRole"][];
+        };
+        /** @enum {string} */
+        StaffRole: "super" | "support" | "moderation" | "content" | "finance";
+        TeamList: {
+            items: components["schemas"]["TeamMember"][];
+        };
+        TeamMember: {
+            /** Format: uuid */
+            id: string;
+            role: components["schemas"]["ProviderRole"];
+            user: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+            };
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Tokens: {
+            accessToken: string;
+            refreshToken: string;
+            expiresIn: number;
+        };
+        VerifyInput: {
+            /** Format: email */
+            email: string;
+            code: string;
         };
     };
     responses: never;
@@ -82,6 +549,737 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Health"];
                 };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    signIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignInInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedIn"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    signInWithGoogle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedIn"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    recoverPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecoverInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    renewSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenewInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Tokens"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    resetPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedIn"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    signOut: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    signOutEverywhere: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    verifyEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedIn"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listAudit: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                providerId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listStaff: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    setStaffRoles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetStaffRolesInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPerson"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listProviderAudit: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                providerId?: string;
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listTeam: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    addTeamMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddTeamMemberInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamMember"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    removeTeamMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                memberId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    changeTeamRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                memberId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeTeamRoleInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamMember"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileUpdateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listPassengers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PassengerList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createPassenger: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PassengerInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Passenger"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updatePassenger: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                passengerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PassengerInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Passenger"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deletePassenger: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                passengerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Error */
             default: {

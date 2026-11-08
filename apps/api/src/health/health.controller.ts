@@ -3,7 +3,8 @@ import type { PrismaClient } from '@fulldays/db';
 import type { Response } from 'express';
 import type { Redis } from 'ioredis';
 import { z } from 'zod';
-import { Endpoint } from '../common/endpoint.ts';
+import { Endpoint, Public } from '../common/endpoint.ts';
+import { SkipRateLimit } from '../common/rate-limit.guard.ts';
 import { DB, REDIS } from '../common/tokens.ts';
 
 const CheckSchema = z.enum(['ok', 'down']);
@@ -28,6 +29,8 @@ export class HealthController {
   ) {}
 
   @Get()
+  @Public()
+  @SkipRateLimit()
   @Endpoint({
     operationId: 'getHealth',
     summary: 'Estado de la API, la base de datos y Redis',

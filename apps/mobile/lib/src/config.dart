@@ -15,12 +15,8 @@ class AppConfig {
   factory AppConfig.fromEnvironment() {
     const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
     const apiUrl = String.fromEnvironment('API_URL');
-    return AppConfig(
-      flavor: flavor,
-      apiUrl: apiUrl.isNotEmpty ? apiUrl : _localApi(),
-    );
+    return AppConfig(flavor: flavor, apiUrl: apiUrl.isNotEmpty ? apiUrl : _localApi());
   }
 
-  static String _localApi() =>
-      Platform.isAndroid ? 'http://10.0.2.2:4000' : 'http://localhost:4000';
+  static String _localApi() => Platform.isAndroid ? 'http://10.0.2.2:4000' : 'http://localhost:4000';
 }

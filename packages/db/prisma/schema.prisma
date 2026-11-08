@@ -10,3 +10,163 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ── Fase 1: cuentas, sesiones y permisos ──────────────────────────────────────
+
+/// Una cuenta por correo. La misma persona puede ser viajera, de una o varias agencias y de Central.
+model User {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  email           String    @unique
+  name            String?
+  phone           String?
+  /// `scrypt$sal$clave`. Nulo si solo entra con Google o si la añadieron a un equipo y no se ha registrado.
+  passwordHash    String?   @map("password_hash")
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  googleId        String?   @unique @map("google_id")
+  /// Una cuenta bloqueada no puede entrar y sus sesiones quedan revocadas.
+  blockedAt       DateTime? @map("blocked_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  sessions    Session[]
+  passengers  Passenger[]
+  memberships ProviderMember[]
+  staffRoles  StaffMember[]
+  auditLog    AuditLog[]
+
+  @@map("users")
+}
+
+/// Una sesión por dispositivo. El token de renovación solo se guarda como SHA-256.
+model Session {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  device    String    @default("")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  retired RetiredToken[]
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+/// Tokens de renovación ya reemplazados. Si uno vuelve (fuera de la ventana de reintento), alguien tiene una copia.
+model RetiredToken {
+  tokenHash String   @id @map("token_hash")
+  sessionId String   @map("session_id") @db.Uuid
+  retiredAt DateTime @default(now()) @map("retired_at")
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("retired_tokens")
+}
+
+/// Pasajero frecuente de una persona, para reservar más rápido.
+model Passenger {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  name         String
+  cedula       String?
+  birthDate    DateTime @map("birth_date") @db.Date
+  restrictions String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("passengers")
+}
+
+/// Agencia u organizador. La Fase 2 agrega sus datos fiscales, documentos y verificación.
+model Provider {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  members  ProviderMember[]
+  auditLog AuditLog[]
+
+  @@map("providers")
+}
+
+enum ProviderRole {
+  owner
+  operations
+  finance
+  guide
+
+  @@map("provider_role")
+}
+
+/// Pertenencia de una persona a una agencia, con un rol.
+model ProviderMember {
+  id         String       @id @default(uuid(7)) @db.Uuid
+  providerId String       @map("provider_id") @db.Uuid
+  userId     String       @map("user_id") @db.Uuid
+  role       ProviderRole
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, userId])
+  @@index([userId])
+  @@map("provider_members")
+}
+
+enum StaffRole {
+  super
+  support
+  moderation
+  content
+  finance
+
+  @@map("staff_role")
+}
+
+/// Un rol de Central de una persona. Puede tener varios.
+model StaffMember {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  role      StaffRole
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+  @@map("staff_members")
+}
+
+enum AuditScope {
+  provider
+  central
+
+  @@map("audit_scope")
+}
+
+/// Cada escritura en /v1/pro y /v1/central, escrita en la misma transacción que la acción.
+model AuditLog {
+  id         String     @id @default(uuid(7)) @db.Uuid
+  actorId    String     @map("actor_id") @db.Uuid
+  scope      AuditScope
+  providerId String?    @map("provider_id") @db.Uuid
+  /// `MÉTODO /ruta/con/:parametros`
+  action     String
+  params     Json       @default("{}")
+  input      Json?
+  before     Json?
+  after      Json?
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  actor    User      @relation(fields: [actorId], references: [id])
+  provider Provider? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+
+  @@index([providerId, id])
+  @@map("audit_log")
+}

@@ -1,0 +1,72 @@
+/* Formularios de acceso, compartidos por las tres webs. Usa los tokens de diseño. */
+.fd-form {
+  display: grid;
+  gap: var(--fd-space-m);
+  margin-top: var(--fd-space-xl);
+}
+
+.fd-field {
+  display: grid;
+  gap: var(--fd-space-xs);
+  font-size: var(--fd-text-etiqueta-size);
+  font-weight: var(--fd-text-etiqueta-weight);
+}
+
+.fd-field input {
+  font: inherit;
+  font-weight: normal;
+  font-size: var(--fd-text-cuerpo-size);
+  padding: var(--fd-space-s) var(--fd-space-m);
+  border: 1px solid var(--fd-color-borde);
+  border-radius: var(--fd-radius-m);
+  background: var(--fd-color-superficie);
+  color: var(--fd-color-texto);
+}
+
+.fd-field input:focus-visible {
+  outline: 2px solid var(--fd-color-primario);
+  outline-offset: 1px;
+}
+
+.fd-button {
+  font: inherit;
+  font-weight: var(--fd-text-etiqueta-weight);
+  padding: var(--fd-space-s) var(--fd-space-l);
+  border: 0;
+  border-radius: var(--fd-radius-pildora);
+  background: var(--fd-color-primario);
+  color: var(--fd-color-sobre-primario);
+  cursor: pointer;
+}
+
+.fd-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.fd-button-secundario {
+  background: transparent;
+  color: var(--fd-color-primario);
+  border: 1px solid var(--fd-color-primario);
+}
+
+.fd-form-error {
+  margin: 0;
+  padding: var(--fd-space-s) var(--fd-space-m);
+  border-radius: var(--fd-radius-m);
+  color: var(--fd-color-error);
+  border: 1px solid var(--fd-color-error);
+}
+
+.fd-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fd-space-m);
+  margin-top: var(--fd-space-l);
+  font-size: var(--fd-text-pequeno-size);
+}
+
+.fd-links a,
+.fd-link {
+  color: var(--fd-color-primario);
+}

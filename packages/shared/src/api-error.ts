@@ -6,12 +6,13 @@ import { z } from 'zod';
  */
 export const API_ERROR_CODES = [
   'bad_request',
-  'validation_failed',
+  'validation_error',
   'unauthorized',
   'forbidden',
+  'email_not_verified',
   'not_found',
   'conflict',
-  'too_many_requests',
+  'rate_limited',
   'internal_error',
 ] as const;
 
@@ -51,10 +52,8 @@ export function codeForStatus(status: number): ApiErrorCode {
       return 'not_found';
     case 409:
       return 'conflict';
-    case 422:
-      return 'validation_failed';
     case 429:
-      return 'too_many_requests';
+      return 'rate_limited';
     default:
       return status >= 500 ? 'internal_error' : 'bad_request';
   }

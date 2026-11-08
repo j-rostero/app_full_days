@@ -6,20 +6,21 @@ Sistema para gestionar fulldays, excursiones, tours y viajes: una API, una web p
 
 ## Piezas
 
-| Carpeta               | Qué es                                                                | Puerto |
-| --------------------- | --------------------------------------------------------------------- | ------ |
-| `apps/api`            | API NestJS. La única que toca base de datos, Redis, archivos y correo | 4000   |
-| `apps/web`            | Web de clientes (Next.js)                                             | 3100   |
-| `apps/pro-web`        | Web de agencias (Next.js)                                             | 3101   |
-| `apps/central`        | Web del equipo interno (Next.js)                                      | 3102   |
-| `apps/mobile`         | App Flutter (viajero y operador)                                      | —      |
-| `packages/shared`     | Reglas y esquemas Zod comunes                                         |        |
-| `packages/db`         | Esquema Prisma y cliente de la base                                   |        |
-| `packages/api-client` | Contrato OpenAPI (`openapi.json`) y cliente TypeScript tipado         |        |
-| `packages/api_dart`   | Cliente Dart generado del mismo contrato                              |        |
-| `packages/tokens`     | Tokens de diseño: genera el CSS de las webs y el Dart de la app       |        |
-| `packages/ui_flutter` | Tema y componentes de la app                                          |        |
-| `infra/docker`        | PostgreSQL, Redis, almacenamiento S3, imgproxy y buzón de correo      |        |
+| Carpeta                | Qué es                                                                | Puerto |
+| ---------------------- | --------------------------------------------------------------------- | ------ |
+| `apps/api`             | API NestJS. La única que toca base de datos, Redis, archivos y correo | 4000   |
+| `apps/web`             | Web de clientes (Next.js)                                             | 3100   |
+| `apps/pro-web`         | Web de agencias (Next.js)                                             | 3101   |
+| `apps/central`         | Web del equipo interno (Next.js)                                      | 3102   |
+| `apps/mobile`          | App Flutter (viajero y operador)                                      | —      |
+| `packages/shared`      | Reglas y esquemas Zod comunes                                         |        |
+| `packages/db`          | Esquema Prisma y cliente de la base                                   |        |
+| `packages/api-client`  | Contrato OpenAPI (`openapi.json`) y cliente TypeScript tipado         |        |
+| `packages/api_dart`    | Cliente Dart generado del mismo contrato                              |        |
+| `packages/web-session` | Sesión de las webs: cookies seguras, renovación y pantallas de acceso |        |
+| `packages/tokens`      | Tokens de diseño: genera el CSS de las webs y el Dart de la app       |        |
+| `packages/ui_flutter`  | Tema y componentes de la app                                          |        |
+| `infra/docker`         | PostgreSQL, Redis, almacenamiento S3, imgproxy y buzón de correo      |        |
 
 ## Empezar
 
@@ -32,6 +33,17 @@ pnpm dev            # levanta la infraestructura, la API y las tres webs
 ```
 
 La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
+
+### Cuentas en local
+
+- Los códigos de confirmación se escriben en la consola de la API (`OTP_SENDER=log`). Con `OTP_SENDER=smtp` llegan a Mailpit: http://localhost:8025.
+- El primer super de Central se crea desde la terminal; después se gestionan desde `/v1/central/equipo`:
+
+  ```bash
+  pnpm --filter @fulldays/api build && pnpm --filter @fulldays/api grant-super tu@correo.com
+  ```
+
+- Entrar con Google necesita `GOOGLE_CLIENT_IDS` (sin él, la API responde que aún no está disponible).
 
 ## Comandos
 

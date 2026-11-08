@@ -183,14 +183,76 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
+        case 'Account':
+          return Account.fromJson(value);
+        case 'AddTeamMemberInput':
+          return AddTeamMemberInput.fromJson(value);
         case 'ApiError':
           return ApiError.fromJson(value);
         case 'ApiErrorIssuesInner':
           return ApiErrorIssuesInner.fromJson(value);
+        case 'AuditEntry':
+          return AuditEntry.fromJson(value);
+        case 'AuditEntryActor':
+          return AuditEntryActor.fromJson(value);
+        case 'AuditPage':
+          return AuditPage.fromJson(value);
+        case 'ChangeTeamRoleInput':
+          return ChangeTeamRoleInput.fromJson(value);
+        case 'GoogleInput':
+          return GoogleInput.fromJson(value);
         case 'Health':
           return Health.fromJson(value);
         case 'HealthChecks':
           return HealthChecks.fromJson(value);
+        case 'Me':
+          return Me.fromJson(value);
+        case 'MeStaff':
+          return MeStaff.fromJson(value);
+        case 'Membership':
+          return Membership.fromJson(value);
+        case 'Passenger':
+          return Passenger.fromJson(value);
+        case 'PassengerInput':
+          return PassengerInput.fromJson(value);
+        case 'PassengerList':
+          return PassengerList.fromJson(value);
+        case 'ProfileUpdateInput':
+          return ProfileUpdateInput.fromJson(value);
+        case 'ProviderPermission':
+          return ProviderPermissionTypeTransformer().decode(value);
+        case 'ProviderRole':
+          return ProviderRoleTypeTransformer().decode(value);
+        case 'RecoverInput':
+          return RecoverInput.fromJson(value);
+        case 'RegisterInput':
+          return RegisterInput.fromJson(value);
+        case 'RenewInput':
+          return RenewInput.fromJson(value);
+        case 'ResetInput':
+          return ResetInput.fromJson(value);
+        case 'SetStaffRolesInput':
+          return SetStaffRolesInput.fromJson(value);
+        case 'SignInInput':
+          return SignInInput.fromJson(value);
+        case 'SignedIn':
+          return SignedIn.fromJson(value);
+        case 'StaffList':
+          return StaffList.fromJson(value);
+        case 'StaffPermission':
+          return StaffPermissionTypeTransformer().decode(value);
+        case 'StaffPerson':
+          return StaffPerson.fromJson(value);
+        case 'StaffRole':
+          return StaffRoleTypeTransformer().decode(value);
+        case 'TeamList':
+          return TeamList.fromJson(value);
+        case 'TeamMember':
+          return TeamMember.fromJson(value);
+        case 'Tokens':
+          return Tokens.fromJson(value);
+        case 'VerifyInput':
+          return VerifyInput.fromJson(value);
         default:
           dynamic match;
           if (value is List && (match = _regList.firstMatch(targetType)?.group(1)) != null) {
