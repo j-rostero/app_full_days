@@ -20,12 +20,14 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
   await requireMe(`/reservas/${id}`);
   const api = await sessionApi();
   const path = { params: { path: { id } } };
-  const [{ data: b }, { data: payments }, { data: settings }, { data: rate }] = await Promise.all([
-    api.GET('/v1/reservas/{id}', path),
-    api.GET('/v1/reservas/{id}/pagos', path),
-    api.GET('/v1/ajustes'),
-    api.GET('/v1/tasa'),
-  ]);
+  const [{ data: b }, { data: payments }, { data: settings }, { data: rate }, { data: notices }] =
+    await Promise.all([
+      api.GET('/v1/reservas/{id}', path),
+      api.GET('/v1/reservas/{id}/pagos', path),
+      api.GET('/v1/ajustes'),
+      api.GET('/v1/tasa'),
+      api.GET('/v1/reservas/{id}/avisos', path),
+    ]);
   if (!b) notFound();
   const accepts = ['held', 'in_review', 'deposit_paid'].includes(b.status);
   const toDeposit = Math.max(b.depositUsd - b.paidUsd - b.pendingUsd, 0);
@@ -51,6 +53,23 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
           })}
           . Reporta tu pago antes para no perderlos.
         </p>
+      ) : null}
+      {notices?.items.length ? (
+        <section className="tarjeta avisos" aria-label="Avisos de la agencia">
+          <h2>Avisos de la agencia</h2>
+          {notices.items.map((n) => (
+            <article key={n.id}>
+              <p>{n.body}</p>
+              <p className="suave">
+                {new Date(n.createdAt).toLocaleString('es-VE', {
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                  timeZone: 'America/Caracas',
+                })}
+              </p>
+            </article>
+          ))}
+        </section>
       ) : null}
       {b.status === 'in_review' ? (
         <p className="aviso">La agencia está revisando tu pago. Tus puestos siguen apartados.</p>
@@ -144,7 +163,12 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
             La agencia necesita estos datos para la lista del viaje y el seguro.
           </p>
           <ActionForm
-            action={savePassengers.bind(null, b.id, b.passengers.length)}
+            action={savePassengers.bind(
+              null,
+              b.id,
+              b.passengers.length,
+              b.mealChoices.map((m) => m.mealId),
+            )}
             submit="Guardar pasajeros"
           >
             {b.passengers.map((p, i) => (
@@ -177,6 +201,47 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
                   <span>Alergias o restricciones</span>
                   <input name={`restrictions.${i}`} defaultValue={p.restrictions ?? ''} />
                 </label>
+                {p.type !== 'infant'
+                  ? b.mealChoices.map((m) =>
+                      m.picksPerPassenger === 1 ? (
+                        <label key={m.mealId} className="fd-field">
+                          <span>{m.name}</span>
+                          <select
+                            name={`meal.${i}.${m.mealId}`}
+                            defaultValue={p.mealPicks[m.mealId]?.[0] ?? ''}
+                          >
+                            <option value="">
+                              {m.options.find((o) => o.isDefault)
+                                ? `Lo de la casa (${m.options.find((o) => o.isDefault)!.name})`
+                                : 'Escoger después'}
+                            </option>
+                            {m.options.map((o) => (
+                              <option key={o.id} value={o.id}>
+                                {o.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ) : (
+                        <fieldset key={m.mealId} className="fd-inline">
+                          <legend className="fd-etiqueta">
+                            {m.name} (hasta {m.picksPerPassenger})
+                          </legend>
+                          {m.options.map((o) => (
+                            <label key={o.id} className="fd-check">
+                              <input
+                                type="checkbox"
+                                name={`meal.${i}.${m.mealId}`}
+                                value={o.id}
+                                defaultChecked={p.mealPicks[m.mealId]?.includes(o.id)}
+                              />
+                              {o.name}
+                            </label>
+                          ))}
+                        </fieldset>
+                      ),
+                    )
+                  : null}
               </fieldset>
             ))}
           </ActionForm>

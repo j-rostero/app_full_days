@@ -16,7 +16,7 @@ class VoucherKeys {
     this.items = const [],
   });
 
-  List<VoucherKeysItemsInner> items;
+  List<VoucherKey> items;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is VoucherKeys &&
@@ -53,7 +53,7 @@ class VoucherKeys {
       }());
 
       return VoucherKeys(
-        items: VoucherKeysItemsInner.listFromJson(json[r'items']),
+        items: VoucherKey.listFromJson(json[r'items']),
       );
     }
     return null;

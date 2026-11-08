@@ -13,6 +13,9 @@ export default async function ProviderHome({
     ['company', 'empresa'],
     ['fulldays', 'productos'],
     ['departures', 'salidas'],
+    ['bookings', 'reservas'],
+    ['payments', 'pagos'],
+    ['checkin', 'hoy'],
     ['team', 'equipo'],
   ].find(([p]) => m?.permissions.includes(p as never));
   redirect(`/agencia/${providerId}/${first?.[1] ?? 'productos'}`);

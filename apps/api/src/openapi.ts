@@ -61,8 +61,10 @@ export function buildOpenApi(app: INestApplication): JsonSchema {
       const responses: Record<string, JsonSchema> = {};
       for (const [status, schema] of Object.entries(spec.responses)) {
         const description = Number(status) < 400 ? 'Éxito' : 'Error';
+        const type =
+          Number(status) < 400 ? (spec.contentType ?? 'application/json') : 'application/json';
         responses[status] = schema
-          ? { description, content: { 'application/json': { schema: ref(schema) } } }
+          ? { description, content: { [type]: { schema: ref(schema) } } }
           : { description };
       }
       const isPublic = Reflect.getMetadata(PUBLIC_METADATA, handler) === true;

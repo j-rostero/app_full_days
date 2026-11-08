@@ -6,6 +6,7 @@ import { CatalogsModule } from './catalogs/catalogs.module.ts';
 import { SearchModule } from './search/search.module.ts';
 import { BookingsModule } from './bookings/bookings.module.ts';
 import { PaymentsModule } from './payments/payments.module.ts';
+import { TripdayModule } from './tripday/tripday.module.ts';
 import { DeparturesModule } from './departures/departures.module.ts';
 import { FilesModule } from './files/files.module.ts';
 import { ProductsModule } from './products/products.module.ts';
@@ -40,6 +41,7 @@ import { UsersModule } from './users/users.module.ts';
     SearchModule,
     BookingsModule,
     PaymentsModule,
+    TripdayModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: RateLimitGuard },

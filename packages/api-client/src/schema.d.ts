@@ -1020,6 +1020,109 @@ export interface paths {
         patch: operations["updateDeparture"];
         trace?: never;
     };
+    "/v1/pro/{providerId}/salidas/{departureId}/avisos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Avisos publicados en la salida, el más nuevo primero */
+        get: operations["listDepartureNotices"];
+        put?: never;
+        /** Publica un aviso para los viajeros con reserva confirmada en la salida */
+        post: operations["publishDepartureNotice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas/{departureId}/checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Aplica las marcas hechas sin conexión (gana la más reciente por hora del teléfono) y devuelve la lista */
+        post: operations["syncCheckins"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas/{departureId}/pasajeros": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista de pasajeros con reserva confirmada, platos, saldo, check-in y las llaves para validar vouchers */
+        get: operations["getManifest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas/{departureId}/pasajeros.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** La lista de pasajeros como CSV para Excel */
+        get: operations["getManifestCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas/{departureId}/produccion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lo que hay que preparar: platos por opción y pendientes, ítems, habitaciones por tipo y restricciones */
+        get: operations["getProduction"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas/hoy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Salidas no canceladas de hoy y mañana, con pasajeros y abordados; un guía solo ve las suyas */
+        get: operations["listTodayDepartures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/productos/{id}": {
         parameters: {
             query?: never;
@@ -1081,6 +1184,23 @@ export interface paths {
         };
         /** Una reserva propia con precio, abono, pagado, saldo, pasajeros e instrucciones de pago */
         get: operations["getMyBooking"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/avisos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Avisos de la agencia para la salida de esta reserva, el más nuevo primero */
+        get: operations["listBookingNotices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1495,6 +1615,7 @@ export interface components {
                 email: string | null;
             } | null;
             passengers: components["schemas"]["BookingPassenger"][];
+            mealChoices: components["schemas"]["MealChoice"][];
             /** Format: date-time */
             createdAt: string;
         };
@@ -1512,6 +1633,11 @@ export interface components {
             /** Format: date */
             birthDate: string | null;
             restrictions: string | null;
+            mealPicks: {
+                [key: string]: string[];
+            };
+            /** @enum {string|null} */
+            checkin: "boarded" | "no_show" | null;
         };
         BookingSelection: {
             /** Format: uuid */
@@ -1542,6 +1668,16 @@ export interface components {
         ChangeTeamRoleInput: {
             /** @enum {string} */
             role: "owner" | "operations" | "finance" | "guide";
+        };
+        CheckinSyncInput: {
+            events: {
+                /** Format: uuid */
+                passengerId: string;
+                /** @enum {string|null} */
+                checkin: "boarded" | "no_show" | null;
+                /** Format: date-time */
+                at: string;
+            }[];
         };
         CommissionInput: {
             commissionPercent: number | null;
@@ -1583,6 +1719,7 @@ export interface components {
             type: "fullday" | "tour" | "excursion";
             sheet?: components["schemas"]["ProductSheet"];
         };
+        CsvText: string;
         CurationInput: {
             featured: boolean;
             themeIds: string[];
@@ -1773,6 +1910,44 @@ export interface components {
             lg: string;
             xl: string;
         };
+        Manifest: {
+            departure: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date */
+                date: string;
+                title: string;
+                status: components["schemas"]["DepartureStatus"];
+            };
+            keys: components["schemas"]["VoucherKey"][];
+            passengers: components["schemas"]["ManifestPassenger"][];
+            discarded: {
+                /** Format: uuid */
+                passengerId: string;
+                /** @enum {string} */
+                reason: "unknown" | "clock" | "older";
+            }[];
+        };
+        ManifestPassenger: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            bookingId: string;
+            bookingCode: string;
+            position: number;
+            /** @enum {string} */
+            type: "adult" | "child" | "senior" | "infant";
+            name: string | null;
+            cedula: string | null;
+            restrictions: string | null;
+            meals: string[];
+            boarding: string | null;
+            balanceUsd: number;
+            /** @enum {string|null} */
+            checkin: "boarded" | "no_show" | null;
+            /** Format: date-time */
+            checkinAt: string | null;
+        };
         ManualBookingInput: {
             /** Format: uuid */
             departureId: string;
@@ -1809,6 +1984,18 @@ export interface components {
                 permissions: components["schemas"]["StaffPermission"][];
             };
         };
+        MealChoice: {
+            /** Format: uuid */
+            mealId: string;
+            name: string;
+            picksPerPassenger: number;
+            options: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                isDefault: boolean;
+            }[];
+        };
         Membership: {
             /** Format: uuid */
             providerId: string;
@@ -1817,6 +2004,20 @@ export interface components {
             providerStatus: "pending" | "in_review" | "approved" | "rejected" | "suspended";
             role: components["schemas"]["ProviderRole"];
             permissions: components["schemas"]["ProviderPermission"][];
+        };
+        Notice: {
+            /** Format: uuid */
+            id: string;
+            body: string;
+            author: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        NoticeInput: {
+            body: string;
+        };
+        NoticeList: {
+            items: components["schemas"]["Notice"][];
         };
         Passenger: {
             /** Format: uuid */
@@ -1848,6 +2049,10 @@ export interface components {
                 birthDate: string;
                 /** @default null */
                 restrictions: string | null;
+                /** @default {} */
+                mealPicks: {
+                    [key: string]: string[];
+                };
             }[];
         };
         Payment: {
@@ -1899,6 +2104,52 @@ export interface components {
             photos: components["schemas"]["Photo"][];
             /** Format: date-time */
             updatedAt: string;
+        };
+        Production: {
+            departure: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date */
+                date: string;
+                title: string;
+            };
+            passengers: {
+                /** @enum {string} */
+                type: "adult" | "child" | "senior" | "infant";
+                label: string;
+                count: number;
+            }[];
+            meals: {
+                /** Format: uuid */
+                mealId: string;
+                name: string;
+                mode: string;
+                description: string;
+                servings: number;
+                options: {
+                    name: string;
+                    count: number;
+                    /** Format: uuid */
+                    optionId: string;
+                }[];
+                pending: number;
+            }[];
+            items: {
+                /** Format: uuid */
+                itemId: string;
+                name: string;
+                modality: string;
+                units: number;
+            }[];
+            rooms: {
+                type: string;
+                label: string;
+                count: number;
+            }[];
+            restrictions: {
+                name: string;
+                restrictions: string;
+            }[];
         };
         ProductList: {
             items: components["schemas"]["ProductSummary"][];
@@ -2440,6 +2691,26 @@ export interface components {
             /** @default  */
             description: string;
         };
+        TodayDeparture: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            date: string;
+            title: string;
+            productType: components["schemas"]["ProductType"];
+            status: components["schemas"]["DepartureStatus"];
+            passengers: number;
+            boarded: number;
+            guides: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+            }[];
+        };
+        TodayList: {
+            items: components["schemas"]["TodayDeparture"][];
+        };
         Tokens: {
             accessToken: string;
             refreshToken: string;
@@ -2466,12 +2737,13 @@ export interface components {
             name: string | null;
             qr: string;
         };
+        VoucherKey: {
+            id: string;
+            publicKey: string;
+            retired: boolean;
+        };
         VoucherKeys: {
-            items: {
-                id: string;
-                publicKey: string;
-                retired: boolean;
-            }[];
+            items: components["schemas"]["VoucherKey"][];
         };
         VoucherList: {
             bookingCode: string;
@@ -4829,6 +5101,237 @@ export interface operations {
             };
         };
     };
+    listDepartureNotices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoticeList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    publishDepartureNotice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoticeInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notice"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    syncCheckins: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckinSyncInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Manifest"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getManifest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Manifest"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getManifestCsv: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": components["schemas"]["CsvText"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProduction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Production"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listTodayDepartures: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TodayList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     getPublicProduct: {
         parameters: {
             query?: never;
@@ -4973,6 +5476,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listBookingNotices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoticeList"];
                 };
             };
             /** @description Error */

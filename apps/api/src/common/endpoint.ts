@@ -17,6 +17,8 @@ export interface EndpointSpec {
   responses: Record<number, z.ZodType | null>;
   body?: z.ZodType;
   query?: z.ZodObject;
+  /** Tipo de la respuesta de éxito cuando no es JSON (por ejemplo `text/csv`). */
+  contentType?: string;
 }
 
 /**

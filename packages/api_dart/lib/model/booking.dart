@@ -32,6 +32,7 @@ class Booking {
     required this.heldUntil,
     required this.contact,
     this.passengers = const [],
+    this.mealChoices = const [],
     required this.createdAt,
   });
 
@@ -75,6 +76,8 @@ class Booking {
 
   List<BookingPassenger> passengers;
 
+  List<MealChoice> mealChoices;
+
   DateTime createdAt;
 
   @override
@@ -98,6 +101,7 @@ class Booking {
     other.heldUntil == heldUntil &&
     other.contact == contact &&
     _deepEquality.equals(other.passengers, passengers) &&
+    _deepEquality.equals(other.mealChoices, mealChoices) &&
     other.createdAt == createdAt;
 
   @override
@@ -122,10 +126,11 @@ class Booking {
     (heldUntil == null ? 0 : heldUntil!.hashCode) +
     (contact == null ? 0 : contact!.hashCode) +
     (passengers.hashCode) +
+    (mealChoices.hashCode) +
     (createdAt.hashCode);
 
   @override
-  String toString() => 'Booking[id=$id, code=$code, status=$status, source_=$source_, departure=$departure, product=$product, provider=$provider, selection=$selection, lines=$lines, seats=$seats, totalUsd=$totalUsd, depositUsd=$depositUsd, paidUsd=$paidUsd, pendingUsd=$pendingUsd, balanceUsd=$balanceUsd, balanceDueDate=$balanceDueDate, heldUntil=$heldUntil, contact=$contact, passengers=$passengers, createdAt=$createdAt]';
+  String toString() => 'Booking[id=$id, code=$code, status=$status, source_=$source_, departure=$departure, product=$product, provider=$provider, selection=$selection, lines=$lines, seats=$seats, totalUsd=$totalUsd, depositUsd=$depositUsd, paidUsd=$paidUsd, pendingUsd=$pendingUsd, balanceUsd=$balanceUsd, balanceDueDate=$balanceDueDate, heldUntil=$heldUntil, contact=$contact, passengers=$passengers, mealChoices=$mealChoices, createdAt=$createdAt]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -160,6 +165,7 @@ class Booking {
       json[r'contact'] = null;
     }
       json[r'passengers'] = this.passengers;
+      json[r'mealChoices'] = this.mealChoices;
       json[r'createdAt'] = _isEpochMarker(r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$/')
         ? this.createdAt.millisecondsSinceEpoch
         : this.createdAt.toUtc().toIso8601String();
@@ -213,6 +219,8 @@ class Booking {
         assert(json.containsKey(r'contact'), 'Required key "Booking[contact]" is missing from JSON.');
         assert(json.containsKey(r'passengers'), 'Required key "Booking[passengers]" is missing from JSON.');
         assert(json[r'passengers'] != null, 'Required key "Booking[passengers]" has a null value in JSON.');
+        assert(json.containsKey(r'mealChoices'), 'Required key "Booking[mealChoices]" is missing from JSON.');
+        assert(json[r'mealChoices'] != null, 'Required key "Booking[mealChoices]" has a null value in JSON.');
         assert(json.containsKey(r'createdAt'), 'Required key "Booking[createdAt]" is missing from JSON.');
         assert(json[r'createdAt'] != null, 'Required key "Booking[createdAt]" has a null value in JSON.');
         return true;
@@ -238,6 +246,7 @@ class Booking {
         heldUntil: mapDateTime(json, r'heldUntil', r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$/'),
         contact: BookingContact.fromJson(json[r'contact']),
         passengers: BookingPassenger.listFromJson(json[r'passengers']),
+        mealChoices: MealChoice.listFromJson(json[r'mealChoices']),
         createdAt: mapDateTime(json, r'createdAt', r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$/')!,
       );
     }
@@ -305,6 +314,7 @@ class Booking {
     'heldUntil',
     'contact',
     'passengers',
+    'mealChoices',
     'createdAt',
   };
 }

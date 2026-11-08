@@ -10,6 +10,7 @@ export const PROVIDER_OWNED_MODELS = new Set<string>([
   'product',
   'departure',
   'booking',
+  'departureNotice',
   'payment',
   'ledgerEntry',
 ]);

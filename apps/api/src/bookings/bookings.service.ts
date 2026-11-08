@@ -17,8 +17,11 @@ import {
   type BookingEvent,
   type BookingSelection,
   type BookingStatus,
+  checkMealPicks,
   checkSelection,
   MAX_HELD_BOOKINGS,
+  type MealPicks,
+  mealName,
   nextBookingStatus,
   type PassengerInput,
   passengerCount,
@@ -262,9 +265,21 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       await this.move(booking, 'expire').catch(() => undefined);
   }
 
-  async setPassengers(booking: Booking, passengers: PassengerInput[]): Promise<void> {
+  async setPassengers(
+    booking: Booking & { departure: { sheet: unknown } },
+    passengers: (PassengerInput & { mealPicks: MealPicks })[],
+  ): Promise<void> {
     if (!SEAT_HOLDING_STATUSES.includes(booking.status))
       throw conflict('Esta reserva ya no admite cambios de pasajeros.');
+    const sold = booking.departure.sheet as ProductSheet;
+    const issues = passengers.flatMap((p, i) =>
+      checkMealPicks(sold, p.mealPicks).map((message) => ({
+        path: ['passengers', String(i), 'mealPicks'],
+        message,
+      })),
+    );
+    if (issues.length)
+      throw new ApiException(400, 'validation_error', issues[0]!.message, { issues });
     const count = passengerCount((booking.selection as unknown as BookingSelection).travelers);
     if (passengers.length !== count)
       throw new ApiException(
@@ -284,6 +299,7 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
             cedula: p.cedula,
             birthDate: new Date(`${p.birthDate}T00:00:00Z`),
             restrictions: p.restrictions,
+            mealPicks: p.mealPicks,
           },
         });
     });
@@ -348,7 +364,17 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
           cedula: p.cedula,
           birthDate: p.birthDate?.toISOString().slice(0, 10) ?? null,
           restrictions: p.restrictions,
+          mealPicks: p.mealPicks as Record<string, string[]>,
+          checkin: p.checkin,
         })),
+        mealChoices: (b.departure.sheet as ProductSheet).meals
+          .filter((m) => m.mode === 'choice')
+          .map((m) => ({
+            mealId: m.id,
+            name: mealName(m),
+            picksPerPassenger: m.picksPerPassenger,
+            options: m.options.map((o) => ({ id: o.id, name: o.name, isDefault: o.isDefault })),
+          })),
         createdAt: b.createdAt.toISOString(),
       };
     });

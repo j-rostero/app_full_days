@@ -17,6 +17,7 @@ class PassengersInputPassengersInner {
     this.cedula = null,
     required this.birthDate,
     required this.restrictions,
+    this.mealPicks = const {},
   });
 
   String name;
@@ -27,12 +28,15 @@ class PassengersInputPassengersInner {
 
   String? restrictions;
 
+  Map<String, List<String>> mealPicks;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is PassengersInputPassengersInner &&
     other.name == name &&
     other.cedula == cedula &&
     other.birthDate == birthDate &&
-    other.restrictions == restrictions;
+    other.restrictions == restrictions &&
+    _deepEquality.equals(other.mealPicks, mealPicks);
 
   @override
   int get hashCode =>
@@ -40,10 +44,11 @@ class PassengersInputPassengersInner {
     (name.hashCode) +
     (cedula == null ? 0 : cedula!.hashCode) +
     (birthDate.hashCode) +
-    (restrictions == null ? 0 : restrictions!.hashCode);
+    (restrictions == null ? 0 : restrictions!.hashCode) +
+    (mealPicks.hashCode);
 
   @override
-  String toString() => 'PassengersInputPassengersInner[name=$name, cedula=$cedula, birthDate=$birthDate, restrictions=$restrictions]';
+  String toString() => 'PassengersInputPassengersInner[name=$name, cedula=$cedula, birthDate=$birthDate, restrictions=$restrictions, mealPicks=$mealPicks]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -61,6 +66,7 @@ class PassengersInputPassengersInner {
     } else {
       json[r'restrictions'] = null;
     }
+      json[r'mealPicks'] = this.mealPicks;
     return json;
   }
 
@@ -81,6 +87,8 @@ class PassengersInputPassengersInner {
         assert(json.containsKey(r'birthDate'), 'Required key "PassengersInputPassengersInner[birthDate]" is missing from JSON.');
         assert(json[r'birthDate'] != null, 'Required key "PassengersInputPassengersInner[birthDate]" has a null value in JSON.');
         assert(json.containsKey(r'restrictions'), 'Required key "PassengersInputPassengersInner[restrictions]" is missing from JSON.');
+        assert(json.containsKey(r'mealPicks'), 'Required key "PassengersInputPassengersInner[mealPicks]" is missing from JSON.');
+        assert(json[r'mealPicks'] != null, 'Required key "PassengersInputPassengersInner[mealPicks]" has a null value in JSON.');
         return true;
       }());
 
@@ -89,6 +97,9 @@ class PassengersInputPassengersInner {
         cedula: mapValueOfType<Object>(json, r'cedula'),
         birthDate: mapDateTime(json, r'birthDate', r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$/')!,
         restrictions: mapValueOfType<String>(json, r'restrictions'),
+        mealPicks: json[r'mealPicks'] == null
+          ? const {}
+            : (json[r'mealPicks'] as Map<String, dynamic>).map((k, v) => MapEntry(k, v == null ? const <String>[] : (v as List).map((value) => value as String).toList(growable: false))),
       );
     }
     return null;
@@ -140,6 +151,7 @@ class PassengersInputPassengersInner {
     'cedula',
     'birthDate',
     'restrictions',
+    'mealPicks',
   };
 }
 
