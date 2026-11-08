@@ -3,6 +3,7 @@ import { type INestApplication, RequestMethod } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module.ts';
+import { productionLogger } from './common/logger.ts';
 import { ApiErrorFilter } from './common/api-error.filter.ts';
 import { CONFIG } from './common/tokens.ts';
 import type { Config } from './config.ts';
@@ -14,7 +15,7 @@ export const UNPREFIXED = [{ path: 'salud', method: RequestMethod.ALL }];
 /** Crea la aplicación configurada, sin escuchar. La usan `main`, las pruebas y la generación del contrato. */
 export async function createApp(options: { logger?: false } = {}): Promise<INestApplication> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: options.logger,
+    logger: options.logger ?? productionLogger(),
   });
   const config = app.get<Config>(CONFIG);
   // Sin esto, detrás de un proxy todas las peticiones parecen venir de la misma IP.

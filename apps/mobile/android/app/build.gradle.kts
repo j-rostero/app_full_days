@@ -1,3 +1,11 @@
+import java.util.Properties
+
+// Llave de publicación fuera del repositorio: android/key.properties (ver README de la app).
+val keyProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -15,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        // Identificador provisional hasta definir la marca: cambiarlo antes de la primera publicación.
+        // Identificador en Google Play. Una vez publicado no se puede cambiar.
         applicationId = "com.jrostero.fulldays"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -49,11 +57,22 @@ android {
         }
     }
 
+    signingConfigs {
+        if (keyProperties.isNotEmpty()) {
+            create("release") {
+                storeFile = file(keyProperties.getProperty("storeFile"))
+                storePassword = keyProperties.getProperty("storePassword")
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Con key.properties se firma para la tienda; sin él, con la llave de depuración
+            // para que `flutter run --release` siga funcionando en local.
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
 }

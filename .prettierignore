@@ -8,3 +8,6 @@ apps/mobile/
 packages/ui_flutter/
 **/.next/
 **/dist/
+e2e/test-results/
+e2e/playwright-report/
+e2e/.estado/

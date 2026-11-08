@@ -45,6 +45,49 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: VERIFICAR_PASOS="formato lint tipos build pruebas contrato" ./scripts/verificar.sh
 
+  e2e:
+    name: De punta a punta
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: fulldays
+          POSTGRES_PASSWORD: fulldays
+          POSTGRES_DB: fulldays
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U fulldays" --health-interval 2s --health-retries 30
+      redis:
+        image: redis:8-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 2s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @fulldays/e2e exec playwright install --with-deps chromium
+      - run: VERIFICAR_PASOS="build e2e" ./scripts/verificar.sh
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7
+
+  docker:
+    name: Imágenes Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infra/docker/api.Dockerfile -t fulldays-api .
+      - run: docker build -f infra/docker/web.Dockerfile --build-arg APP=web -t fulldays-web .
+
   flutter:
     name: App Flutter
     runs-on: ubuntu-latest

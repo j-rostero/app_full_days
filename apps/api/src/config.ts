@@ -101,6 +101,11 @@ export const ConfigSchema = z
     if (config.VOUCHER_SIGNING_KEY === DEV_VOUCHER_KEY)
       reject('VOUCHER_SIGNING_KEY', 'es la clave de desarrollo');
     if (config.IMGPROXY_KEY === '736563726574') reject('IMGPROXY_KEY', 'es la clave de desarrollo');
+    if (config.IMGPROXY_SALT === '68656C6C6F') reject('IMGPROXY_SALT', 'es la sal de desarrollo');
+    if (config.S3_SECRET_KEY === 'fulldays-secret')
+      reject('S3_SECRET_KEY', 'es la clave del almacenamiento local');
+    // Sin la clave, el límite de peticiones ve a todos los visitantes de las webs como una IP.
+    if (!config.WEB_SERVER_KEY) reject('WEB_SERVER_KEY', 'producción la necesita');
   });
 
 export type Config = z.infer<typeof ConfigSchema>;

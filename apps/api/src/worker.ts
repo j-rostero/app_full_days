@@ -7,6 +7,7 @@ import { CONFIG } from './common/tokens.ts';
 import type { Config } from './config.ts';
 import { JobsModule } from './jobs/jobs.module.ts';
 import { JobsService } from './jobs/jobs.service.ts';
+import { productionLogger } from './common/logger.ts';
 
 /**
  * Proceso aparte de la API para las tareas periódicas. Se pueden correr varias instancias:
@@ -17,7 +18,9 @@ const QUEUE = 'fulldays-jobs';
 const DELIVER_EVERY_MS = 10_000;
 const log = new Logger('Worker');
 
-const app = await NestFactory.createApplicationContext(JobsModule, { bufferLogs: false });
+const app = await NestFactory.createApplicationContext(JobsModule, {
+  logger: productionLogger(),
+});
 app.enableShutdownHooks();
 const config = app.get<Config>(CONFIG);
 const jobs = app.get(JobsService);

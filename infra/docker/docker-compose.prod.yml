@@ -1,0 +1,71 @@
+# Ejemplo de despliegue en un solo servidor. En la nube lo normal es PostgreSQL, Redis y S3
+# administrados: entonces se quitan esos servicios y se apuntan las variables a ellos.
+# Uso (ver docs/despliegue.md):
+#   cp infra/docker/produccion.env.example produccion.env   # y llenarlo
+#   docker compose -f infra/docker/docker-compose.prod.yml up -d --build
+name: fulldays-prod
+
+x-api: &api
+  build: { context: ../.., dockerfile: infra/docker/api.Dockerfile, target: runtime }
+  image: fulldays-api
+  env_file: ../../produccion.env
+  restart: unless-stopped
+  depends_on:
+    migrate: { condition: service_completed_successfully }
+    redis: { condition: service_healthy }
+
+x-web: &web
+  env_file: ../../produccion.env
+  environment: { API_URL: 'http://api:4000' }
+  restart: unless-stopped
+  depends_on: [api]
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    env_file: ../../produccion.env
+    volumes: ['postgres:/var/lib/postgresql/data']
+    healthcheck: { test: ['CMD-SHELL', 'pg_isready'], interval: 5s, retries: 30 }
+    restart: unless-stopped
+
+  redis:
+    image: redis:8-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes: ['redis:/data']
+    healthcheck: { test: ['CMD', 'redis-cli', 'ping'], interval: 5s, retries: 30 }
+    restart: unless-stopped
+
+  # Aplica las migraciones pendientes antes de que arranquen la API y el worker.
+  migrate:
+    build: { context: ../.., dockerfile: infra/docker/api.Dockerfile, target: migrate }
+    env_file: ../../produccion.env
+    depends_on: { postgres: { condition: service_healthy } }
+
+  api:
+    <<: *api
+    ports: ['127.0.0.1:4000:4000']
+
+  # Tareas periódicas y entrega de avisos. Se puede escalar: `--scale worker=2`.
+  worker:
+    <<: *api
+    command: ['node', 'dist/worker.js']
+    healthcheck: { disable: true }
+
+  web:
+    <<: *web
+    build: { context: ../.., dockerfile: infra/docker/web.Dockerfile, args: { APP: web } }
+    ports: ['127.0.0.1:3100:3000']
+
+  pro-web:
+    <<: *web
+    build: { context: ../.., dockerfile: infra/docker/web.Dockerfile, args: { APP: pro-web } }
+    ports: ['127.0.0.1:3101:3000']
+
+  central:
+    <<: *web
+    build: { context: ../.., dockerfile: infra/docker/web.Dockerfile, args: { APP: central } }
+    ports: ['127.0.0.1:3102:3000']
+
+volumes:
+  postgres:
+  redis:

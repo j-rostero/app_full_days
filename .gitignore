@@ -21,3 +21,4 @@ next-env.d.ts
 packages/ui_flutter/pubspec.lock
 packages/api_dart/pubspec.lock
 dump.rdb
+produccion.env
