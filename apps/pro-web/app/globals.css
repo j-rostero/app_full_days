@@ -1,4 +1,5 @@
 @import '@fulldays/tokens/tokens.css';
+@import '@fulldays/web-session/session.css';
 
 * {
   box-sizing: border-box;
@@ -41,4 +42,12 @@ h1 {
 .tarjeta h2 {
   font-size: var(--fd-text-subtitulo-size);
   margin: 0 0 var(--fd-space-s);
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fd-space-m);
+  margin-top: var(--fd-space-l);
 }

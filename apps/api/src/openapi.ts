@@ -4,7 +4,7 @@ import { DiscoveryService, MetadataScanner } from '@nestjs/core';
 import { ApiErrorSchema } from '@fulldays/shared';
 import { z } from 'zod';
 import { API_PREFIX, UNPREFIXED } from './app.setup.ts';
-import { ENDPOINT_METADATA, type EndpointSpec } from './common/endpoint.ts';
+import { ENDPOINT_METADATA, type EndpointSpec, PUBLIC_METADATA } from './common/endpoint.ts';
 
 type JsonSchema = Record<string, unknown>;
 
@@ -60,11 +60,12 @@ export function buildOpenApi(app: INestApplication): JsonSchema {
 
       const responses: Record<string, JsonSchema> = {};
       for (const [status, schema] of Object.entries(spec.responses)) {
-        responses[status] = {
-          description: Number(status) < 400 ? 'Éxito' : 'Error',
-          content: { 'application/json': { schema: ref(schema) } },
-        };
+        const description = Number(status) < 400 ? 'Éxito' : 'Error';
+        responses[status] = schema
+          ? { description, content: { 'application/json': { schema: ref(schema) } } }
+          : { description };
       }
+      const isPublic = Reflect.getMetadata(PUBLIC_METADATA, handler) === true;
       responses.default = {
         description: 'Error',
         content: { 'application/json': { schema: ref(NamedApiError) } },
@@ -90,6 +91,7 @@ export function buildOpenApi(app: INestApplication): JsonSchema {
         operationId: spec.operationId,
         summary: spec.summary,
         tags: spec.tags,
+        ...(isPublic ? { security: [] } : {}),
         ...(parameters.length ? { parameters } : {}),
         ...(spec.body
           ? {
@@ -122,7 +124,12 @@ export function buildOpenApi(app: INestApplication): JsonSchema {
     openapi: '3.0.3',
     info: { title: 'FullDays API', version: '1.0.0' },
     paths: sortKeys(paths),
-    components: { schemas: sortKeys(schemas) },
+    // Todo exige sesión salvo lo que declara `security: []`.
+    security: [{ bearer: [] }],
+    components: {
+      securitySchemes: { bearer: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
+      schemas: sortKeys(schemas),
+    },
   };
 }
 

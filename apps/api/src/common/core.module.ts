@@ -2,6 +2,7 @@ import { Global, Inject, Module, type OnApplicationShutdown } from '@nestjs/comm
 import { createDb, type PrismaClient } from '@fulldays/db';
 import { Redis } from 'ioredis';
 import { loadConfig, type Config } from '../config.ts';
+import { transactionalDb } from './db.ts';
 import { CONFIG, DB, REDIS } from './tokens.ts';
 
 /** Configuración, base de datos y Redis, disponibles en toda la API. */
@@ -12,7 +13,7 @@ import { CONFIG, DB, REDIS } from './tokens.ts';
     {
       provide: DB,
       inject: [CONFIG],
-      useFactory: (config: Config) => createDb(config.DATABASE_URL),
+      useFactory: (config: Config) => transactionalDb(createDb(config.DATABASE_URL)),
     },
     {
       provide: REDIS,

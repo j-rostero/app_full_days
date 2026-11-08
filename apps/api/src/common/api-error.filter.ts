@@ -10,6 +10,17 @@ import { codeForStatus, type ApiError } from '@fulldays/shared';
 import type { Response } from 'express';
 import { ApiException } from './api-exception.ts';
 
+/** Textos fijos por estado: los mensajes del framework y de librerías nunca se reenvían. */
+const MESSAGES: Record<number, string> = {
+  400: 'La petición no es válida.',
+  401: 'Inicia sesión para continuar.',
+  403: 'No tienes permiso para esto.',
+  404: 'No encontrado.',
+  409: 'La acción no se puede completar.',
+  413: 'El contenido es demasiado grande.',
+  429: 'Demasiados intentos. Espera un momento.',
+};
+
 /** Convierte cualquier error en la forma única `{ statusCode, code, message, issues? }`. */
 @Catch()
 export class ApiErrorFilter implements ExceptionFilter {
@@ -34,11 +45,13 @@ export function toApiError(exception: unknown): ApiError {
   }
   if (exception instanceof HttpException) {
     const status = exception.getStatus();
-    return {
-      statusCode: status,
-      code: codeForStatus(status),
-      message: status === HttpStatus.NOT_FOUND ? 'No encontrado.' : exception.message,
-    };
+    if (status < 500) {
+      return {
+        statusCode: status,
+        code: codeForStatus(status),
+        message: MESSAGES[status] ?? MESSAGES[400]!,
+      };
+    }
   }
   return {
     statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

@@ -137,12 +137,13 @@ class ApiError {
 
 enum ApiErrorCodeEnum {
   badRequest._(r'bad_request'),
-  validationFailed._(r'validation_failed'),
+  validationError._(r'validation_error'),
   unauthorized._(r'unauthorized'),
   forbidden._(r'forbidden'),
+  emailNotVerified._(r'email_not_verified'),
   notFound._(r'not_found'),
   conflict._(r'conflict'),
-  tooManyRequests._(r'too_many_requests'),
+  rateLimited._(r'rate_limited'),
   internalError._(r'internal_error'),
   ;
 
@@ -203,12 +204,13 @@ class ApiErrorCodeEnumTypeTransformer {
     if (data != null) {
       switch (data) {
         case r'bad_request': return ApiErrorCodeEnum.badRequest;
-        case r'validation_failed': return ApiErrorCodeEnum.validationFailed;
+        case r'validation_error': return ApiErrorCodeEnum.validationError;
         case r'unauthorized': return ApiErrorCodeEnum.unauthorized;
         case r'forbidden': return ApiErrorCodeEnum.forbidden;
+        case r'email_not_verified': return ApiErrorCodeEnum.emailNotVerified;
         case r'not_found': return ApiErrorCodeEnum.notFound;
         case r'conflict': return ApiErrorCodeEnum.conflict;
-        case r'too_many_requests': return ApiErrorCodeEnum.tooManyRequests;
+        case r'rate_limited': return ApiErrorCodeEnum.rateLimited;
         case r'internal_error': return ApiErrorCodeEnum.internalError;
         default:
           if (!allowNull) {

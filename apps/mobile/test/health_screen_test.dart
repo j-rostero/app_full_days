@@ -3,18 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fulldays_api/api.dart';
-import 'package:fulldays_mobile/main.dart';
+import 'package:fulldays_mobile/src/health_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
 ApiClient fakeApi(Future<http.Response> Function(http.Request) handler) =>
     ApiClient(basePath: 'http://api.test')..client = MockClient(handler);
 
-http.Response json(int status, Object body) => http.Response(
-      jsonEncode(body),
-      status,
-      headers: {'content-type': 'application/json; charset=utf-8'},
-    );
+http.Response json(int status, Object body) =>
+    http.Response(jsonEncode(body), status, headers: {'content-type': 'application/json; charset=utf-8'});
 
 void main() {
   testWidgets('muestra la API conectada cuando /salud responde ok', (tester) async {
@@ -25,7 +22,11 @@ void main() {
         'checks': {'database': 'ok', 'redis': 'ok'},
       });
     });
-    await tester.pumpWidget(FullDaysApp(client: client, flavor: 'dev'));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HealthScreen(client: client, flavor: 'dev'),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('API conectada'), findsOneWidget);
@@ -33,11 +34,17 @@ void main() {
   });
 
   testWidgets('una API degradada (503) muestra qué servicio falla', (tester) async {
-    final client = fakeApi((_) async => json(503, {
-          'status': 'degraded',
-          'checks': {'database': 'ok', 'redis': 'down'},
-        }));
-    await tester.pumpWidget(FullDaysApp(client: client, flavor: 'dev'));
+    final client = fakeApi(
+      (_) async => json(503, {
+        'status': 'degraded',
+        'checks': {'database': 'ok', 'redis': 'down'},
+      }),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HealthScreen(client: client, flavor: 'dev'),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('API con problemas'), findsOneWidget);
@@ -50,7 +57,11 @@ void main() {
       calls++;
       throw http.ClientException('sin red');
     });
-    await tester.pumpWidget(FullDaysApp(client: client, flavor: 'dev'));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HealthScreen(client: client, flavor: 'dev'),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(find.text('No pudimos conectar con la API. Revisa tu conexión.'), findsOneWidget);
 

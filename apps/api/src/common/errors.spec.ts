@@ -6,7 +6,7 @@ import { toApiError } from './api-error.filter.ts';
 import { ApiException } from './api-exception.ts';
 import { ZodPipe } from './zod.pipe.ts';
 
-test('ZodPipe responde 422 con los problemas por campo', () => {
+test('ZodPipe responde 400 con los problemas por campo', () => {
   const pipe = new ZodPipe(z.object({ email: z.email(), edad: z.number().min(18) }));
   assert.deepEqual(pipe.transform({ email: 'ana@x.com', edad: 30 }), {
     email: 'ana@x.com',
@@ -17,8 +17,8 @@ test('ZodPipe responde 422 con los problemas por campo', () => {
     assert.fail('debía fallar');
   } catch (error) {
     const body = toApiError(error);
-    assert.equal(body.statusCode, 422);
-    assert.equal(body.code, 'validation_failed');
+    assert.equal(body.statusCode, 400);
+    assert.equal(body.code, 'validation_error');
     assert.deepEqual(
       body.issues?.map((i) => i.path.join('.')),
       ['email', 'edad'],

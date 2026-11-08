@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@fulldays/api-client": "workspace:*",
+    "@fulldays/shared": "workspace:*",
     "@fulldays/tokens": "workspace:*",
+    "@fulldays/web-session": "workspace:*",
     "next": "^16.4.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"

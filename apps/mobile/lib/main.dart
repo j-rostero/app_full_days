@@ -4,16 +4,21 @@ import 'package:fulldays_ui/fulldays_ui.dart';
 
 import 'src/config.dart';
 import 'src/health_screen.dart';
+import 'src/screens/auth_screens.dart';
+import 'src/screens/home_screen.dart';
+import 'src/session/session.dart';
+import 'src/session/token_store.dart';
 
 void main() {
   final config = AppConfig.fromEnvironment();
-  runApp(FullDaysApp(client: ApiClient(basePath: config.apiUrl), flavor: config.flavor));
+  final session = SessionController(apiUrl: config.apiUrl, store: SecureTokenStore())..restore();
+  runApp(FullDaysApp(session: session, flavor: config.flavor));
 }
 
 class FullDaysApp extends StatelessWidget {
-  const FullDaysApp({super.key, required this.client, required this.flavor});
+  const FullDaysApp({super.key, required this.session, required this.flavor});
 
-  final ApiClient client;
+  final SessionController session;
   final String flavor;
 
   @override
@@ -22,7 +27,24 @@ class FullDaysApp extends StatelessWidget {
       title: 'FullDays',
       debugShowCheckedModeBanner: flavor != 'prod',
       theme: fdTheme(FdProduct.viajero),
-      home: HealthScreen(client: client, flavor: flavor),
+      home: ListenableBuilder(
+        listenable: session,
+        builder: (context, _) => switch (session.status) {
+          SessionStatus.loading => const Scaffold(body: Center(child: CircularProgressIndicator())),
+          SessionStatus.signedOut => SignInScreen(
+            session: session,
+            onHealth: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => HealthScreen(
+                  client: ApiClient(basePath: session.client.basePath),
+                  flavor: flavor,
+                ),
+              ),
+            ),
+          ),
+          SessionStatus.signedIn => HomeScreen(session: session),
+        },
+      ),
     );
   }
 }

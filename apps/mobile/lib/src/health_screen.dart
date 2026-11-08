@@ -72,9 +72,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 builder: (context, snapshot) => switch (snapshot.data) {
                   null => const Center(child: CircularProgressIndicator()),
                   ApiReachable(:final health) => _HealthCard(health: health),
-                  ApiUnreachable() => const _Message(
-                      'No pudimos conectar con la API. Revisa tu conexión.',
-                    ),
+                  ApiUnreachable() => const _Message('No pudimos conectar con la API. Revisa tu conexión.'),
                 },
               ),
               const Spacer(),
@@ -96,10 +94,8 @@ class _HealthCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ok = health.status == HealthStatusEnum.ok;
     final text = Theme.of(context).textTheme;
-    String label(HealthChecksDatabaseEnum? c) =>
-        c == HealthChecksDatabaseEnum.ok ? 'en línea' : 'sin respuesta';
-    String redis(HealthChecksRedisEnum? c) =>
-        c == HealthChecksRedisEnum.ok ? 'en línea' : 'sin respuesta';
+    String label(HealthChecksDatabaseEnum? c) => c == HealthChecksDatabaseEnum.ok ? 'en línea' : 'sin respuesta';
+    String redis(HealthChecksRedisEnum? c) => c == HealthChecksRedisEnum.ok ? 'en línea' : 'sin respuesta';
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(FdSpace.l),
@@ -123,6 +119,5 @@ class _Message extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) =>
-      Text(text, style: Theme.of(context).textTheme.bodyLarge);
+  Widget build(BuildContext context) => Text(text, style: Theme.of(context).textTheme.bodyLarge);
 }

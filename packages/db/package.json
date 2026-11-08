@@ -17,7 +17,8 @@
     "typecheck": "prisma generate && tsc --noEmit",
     "lint": "eslint .",
     "migrate:dev": "prisma migrate dev",
-    "migrate:deploy": "prisma migrate deploy"
+    "migrate:deploy": "prisma migrate deploy",
+    "test": "prisma migrate deploy && node --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.1",
