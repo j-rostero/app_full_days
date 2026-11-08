@@ -10,6 +10,8 @@ import 'src/session/token_store.dart';
 import 'src/traveler/traveler_shell.dart';
 
 void main() {
+  // El almacenamiento seguro usa canales de plataforma: el binding debe existir antes.
+  WidgetsFlutterBinding.ensureInitialized();
   final config = AppConfig.fromEnvironment();
   final session = SessionController(apiUrl: config.apiUrl, store: SecureTokenStore())..restore();
   runApp(FullDaysApp(session: session, flavor: config.flavor));

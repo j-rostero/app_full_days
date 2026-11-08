@@ -7,8 +7,11 @@ Una sola app para iOS y Android, con modo viajero y modo operador.
 Con la API corriendo (`pnpm dev` en la raíz):
 
 ```bash
-flutter run --flavor dev --dart-define-from-file=env/dev.json
+flutter run --flavor dev --dart-define-from-file=env/dev.json   # Android
+flutter run --dart-define-from-file=env/dev.json                # iOS: sin --flavor
 ```
+
+- En iOS no hay esquemas por entorno: se corre sin `--flavor` y el entorno llega igual por `env/<entorno>.json`.
 
 - Sin `API_URL`, en desarrollo la app usa `http://10.0.2.2:4000` en el emulador de Android y `http://localhost:4000` en el simulador de iOS.
 - En un teléfono físico: `--dart-define=API_URL=http://<IP del computador>:4000`.
