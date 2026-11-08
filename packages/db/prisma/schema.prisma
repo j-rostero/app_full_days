@@ -35,6 +35,8 @@ model User {
   auditLog    AuditLog[]
   files       File[]
   guiding     DepartureGuide[]
+  bookings    Booking[]
+  favorites   Favorite[]
 
   @@map("users")
 }
@@ -128,6 +130,9 @@ model Provider {
   documents  ProviderDocument[]
   products   Product[]
   departures Departure[]
+  bookings   Booking[]
+  payments   Payment[]
+  ledger     LedgerEntry[]
 
   @@index([status, submittedAt])
   @@map("providers")
@@ -186,6 +191,7 @@ model File {
 
   uploader User              @relation(fields: [uploaderId], references: [id])
   document ProviderDocument?
+  payments Payment[]
 
   @@index([uploaderId])
   @@map("files")
@@ -274,6 +280,7 @@ model Product {
   provider   Provider       @relation(fields: [providerId], references: [id], onDelete: Cascade)
   departures Departure[]
   themes     ProductTheme[]
+  favorites  Favorite[]
 
   @@index([providerId, id])
   @@index([status, statusAt])
@@ -344,6 +351,8 @@ model Departure {
   provider Provider         @relation(fields: [providerId], references: [id], onDelete: Cascade)
   product  Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
   guides   DepartureGuide[]
+  bookings Booking[]
+  quotas   DepartureQuota[]
 
   @@unique([productId, date])
   @@index([providerId, date])
@@ -456,4 +465,203 @@ model AuditLog {
 
   @@index([providerId, id])
   @@map("audit_log")
+}
+
+// ── Fase 3: búsqueda, reserva y pago ─────────────────────────────────────────
+
+/// Cupo limitado dentro de una salida (habitaciones por tipo, porciones de un plato). Un CHECK impide pasar del límite.
+model DepartureQuota {
+  departureId String @map("departure_id") @db.Uuid
+  /// `room:<id>` o `meal:<id>`.
+  key         String
+  limit       Int
+  taken       Int    @default(0)
+
+  departure Departure @relation(fields: [departureId], references: [id], onDelete: Cascade)
+
+  @@id([departureId, key])
+  @@map("departure_quotas")
+}
+
+enum BookingStatus {
+  held
+  in_review
+  deposit_paid
+  paid
+  expired
+  cancelled
+  completed
+  no_show
+
+  @@map("booking_status")
+}
+
+enum BookingSource {
+  app
+  agency
+
+  @@map("booking_source")
+}
+
+/// Una reserva de una salida. Las de la app tienen `userId`; las ventas propias de la agencia, contacto.
+model Booking {
+  id             String        @id @default(uuid(7)) @db.Uuid
+  code           String        @unique
+  providerId     String        @map("provider_id") @db.Uuid
+  departureId    String        @map("departure_id") @db.Uuid
+  userId         String?       @map("user_id") @db.Uuid
+  source         BookingSource @default(app)
+  status         BookingStatus @default(held)
+  /// Selección validada: embarque, pasajeros por tipo, habitaciones, comidas y extras.
+  selection      Json
+  lines          Json
+  seats          Int
+  totalUsd       Decimal       @map("total_usd") @db.Decimal(12, 2)
+  depositUsd     Decimal       @map("deposit_usd") @db.Decimal(12, 2)
+  paidUsd        Decimal       @default(0) @map("paid_usd") @db.Decimal(12, 2)
+  balanceDueDate DateTime      @map("balance_due_date") @db.Date
+  /// Hasta cuándo se guardan los puestos mientras está `held`.
+  heldUntil      DateTime?     @map("held_until")
+  contactName    String?       @map("contact_name")
+  contactPhone   String?       @map("contact_phone")
+  contactEmail   String?       @map("contact_email")
+  cancelledAt    DateTime?     @map("cancelled_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  provider   Provider           @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  departure  Departure          @relation(fields: [departureId], references: [id], onDelete: Cascade)
+  user       User?              @relation(fields: [userId], references: [id])
+  passengers BookingPassenger[]
+  payments   Payment[]
+
+  @@index([providerId, departureId])
+  @@index([userId, createdAt])
+  @@index([status, heldUntil])
+  @@map("bookings")
+}
+
+enum PassengerType {
+  adult
+  child
+  senior
+  infant
+
+  @@map("passenger_type")
+}
+
+enum Checkin {
+  boarded
+  no_show
+
+  @@map("checkin")
+}
+
+model BookingPassenger {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  bookingId    String        @map("booking_id") @db.Uuid
+  position     Int
+  type         PassengerType
+  name         String?
+  cedula       String?
+  birthDate    DateTime?     @map("birth_date") @db.Date
+  restrictions String?
+  checkin      Checkin?
+  /// Hora del teléfono de la última marca; gana la más reciente.
+  checkinAt    DateTime?     @map("checkin_at")
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, position])
+  @@map("booking_passengers")
+}
+
+enum PaymentMethod {
+  mobile_payment
+  bank_transfer
+  zelle
+  cash_usd
+
+  @@map("payment_method")
+}
+
+enum PaymentStatus {
+  pending
+  confirmed
+  rejected
+
+  @@map("payment_status")
+}
+
+/// Un pago hecho fuera de la plataforma, reportado por el viajero o registrado por la agencia.
+model Payment {
+  id             String        @id @default(uuid(7)) @db.Uuid
+  providerId     String        @map("provider_id") @db.Uuid
+  bookingId      String        @map("booking_id") @db.Uuid
+  method         PaymentMethod
+  /// Normalizada (sin espacios ni guiones, mayúsculas); única para no contar dos veces el mismo pago.
+  reference      String        @unique
+  amountUsd      Decimal       @map("amount_usd") @db.Decimal(12, 2)
+  /// Tasa y monto en bolívares de los métodos en bolívares.
+  bsPerUsd       Decimal?      @map("bs_per_usd") @db.Decimal(14, 4)
+  amountBs       Decimal?      @map("amount_bs") @db.Decimal(16, 2)
+  proofFileId    String?       @map("proof_file_id") @db.Uuid
+  status         PaymentStatus @default(pending)
+  reason         String?
+  idempotencyKey String        @map("idempotency_key")
+  reportedById   String?       @map("reported_by_id") @db.Uuid
+  reviewedById   String?       @map("reviewed_by_id") @db.Uuid
+  reviewedAt     DateTime?     @map("reviewed_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  booking  Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  proof    File?    @relation(fields: [proofFileId], references: [id])
+
+  @@unique([bookingId, idempotencyKey])
+  @@index([providerId, status, createdAt])
+  @@map("payments")
+}
+
+/// Libro de partida doble: cada pago confirmado deja asientos que cuadran por `transactionId`.
+model LedgerEntry {
+  id            String   @id @default(uuid(7)) @db.Uuid
+  transactionId String   @map("transaction_id") @db.Uuid
+  providerId    String   @map("provider_id") @db.Uuid
+  bookingId     String?  @map("booking_id") @db.Uuid
+  paymentId     String?  @map("payment_id") @db.Uuid
+  account       String
+  debitUsd      Decimal  @default(0) @map("debit_usd") @db.Decimal(12, 2)
+  creditUsd     Decimal  @default(0) @map("credit_usd") @db.Decimal(12, 2)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([providerId, createdAt])
+  @@index([transactionId])
+  @@map("ledger_entries")
+}
+
+model Favorite {
+  userId    String   @map("user_id") @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([userId, productId])
+  @@map("favorites")
+}
+
+/// Primera página de cada búsqueda, para las métricas de Central.
+model SearchLog {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  text      String?
+  filters   Json
+  results   Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("search_log")
 }

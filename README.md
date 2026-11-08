@@ -50,6 +50,8 @@ La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
   ```
 
 - Una agencia se registra en la web Pro, envía sus documentos y Central la aprueba en `/agencias`; desde ahí publica fichas que Central revisa en `/productos`.
+- Con una ficha aprobada, la agencia programa salidas en `/salidas`. El viajero las encuentra en la web (http://localhost:3100) o en la app, aparta sus puestos, reporta el pago con su comprobante y la agencia lo confirma en `/pagos`; confirmado el abono, los vouchers QR aparecen en la reserva y la app los guarda para verlos sin conexión.
+- Los pagos en bolívares necesitan la tasa del día, que Central carga en `/tasa`.
 - Entrar con Google necesita `GOOGLE_CLIENT_IDS` (sin él, la API responde que aún no está disponible).
 
 ## Comandos

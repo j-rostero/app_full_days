@@ -1,6 +1,6 @@
 'use client';
 
-import { confirmFile, declareFile } from './file-actions';
+import { confirmFile, declareFile } from './files.ts';
 
 /**
  * Sube un archivo en tres pasos: la API lo declara y firma la subida, el navegador lo envía

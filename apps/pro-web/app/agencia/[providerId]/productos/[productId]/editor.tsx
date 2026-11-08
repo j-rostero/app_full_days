@@ -20,7 +20,7 @@ import {
   ROOM_TYPES,
   VEHICLES,
 } from '@fulldays/shared';
-import { uploadFile } from '../../../../../lib/upload';
+import { uploadFile } from '@fulldays/web-session/upload';
 import { pauseProduct, publishProduct, saveProduct } from '../actions';
 
 type Detail = components['schemas']['ProductDetail'];

@@ -114,6 +114,8 @@ void main() {
     await tester.enterText(find.byKey(const ValueKey('campo-code')), '123456');
     await tester.tap(find.widgetWithText(FilledButton, 'Confirmar'));
     await tester.pumpAndSettle();
-    expect(find.text('Hola, ana@x.com.'), findsOneWidget);
+    // Con la sesión abierta entra al modo viajero.
+    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.text('Hola, ana@x.com.', skipOffstage: false), findsOneWidget);
   });
 }

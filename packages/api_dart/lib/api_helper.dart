@@ -55,8 +55,17 @@ String parameterToString(dynamic value) {
   if (value is DateTime) {
     return value.toUtc().toIso8601String();
   }
+  if (value is BookingStatus) {
+    return BookingStatusTypeTransformer().encode(value).toString();
+  }
   if (value is DepartureStatus) {
     return DepartureStatusTypeTransformer().encode(value).toString();
+  }
+  if (value is PaymentMethod) {
+    return PaymentMethodTypeTransformer().encode(value).toString();
+  }
+  if (value is PaymentStatus) {
+    return PaymentStatusTypeTransformer().encode(value).toString();
   }
   if (value is ProductStatus) {
     return ProductStatusTypeTransformer().encode(value).toString();

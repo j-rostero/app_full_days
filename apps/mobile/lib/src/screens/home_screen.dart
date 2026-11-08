@@ -4,7 +4,7 @@ import '../session/session.dart';
 
 const _roleLabels = {'owner': 'Dueño', 'operations': 'Operaciones', 'finance': 'Finanzas', 'guide': 'Guía'};
 
-/// Inicio con sesión. Las fases siguientes agregan el catálogo y las reservas.
+/// La cuenta: datos y agencias de las que la persona es parte.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.session});
 
@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FullDays'),
+        title: const Text('Cuenta'),
         actions: [IconButton(tooltip: 'Salir', icon: const Icon(Icons.logout), onPressed: session.signOut)],
       ),
       body: ListView(
@@ -24,7 +24,6 @@ class HomeScreen extends StatelessWidget {
         children: [
           Text('Hola, ${me?.name ?? me?.email ?? ''}.', style: theme.textTheme.headlineSmall),
           const SizedBox(height: 8),
-          Text('Pronto verás aquí los próximos fulldays.', style: theme.textTheme.bodyMedium),
           if (me != null && me.memberships.isNotEmpty) ...[
             const SizedBox(height: 24),
             Text('Tus agencias', style: theme.textTheme.titleMedium),

@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/agencias/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Agencia aprobada y sus viajes publicados; sin datos legales ni de contacto */
+        get: operations["getPublicAgency"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/ajustes": {
         parameters: {
             query?: never;
@@ -812,6 +829,57 @@ export interface paths {
         patch: operations["changeTeamRole"];
         trace?: never;
     };
+    "/v1/pro/{providerId}/pagos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pagos por estado, el más antiguo primero (máximo 200) */
+        get: operations["listProviderPayments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/pagos/{paymentId}/confirmar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirma un pago pendiente: lo aplica a la reserva y lo asienta */
+        post: operations["confirmPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/pagos/{paymentId}/rechazar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rechaza un pago pendiente con un motivo para el viajero */
+        post: operations["rejectPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/pro/{providerId}/productos": {
         parameters: {
             query?: never;
@@ -882,6 +950,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/pro/{providerId}/reservas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reservas de la agencia; filtros por salida y estado (máximo 300) */
+        get: operations["listProviderBookings"];
+        put?: never;
+        /** Venta propia (WhatsApp, oficina) con contacto y, si ya pagó, el dinero recibido */
+        post: operations["createManualBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/reservas/{bookingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Una reserva de la agencia, con el contacto si es venta propia */
+        get: operations["getProviderBooking"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/pro/{providerId}/salidas": {
         parameters: {
             query?: never;
@@ -917,6 +1020,23 @@ export interface paths {
         patch: operations["updateDeparture"];
         trace?: never;
     };
+    "/v1/productos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ficha publicada con fotos, agencia, destino y próximas fechas (hasta 60) */
+        get: operations["getPublicProduct"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/proveedores": {
         parameters: {
             query?: never;
@@ -928,6 +1048,144 @@ export interface paths {
         put?: never;
         /** Registra una agencia u organizador; quien la registra queda como dueño */
         post: operations["registerProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reservas propias, la más nueva primero (máximo 100) */
+        get: operations["listMyBookings"];
+        put?: never;
+        /** Aparta puestos y habitaciones y crea la reserva por los minutos de apartado */
+        post: operations["holdBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Una reserva propia con precio, abono, pagado, saldo, pasajeros e instrucciones de pago */
+        get: operations["getMyBooking"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/pagos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pagos de una reserva propia con su estado y motivo de rechazo */
+        get: operations["listBookingPayments"];
+        put?: never;
+        /** Reporta un pago hecho a la agencia; la misma clave de idempotencia devuelve el mismo pago */
+        post: operations["reportPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/pasajeros": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Nombre, cédula, fecha de nacimiento y restricciones de cada pasajero, en orden */
+        put: operations["setBookingPassengers"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/vouchers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Un voucher firmado por pasajero, cuando la reserva tiene el abono o el total confirmado */
+        get: operations["getVouchers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/cotizar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Precio exacto de una selección en una salida en venta, sin apartar */
+        post: operations["quoteBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/salidas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Busca salidas visibles con filtros y orden; páginas de 20 */
+        get: operations["searchDepartures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/salidas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Disponibilidad de una salida visible: precio, puestos y habitaciones libres, y la ficha que se vende */
+        get: operations["getAvailability"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -968,6 +1226,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/vouchers/llaves": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Claves públicas Ed25519 vigentes y retiradas, por id */
+        get: operations["getVoucherKeys"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/yo": {
         parameters: {
             query?: never;
@@ -984,6 +1259,41 @@ export interface paths {
         head?: never;
         /** Cambia mi nombre o mi teléfono */
         patch: operations["updateMe"];
+        trace?: never;
+    };
+    "/v1/yo/favoritos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Viajes guardados que siguen publicados */
+        get: operations["listFavorites"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/yo/favoritos/{productId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Guarda un viaje publicado (idempotente) */
+        put: operations["addFavorite"];
+        post?: never;
+        /** Quita un viaje de los guardados */
+        delete: operations["removeFavorite"];
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/yo/pasajeros": {
@@ -1082,6 +1392,28 @@ export interface components {
             /** Format: uuid */
             nextCursor: string | null;
         };
+        Availability: {
+            departure: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date */
+                date: string;
+                /** @enum {string} */
+                status: "open" | "paused" | "closed" | "in_progress" | "finished" | "cancelled";
+                priceUsd: number;
+                seatsLeft: number;
+                /** Format: uuid */
+                productId: string;
+                adultPriceUsd: number | null;
+            };
+            type: components["schemas"]["ProductType"];
+            title: string;
+            sheet: components["schemas"]["ProductSheet"];
+            provider: components["schemas"]["PublicProviderRef"];
+            roomsLeft: {
+                [key: string]: number;
+            };
+        };
         BoardingPoint: {
             /** Format: uuid */
             id: string;
@@ -1114,6 +1446,99 @@ export interface components {
             /** @default null */
             lng: number | null;
         };
+        Booking: {
+            /** Format: uuid */
+            id: string;
+            code: string;
+            status: components["schemas"]["BookingStatus"];
+            /** @enum {string} */
+            source: "app" | "agency";
+            departure: {
+                /** Format: uuid */
+                id: string;
+                /** Format: date */
+                date: string;
+                /** @enum {string} */
+                status: "open" | "paused" | "closed" | "in_progress" | "finished" | "cancelled";
+            };
+            product: {
+                /** Format: uuid */
+                id: string;
+                type: components["schemas"]["ProductType"];
+                title: string;
+                cover: components["schemas"]["ImageUrls"] | null;
+            };
+            provider: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                paymentInstructions: string | null;
+            };
+            selection: components["schemas"]["BookingSelection"];
+            lines: {
+                label: string;
+                amountUsd: number;
+            }[];
+            seats: number;
+            totalUsd: number;
+            depositUsd: number;
+            paidUsd: number;
+            pendingUsd: number;
+            balanceUsd: number;
+            /** Format: date */
+            balanceDueDate: string;
+            /** Format: date-time */
+            heldUntil: string | null;
+            contact: {
+                name: string | null;
+                phone: string | null;
+                email: string | null;
+            } | null;
+            passengers: components["schemas"]["BookingPassenger"][];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        BookingList: {
+            items: components["schemas"]["Booking"][];
+        };
+        BookingPassenger: {
+            /** Format: uuid */
+            id: string;
+            position: number;
+            /** @enum {string} */
+            type: "adult" | "child" | "senior" | "infant";
+            name: string | null;
+            cedula: string | null;
+            /** Format: date */
+            birthDate: string | null;
+            restrictions: string | null;
+        };
+        BookingSelection: {
+            /** Format: uuid */
+            boardingId: string;
+            travelers: {
+                /** @default 0 */
+                adult: number;
+                /** @default 0 */
+                child: number;
+                /** @default 0 */
+                senior: number;
+                /** @default 0 */
+                infant: number;
+            };
+            /** @default [] */
+            rooms: {
+                /** Format: uuid */
+                roomId: string;
+                count: number;
+            }[];
+            /** @default [] */
+            mealIds: string[];
+            /** @default [] */
+            itemIds: string[];
+        };
+        /** @enum {string} */
+        BookingStatus: "held" | "in_review" | "deposit_paid" | "paid" | "expired" | "cancelled" | "completed" | "no_show";
         ChangeTeamRoleInput: {
             /** @enum {string} */
             role: "owner" | "operations" | "finance" | "guide";
@@ -1202,6 +1627,37 @@ export interface components {
                 name: string | null;
             }[];
         };
+        DepartureCard: {
+            /** Format: uuid */
+            departureId: string;
+            /** Format: uuid */
+            productId: string;
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            status: "open" | "paused" | "closed" | "in_progress" | "finished" | "cancelled";
+            type: components["schemas"]["ProductType"];
+            title: string;
+            summary: string;
+            cover: components["schemas"]["ImageUrls"] | null;
+            priceUsd: number;
+            seatsLeft: number;
+            days: number;
+            destination: string | null;
+            cities: string[];
+            featured: boolean;
+            provider: components["schemas"]["PublicProviderRef"];
+        };
+        DepartureDate: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            status: "open" | "paused" | "closed" | "in_progress" | "finished" | "cancelled";
+            priceUsd: number;
+            seatsLeft: number;
+        };
         DepartureList: {
             items: components["schemas"]["Departure"][];
         };
@@ -1277,6 +1733,9 @@ export interface components {
              */
             parentId: string | null;
         };
+        FavoriteList: {
+            items: components["schemas"]["PublicProductCard"][];
+        };
         File: {
             /** Format: uuid */
             id: string;
@@ -1303,11 +1762,38 @@ export interface components {
                 redis: "ok" | "down";
             };
         };
+        HoldInput: {
+            /** Format: uuid */
+            departureId: string;
+            selection: components["schemas"]["BookingSelection"];
+        };
         ImageUrls: {
             sm: string;
             md: string;
             lg: string;
             xl: string;
+        };
+        ManualBookingInput: {
+            /** Format: uuid */
+            departureId: string;
+            selection: components["schemas"]["BookingSelection"];
+            contact: {
+                name: string;
+                /** @default null */
+                phone: string | null;
+                /**
+                 * Format: email
+                 * @default null
+                 */
+                email: string | null;
+            };
+            /** @default null */
+            payment: {
+                /** @enum {string} */
+                method: "mobile_payment" | "bank_transfer" | "zelle" | "cash_usd";
+                reference: string;
+                amountUsd: number;
+            } | null;
         };
         Me: {
             /** Format: uuid */
@@ -1353,6 +1839,46 @@ export interface components {
         PassengerList: {
             items: components["schemas"]["Passenger"][];
         };
+        PassengersInput: {
+            passengers: {
+                name: string;
+                /** @default null */
+                cedula: unknown;
+                /** Format: date */
+                birthDate: string;
+                /** @default null */
+                restrictions: string | null;
+            }[];
+        };
+        Payment: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            bookingId: string;
+            bookingCode: string;
+            /** Format: date */
+            departureDate: string;
+            title: string;
+            method: components["schemas"]["PaymentMethod"];
+            reference: string;
+            amountUsd: number;
+            bsPerUsd: number | null;
+            amountBs: number | null;
+            status: components["schemas"]["PaymentStatus"];
+            reason: string | null;
+            proofUrl: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            reviewedAt: string | null;
+        };
+        PaymentList: {
+            items: components["schemas"]["Payment"][];
+        };
+        /** @enum {string} */
+        PaymentMethod: "mobile_payment" | "bank_transfer" | "zelle" | "cash_usd";
+        /** @enum {string} */
+        PaymentStatus: "pending" | "confirmed" | "rejected";
         Photo: {
             /** Format: uuid */
             id: string;
@@ -1677,6 +2203,87 @@ export interface components {
             instagram?: string | null;
             paymentInstructions?: string | null;
         };
+        PublicAgency: {
+            provider: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                /** @enum {string|null} */
+                badge: "verified" | "new" | null;
+                baseCity: string;
+                instagram: string | null;
+            };
+            products: components["schemas"]["PublicProductCard"][];
+        };
+        PublicProduct: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["ProductType"];
+            sheet: components["schemas"]["ProductSheet"];
+            photos: components["schemas"]["Photo"][];
+            featured: boolean;
+            themes: {
+                slug: string;
+                name: string;
+            }[];
+            destination: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+            } | null;
+            cashAtDestination: {
+                totalUsd: number;
+                concepts: string[];
+            };
+            inclusions: {
+                included: string[];
+                optional: string[];
+                payAtDestination: string[];
+                notIncluded: string[];
+            };
+            provider: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                /** @enum {string|null} */
+                badge: "verified" | "new" | null;
+                baseCity: string;
+                instagram: string | null;
+            };
+            departures: components["schemas"]["DepartureDate"][];
+        };
+        PublicProductCard: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["ProductType"];
+            title: string;
+            summary: string;
+            cover: components["schemas"]["ImageUrls"] | null;
+            priceUsd: number;
+            /** Format: date */
+            nextDate: string | null;
+        };
+        PublicProviderRef: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @enum {string|null} */
+            badge: "verified" | "new" | null;
+            baseCity: string;
+        };
+        Quote: {
+            lines: {
+                label: string;
+                amountUsd: number;
+            }[];
+            totalUsd: number;
+            depositUsd: number;
+            seats: number;
+            /** Format: date */
+            balanceDueDate: string;
+        };
+        QuoteInput: components["schemas"]["HoldInput"];
         Rate: {
             /** Format: date */
             date: string;
@@ -1702,8 +2309,23 @@ export interface components {
             email: string;
             password: string;
         };
+        RejectPaymentInput: {
+            reason: string;
+        };
         RenewInput: {
             refreshToken: string;
+        };
+        ReportPaymentInput: {
+            /** @enum {string} */
+            method: "mobile_payment" | "bank_transfer" | "zelle" | "cash_usd";
+            reference: string;
+            amountUsd: number;
+            /**
+             * Format: uuid
+             * @default null
+             */
+            proofFileId: string | null;
+            idempotencyKey: string;
         };
         ResetInput: {
             /** Format: email */
@@ -1724,6 +2346,11 @@ export interface components {
             minCapacity: number;
             /** @default null */
             adultPriceUsd: number | null;
+        };
+        SearchResult: {
+            items: components["schemas"]["DepartureCard"][];
+            page: number;
+            hasMore: boolean;
         };
         SetStaffRolesInput: {
             /** Format: email */
@@ -1830,6 +2457,29 @@ export interface components {
             email: string;
             code: string;
         };
+        Voucher: {
+            /** Format: uuid */
+            passengerId: string;
+            position: number;
+            /** @enum {string} */
+            type: "adult" | "child" | "senior" | "infant";
+            name: string | null;
+            qr: string;
+        };
+        VoucherKeys: {
+            items: {
+                id: string;
+                publicKey: string;
+                retired: boolean;
+            }[];
+        };
+        VoucherList: {
+            bookingCode: string;
+            title: string;
+            /** Format: date */
+            date: string;
+            items: components["schemas"]["Voucher"][];
+        };
     };
     responses: never;
     parameters: never;
@@ -1864,6 +2514,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getPublicAgency: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicAgency"];
                 };
             };
             /** @description Error */
@@ -3643,6 +4324,107 @@ export interface operations {
             };
         };
     };
+    listProviderPayments: {
+        parameters: {
+            query?: {
+                status?: "pending" | "confirmed" | "rejected";
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    confirmPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    rejectPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectPaymentInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listProducts: {
         parameters: {
             query?: never;
@@ -3841,6 +4623,107 @@ export interface operations {
             };
         };
     };
+    listProviderBookings: {
+        parameters: {
+            query?: {
+                departureId?: string;
+                status?: "held" | "in_review" | "deposit_paid" | "paid" | "expired" | "cancelled" | "completed" | "no_show";
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createManualBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualBookingInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProviderBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                bookingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listDepartures: {
         parameters: {
             query?: {
@@ -3946,6 +4829,37 @@ export interface operations {
             };
         };
     };
+    getPublicProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProduct"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     registerProvider: {
         parameters: {
             query?: never;
@@ -3966,6 +4880,340 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listMyBookings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    holdBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HoldInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getMyBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listBookingPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    reportPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportPaymentInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    setBookingPassengers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PassengersInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getVouchers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoucherList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    quoteBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuoteInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quote"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    searchDepartures: {
+        parameters: {
+            query?: {
+                q?: string;
+                destino?: string;
+                desde?: string;
+                fechaDesde?: string;
+                fechaHasta?: string;
+                tipo?: "fullday" | "tour" | "excursion";
+                categoria?: "beach" | "island" | "mountain" | "nature" | "river" | "adventure" | "culture" | "gastronomy" | "city";
+                tematica?: string;
+                precioMax?: number;
+                incluye?: string;
+                verificados?: unknown;
+                ninos?: unknown;
+                mascotas?: unknown;
+                orden?: "recomendados" | "fecha" | "precio" | "cupos";
+                pagina?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResult"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getAvailability: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Availability"];
                 };
             };
             /** @description Error */
@@ -4037,6 +5285,35 @@ export interface operations {
             };
         };
     };
+    getVoucherKeys: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoucherKeys"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     getMe: {
         parameters: {
             query?: never;
@@ -4087,6 +5364,93 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Me"];
                 };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listFavorites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    addFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    removeFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Error */
             default: {
