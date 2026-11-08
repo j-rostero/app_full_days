@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput & node --watch-path=dist --env-file-if-exists=../../.env dist/main.js",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput & node --watch-path=dist --env-file-if-exists=../../.env dist/main.js & node --watch-path=dist --env-file-if-exists=../../.env dist/worker.js",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

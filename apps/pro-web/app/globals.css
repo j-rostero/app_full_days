@@ -157,3 +157,14 @@ main.ancho {
 small.error {
   color: var(--fd-color-error);
 }
+
+.mensajes {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--fd-space-s);
+}
+.mensajes li {
+  border-left: 3px solid var(--fd-color-borde);
+  padding-left: var(--fd-space-s);
+}

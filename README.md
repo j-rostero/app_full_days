@@ -29,7 +29,7 @@ Requisitos: Node 22.18 o más nuevo (CI usa 24), pnpm 10, Docker, Java 17 o más
 ```bash
 pnpm install
 cp .env.example .env
-pnpm dev            # levanta la infraestructura, la API y las tres webs
+pnpm dev            # levanta la infraestructura, la API, el worker y las tres webs
 ```
 
 La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
@@ -52,6 +52,8 @@ La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
 - Una agencia se registra en la web Pro, envía sus documentos y Central la aprueba en `/agencias`; desde ahí publica fichas que Central revisa en `/productos`.
 - Con una ficha aprobada, la agencia programa salidas en `/salidas`. El viajero las encuentra en la web (http://localhost:3100) o en la app, aparta sus puestos, reporta el pago con su comprobante y la agencia lo confirma en `/pagos`; confirmado el abono, los vouchers QR aparecen en la reserva y la app los guarda para verlos sin conexión.
 - El día del viaje, la agencia y sus guías abren la salida desde `/hoy` en la web Pro o desde la pestaña «Operar» de la app. La app guarda la lista en el teléfono, escanea los vouchers con la cámara, valida su firma sin señal y sube las marcas al recuperar conexión. La agencia descarga la lista en CSV, ve qué preparar (platos, ítems, habitaciones) y publica avisos que el viajero ve en su reserva.
+- Después del viaje: el viajero cancela viendo antes cuánto le devuelven, reseña (hasta 30 días después) y abre reclamos desde su reserva; la agencia paga reembolsos en `/reembolsos`, responde reseñas y reclamos y descarga su liquidación mensual en CSV. Central resuelve reclamos escalados, modera reseñas, atiende usuarios y ve liquidaciones y métricas.
+- El worker (`pnpm --filter @fulldays/api worker`, o `dev:worker`) vence apartados, cancela saldos vencidos, envía recordatorios, cierra salidas pasadas, borra archivos huérfanos y entrega la cola de avisos por push y correo con reintentos. Se pueden correr varias instancias sin que un mensaje salga dos veces. Sin `FCM_SERVICE_ACCOUNT` no hay push (los avisos quedan en la bandeja de la web y la app); con `NOTIFICATION_EMAIL=smtp` los correos llegan a Mailpit.
 - Los pagos en bolívares necesitan la tasa del día, que Central carga en `/tasa`.
 - Entrar con Google necesita `GOOGLE_CLIENT_IDS` (sin él, la API responde que aún no está disponible).
 

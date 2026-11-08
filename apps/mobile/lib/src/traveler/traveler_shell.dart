@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../operator/operator_screen.dart';
+import '../push/push.dart';
 import '../screens/home_screen.dart';
 import '../session/session.dart';
 import 'explore_screen.dart';
@@ -9,9 +10,12 @@ import 'trips_screen.dart';
 
 /// Modo viajero: explorar, guardados, mis viajes y cuenta.
 class TravelerShell extends StatefulWidget {
-  const TravelerShell({super.key, required this.session});
+  const TravelerShell({super.key, required this.session, this.pushTokens});
 
   final SessionController session;
+
+  /// Por defecto Firebase; las pruebas pasan uno falso.
+  final PushTokens? pushTokens;
 
   @override
   State<TravelerShell> createState() => _TravelerShellState();
@@ -19,6 +23,19 @@ class TravelerShell extends StatefulWidget {
 
 class _TravelerShellState extends State<TravelerShell> {
   int _tab = 0;
+  late final PushRegistration _push = PushRegistration(widget.session, widget.pushTokens ?? FirebasePushTokens());
+
+  @override
+  void initState() {
+    super.initState();
+    _push.start();
+  }
+
+  @override
+  void dispose() {
+    _push.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

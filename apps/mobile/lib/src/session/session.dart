@@ -56,6 +56,9 @@ class SessionController extends ChangeNotifier {
   SessionStatus status = SessionStatus.loading;
   Me? me;
 
+  /// Tareas que corren antes de cerrar la sesión, con ella todavía válida (quitar el push).
+  final List<Future<void> Function()> beforeSignOut = [];
+
   AuthApi get _auth => AuthApi(client);
 
   /// Al abrir la app: si hay tokens guardados, carga la cuenta.
@@ -94,6 +97,13 @@ class SessionController extends ChangeNotifier {
       _open(() => _auth.resetPassword(ResetInput(email: email, code: code, password: password)));
 
   Future<void> signOut() async {
+    for (final task in List.of(beforeSignOut)) {
+      try {
+        await task();
+      } on Object {
+        // Lo que falle aquí no impide salir.
+      }
+    }
     try {
       await _auth.signOut();
     } on Object {

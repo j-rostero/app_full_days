@@ -6,11 +6,13 @@ import {
   PASSENGER_TYPES,
   PAYMENT_METHODS,
   PAYMENT_STATUS_LABELS,
+  REVIEW_ASPECTS,
 } from '@fulldays/shared';
 import { requireMe, sessionApi } from '@fulldays/web-session';
 import { ActionForm } from '@fulldays/web-session/action-form';
 import { bs, longDate, usd } from '../../../lib/format';
-import { savePassengers } from './actions';
+import { ClaimThread } from '../../../components/claim';
+import { cancelBooking, openClaim, reviewBooking, savePassengers } from './actions';
 import { PaymentForm } from './payment-form';
 
 export const metadata = { title: 'Mi reserva', robots: { index: false } };
@@ -20,15 +22,25 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
   await requireMe(`/reservas/${id}`);
   const api = await sessionApi();
   const path = { params: { path: { id } } };
-  const [{ data: b }, { data: payments }, { data: settings }, { data: rate }, { data: notices }] =
-    await Promise.all([
-      api.GET('/v1/reservas/{id}', path),
-      api.GET('/v1/reservas/{id}/pagos', path),
-      api.GET('/v1/ajustes'),
-      api.GET('/v1/tasa'),
-      api.GET('/v1/reservas/{id}/avisos', path),
-    ]);
+  const [
+    { data: b },
+    { data: payments },
+    { data: settings },
+    { data: rate },
+    { data: notices },
+    { data: quote },
+    { data: claims },
+  ] = await Promise.all([
+    api.GET('/v1/reservas/{id}', path),
+    api.GET('/v1/reservas/{id}/pagos', path),
+    api.GET('/v1/ajustes'),
+    api.GET('/v1/tasa'),
+    api.GET('/v1/reservas/{id}/avisos', path),
+    api.GET('/v1/reservas/{id}/cancelacion', path),
+    api.GET('/v1/reclamos', { params: { query: { reserva: id } } }),
+  ]);
   if (!b) notFound();
+  const back = `/reservas/${id}`;
   const accepts = ['held', 'in_review', 'deposit_paid'].includes(b.status);
   const toDeposit = Math.max(b.depositUsd - b.paidUsd - b.pendingUsd, 0);
   const toTotal = Math.max(b.totalUsd - b.paidUsd - b.pendingUsd, 0);
@@ -245,6 +257,102 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
               </fieldset>
             ))}
           </ActionForm>
+        </section>
+      ) : null}
+      {b.status === 'cancelled' ? (
+        <section className="tarjeta">
+          <h2>Cancelación</h2>
+          {b.refund ? (
+            <p>
+              Te corresponden <strong>{usd(b.refund.amountUsd)}</strong>. {b.refund.rule}{' '}
+              {b.refund.status === 'paid'
+                ? `La agencia ya te los devolvió${b.refund.reference ? ` (ref. ${b.refund.reference})` : ''}.`
+                : 'La agencia te los devolverá por el mismo medio en que pagaste.'}
+            </p>
+          ) : (
+            <p className="suave">Esta reserva no tiene reembolso.</p>
+          )}
+        </section>
+      ) : null}
+      {b.canReview ? (
+        <section className="tarjeta">
+          <h2>¿Cómo te fue?</h2>
+          <p className="suave">Tu reseña ayuda a otros viajeros. Solo se publica tu nombre.</p>
+          <ActionForm action={reviewBooking.bind(null, b.id)} submit="Publicar reseña">
+            <label className="fd-field">
+              <span>Calificación general</span>
+              <select name="rating" required defaultValue="5">
+                {[5, 4, 3, 2, 1].map((n) => (
+                  <option key={n} value={n}>
+                    {'★'.repeat(n)} ({n})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="fila">
+              {Object.entries(REVIEW_ASPECTS).map(([key, label]) => (
+                <label key={key} className="fd-field">
+                  <span>{label}</span>
+                  <select name={`aspect.${key}`} defaultValue="">
+                    <option value="">—</option>
+                    {[5, 4, 3, 2, 1].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+            </div>
+            <fieldset className="fd-field">
+              <legend>¿Fue como se describió?</legend>
+              <label className="fd-check">
+                <input type="radio" name="asDescribed" value="si" defaultChecked /> Sí
+              </label>
+              <label className="fd-check">
+                <input type="radio" name="asDescribed" value="no" /> No
+              </label>
+            </fieldset>
+            <label className="fd-field">
+              <span>Comentario</span>
+              <textarea name="comment" maxLength={2000} rows={3} />
+            </label>
+          </ActionForm>
+        </section>
+      ) : null}
+      {quote?.allowed ? (
+        <section className="tarjeta">
+          <h2>Cancelar</h2>
+          <p>
+            Si cancelas hoy, te devuelven <strong>{usd(quote.amountUsd)}</strong>. {quote.rule}
+          </p>
+          <ActionForm
+            action={cancelBooking.bind(null, b.id)}
+            submit="Cancelar reserva"
+            submitClassName="fd-button fd-button-secundario"
+            confirm={`¿Cancelar la reserva ${b.code}? Te devolverán ${usd(quote.amountUsd)}. No se puede deshacer.`}
+          />
+        </section>
+      ) : null}
+      {b.paidUsd > 0 ? (
+        <section className="tarjeta">
+          <h2>Reclamos</h2>
+          {claims?.items.map((c) => (
+            <ClaimThread key={c.id} claim={c} back={back} />
+          ))}
+          <details>
+            <summary>Abrir un reclamo</summary>
+            <ActionForm action={openClaim.bind(null, b.id)} submit="Enviar a la agencia">
+              <label className="fd-field">
+                <span>Asunto</span>
+                <input name="subject" required minLength={3} maxLength={150} />
+              </label>
+              <label className="fd-field">
+                <span>Qué pasó</span>
+                <textarea name="message" required maxLength={3000} rows={3} />
+              </label>
+            </ActionForm>
+          </details>
         </section>
       ) : null}
     </main>

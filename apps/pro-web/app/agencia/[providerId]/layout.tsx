@@ -35,6 +35,11 @@ export default async function ProviderLayout({
         {can('departures') ? <Link href={`${base}/salidas`}>Salidas</Link> : null}
         {can('bookings') ? <Link href={`${base}/reservas`}>Reservas</Link> : null}
         {can('payments') ? <Link href={`${base}/pagos`}>Pagos</Link> : null}
+        {can('payments') ? <Link href={`${base}/reembolsos`}>Reembolsos</Link> : null}
+        {can('bookings') ? <Link href={`${base}/reclamos`}>Reclamos</Link> : null}
+        {can('bookings') ? <Link href={`${base}/resenas`}>Reseñas</Link> : null}
+        {can('settlements') ? <Link href={`${base}/liquidaciones`}>Liquidaciones</Link> : null}
+        {can('reports') ? <Link href={`${base}/reportes`}>Reportes</Link> : null}
         {can('team') ? <Link href={`${base}/equipo`}>Equipo</Link> : null}
       </nav>
       {children}

@@ -58,7 +58,7 @@ h1 {
   gap: 1rem;
 }
 .bloque {
-  border-top: 1px solid var(--fd-line, #ddd);
+  border-top: 1px solid var(--fd-color-borde);
   padding: 0.75rem 0;
 }
 .fotos {
@@ -81,4 +81,15 @@ pre {
   word-break: break-word;
   max-height: 20rem;
   overflow: auto;
+}
+
+.mensajes {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--fd-space-s);
+}
+.mensajes li {
+  border-left: 3px solid var(--fd-color-borde);
+  padding-left: var(--fd-space-s);
 }
