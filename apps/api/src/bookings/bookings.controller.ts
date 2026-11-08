@@ -14,6 +14,7 @@ import {
   BookingListSchema,
   BookingSchema,
   type BookingView,
+  CancellationSchema,
   HoldInput,
   PassengersInput,
   ProBookingQuery,
@@ -127,6 +128,34 @@ export class BookingsController {
     return this.one(id, auth.userId);
   }
 
+  @Get(':id/cancelacion')
+  @Endpoint({
+    operationId: 'previewCancellation',
+    summary: 'Cuánto se devolvería si se cancela ahora y qué regla lo dice',
+    tags: TAG,
+    responses: { 200: CancellationSchema },
+  })
+  async preview(@Auth() auth: AuthContext, @Param('id') id: string) {
+    if (!isUuid(id)) throw notFound();
+    return this.bookings.cancellation(await this.bookings.load({ id, userId: auth.userId }));
+  }
+
+  @Post(':id/cancelar')
+  @HttpCode(200)
+  @Endpoint({
+    operationId: 'cancelBooking',
+    summary: 'Cancela la reserva; si corresponde, deja el reembolso pendiente para la agencia',
+    tags: TAG,
+    responses: { 200: BookingSchema },
+  })
+  async cancel(@Auth() auth: AuthContext, @Param('id') id: string): Promise<BookingView> {
+    if (!isUuid(id)) throw notFound();
+    const booking = await this.bookings.load({ id, userId: auth.userId });
+    await this.bookings.refresh(booking);
+    await this.bookings.cancel(await this.bookings.load({ id, userId: auth.userId }), 'traveler');
+    return this.one(id, auth.userId);
+  }
+
   private async one(id: string, userId: string): Promise<BookingView> {
     const booking = await this.bookings.load({ id, userId });
     await this.bookings.refresh(booking);
@@ -187,5 +216,26 @@ export class ProBookingsController {
       true,
     );
     return view!;
+  }
+
+  @Post(':bookingId/cancelar')
+  @HttpCode(200)
+  @Can('bookings')
+  @Endpoint({
+    operationId: 'cancelProviderBooking',
+    summary: 'La agencia cancela una reserva y devuelve todo lo pagado',
+    tags: TAG,
+    responses: { 200: BookingSchema },
+  })
+  async cancel(
+    @Membership() m: MembershipContext,
+    @Param('bookingId') bookingId: string,
+  ): Promise<BookingView> {
+    if (!isUuid(bookingId)) throw notFound();
+    await this.bookings.cancel(
+      await this.bookings.load({ id: bookingId, providerId: m.providerId }),
+      'agency',
+    );
+    return this.get(m, bookingId);
   }
 }

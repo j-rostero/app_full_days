@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/agencias/{id}/reputacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reputación de la agencia y sus últimas 100 reseñas visibles */
+        get: operations["getAgencyReputation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/ajustes": {
         parameters: {
             query?: never;
@@ -449,6 +466,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/central/liquidaciones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Totales del mes por cada agencia con movimientos en el libro */
+        get: operations["listSettlements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/metricas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Actividad de un periodo (por defecto los últimos 7 días): reservas, GMV, comisión, ocupación y búsquedas */
+        get: operations["getMetrics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/central/productos": {
         parameters: {
             query?: never;
@@ -653,6 +704,108 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/central/reclamos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Todos los reclamos por estado, el que más espera primero */
+        get: operations["listAllClaims"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/reclamos/{id}/mensajes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Central responde en un reclamo */
+        post: operations["centralAnswerClaim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/reclamos/{id}/resolver": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cierra el reclamo con la resolución y avisa al viajero */
+        post: operations["resolveClaim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/resenas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Cola de moderación: reseñas reportadas u ocultas */
+        get: operations["listModerationQueue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/resenas/{id}/mostrar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Vuelve a mostrar una reseña y cierra el reporte */
+        post: operations["showReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/resenas/{id}/ocultar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Oculta una reseña con motivo y cierra el reporte */
+        post: operations["hideReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/central/tasas": {
         parameters: {
             query?: never;
@@ -704,6 +857,57 @@ export interface paths {
         head?: never;
         /** Edita una temática */
         patch: operations["updateTheme"];
+        trace?: never;
+    };
+    "/v1/central/usuarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Busca personas por nombre, correo, teléfono o código de reserva (máximo 30), con sus últimas reservas */
+        get: operations["searchUsers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/usuarios/{id}/bloquear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bloquea con motivo y cierra todas sus sesiones al instante */
+        post: operations["blockUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/usuarios/{id}/desbloquear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Quita el bloqueo */
+        post: operations["unblockUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/pro/{providerId}/auditoria": {
@@ -829,6 +1033,40 @@ export interface paths {
         patch: operations["changeTeamRole"];
         trace?: never;
     };
+    "/v1/pro/{providerId}/liquidaciones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liquidación de un mes (por defecto el actual): pagos, reembolsos, comisión, neto y líneas */
+        get: operations["getSettlement"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/liquidaciones.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** La liquidación del mes en CSV */
+        get: operations["getSettlementCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/pro/{providerId}/pagos": {
         parameters: {
             query?: never;
@@ -950,6 +1188,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/pro/{providerId}/reclamos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reclamos sobre reservas de la agencia */
+        get: operations["listProviderClaims"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/reclamos/{claimId}/mensajes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** La agencia responde en un reclamo */
+        post: operations["answerClaim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/reembolsos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reembolsos de la agencia, pendientes primero (máximo 200) */
+        get: operations["listRefunds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/reembolsos/{refundId}/pagar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registra que se envió el reembolso (referencia opcional) y lo asienta en el libro */
+        post: operations["payRefund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/reportes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ventas del mes, reservas confirmadas, cancelaciones, ocupación y reputación */
+        get: operations["getProviderReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/resenas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reseñas de la agencia, visibles u ocultas, con su moderación */
+        get: operations["listProviderReviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/resenas/{reviewId}/reportar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pide a Central que revise una reseña, con motivo */
+        post: operations["reportReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/resenas/{reviewId}/responder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** La única respuesta pública de la agencia a una reseña */
+        post: operations["replyReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/pro/{providerId}/reservas": {
         parameters: {
             query?: never;
@@ -979,6 +1353,23 @@ export interface paths {
         get: operations["getProviderBooking"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/reservas/{bookingId}/cancelar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** La agencia cancela una reserva y devuelve todo lo pagado */
+        post: operations["cancelProviderBooking"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1140,6 +1531,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/productos/{id}/resenas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reputación del viaje y sus últimas 100 reseñas visibles */
+        get: operations["listProductReviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/proveedores": {
         parameters: {
             query?: never;
@@ -1151,6 +1559,57 @@ export interface paths {
         put?: never;
         /** Registra una agencia u organizador; quien la registra queda como dueño */
         post: operations["registerProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reclamos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reclamos propios con sus mensajes */
+        get: operations["listMyClaims"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reclamos/{id}/escalar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pide que FullDays intervenga en el reclamo */
+        post: operations["escalateClaim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reclamos/{id}/mensajes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** El viajero responde en su reclamo */
+        post: operations["writeClaim"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1209,6 +1668,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/reservas/{id}/cancelacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Cuánto se devolvería si se cancela ahora y qué regla lo dice */
+        get: operations["previewCancellation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/cancelar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancela la reserva; si corresponde, deja el reembolso pendiente para la agencia */
+        post: operations["cancelBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/reservas/{id}/pagos": {
         parameters: {
             query?: never;
@@ -1238,6 +1731,40 @@ export interface paths {
         /** Nombre, cédula, fecha de nacimiento y restricciones de cada pasajero, en orden */
         put: operations["setBookingPassengers"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/reclamos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Abre un reclamo sobre una reserva con algún pago confirmado */
+        post: operations["openClaim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/reservas/{id}/resena": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reseña un viaje realizado: una vez y hasta 30 días después */
+        post: operations["reviewBooking"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1381,6 +1908,40 @@ export interface paths {
         patch: operations["updateMe"];
         trace?: never;
     };
+    "/v1/yo/dispositivos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Registra el token de push de este teléfono (pasa a la cuenta actual si era de otra) */
+        put: operations["registerDevice"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/yo/dispositivos/quitar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deja de enviar push a este teléfono (al cerrar sesión) */
+        post: operations["forgetDevice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/yo/favoritos": {
         parameters: {
             query?: never;
@@ -1411,6 +1972,40 @@ export interface paths {
         post?: never;
         /** Quita un viaje de los guardados */
         delete: operations["removeFavorite"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/yo/notificaciones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Las últimas 50 notificaciones y cuántas faltan por leer */
+        get: operations["getInbox"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/yo/notificaciones/leidas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Marca como leídas las indicadas, o todas si no se indica ninguna */
+        post: operations["markInboxRead"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1468,6 +2063,28 @@ export interface components {
             email: string;
             /** @enum {string} */
             role: "owner" | "operations" | "finance" | "guide";
+        };
+        AdminUserList: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+                phone: string | null;
+                /** Format: date-time */
+                blockedAt: string | null;
+                /** Format: date-time */
+                createdAt: string;
+                bookings: {
+                    /** Format: uuid */
+                    id: string;
+                    code: string;
+                    status: string;
+                    title: string;
+                    /** Format: date */
+                    date: string;
+                }[];
+            }[];
         };
         /** @description Forma única de error. */
         ApiError: {
@@ -1609,6 +2226,18 @@ export interface components {
             balanceDueDate: string;
             /** Format: date-time */
             heldUntil: string | null;
+            /** @enum {string|null} */
+            cancelledBy: "traveler" | "agency" | "system" | null;
+            refund: {
+                /** Format: uuid */
+                id: string;
+                amountUsd: number;
+                rule: string;
+                /** @enum {string} */
+                status: "pending" | "paid";
+                reference: string | null;
+            } | null;
+            canReview: boolean;
             contact: {
                 name: string | null;
                 phone: string | null;
@@ -1665,6 +2294,24 @@ export interface components {
         };
         /** @enum {string} */
         BookingStatus: "held" | "in_review" | "deposit_paid" | "paid" | "expired" | "cancelled" | "completed" | "no_show";
+        Cancellation: {
+            allowed: boolean;
+            amountUsd: number;
+            rule: string;
+            daysBefore: number;
+        };
+        CentralSettlements: {
+            month: string;
+            items: {
+                /** Format: uuid */
+                providerId: string;
+                providerName: string;
+                paymentsUsd: number;
+                refundsUsd: number;
+                commissionUsd: number;
+                netUsd: number;
+            }[];
+        };
         ChangeTeamRoleInput: {
             /** @enum {string} */
             role: "owner" | "operations" | "finance" | "guide";
@@ -1678,6 +2325,47 @@ export interface components {
                 /** Format: date-time */
                 at: string;
             }[];
+        };
+        Claim: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            bookingId: string;
+            bookingCode: string;
+            title: string;
+            providerName: string;
+            traveler: string;
+            subject: string;
+            /** @enum {string} */
+            status: "open" | "escalated" | "resolved";
+            resolution: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            messages: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                role: "traveler" | "agency" | "central";
+                author: string | null;
+                body: string;
+                /** Format: date-time */
+                createdAt: string;
+            }[];
+        };
+        ClaimInput: {
+            subject: string;
+            message: string;
+        };
+        ClaimList: {
+            items: components["schemas"]["Claim"][];
+        };
+        ClaimMessageInput: {
+            body: string;
+        };
+        ClaimResolveInput: {
+            resolution: string;
         };
         CommissionInput: {
             commissionPercent: number | null;
@@ -1870,6 +2558,11 @@ export interface components {
              */
             parentId: string | null;
         };
+        DeviceInput: {
+            token: string;
+            /** @enum {string} */
+            platform: "android" | "ios";
+        };
         FavoriteList: {
             items: components["schemas"]["PublicProductCard"][];
         };
@@ -1884,6 +2577,9 @@ export interface components {
             status: "pending" | "ready";
             image: components["schemas"]["ImageUrls"] | null;
             downloadUrl: string | null;
+        };
+        ForgetDeviceInput: {
+            token: string;
         };
         GoogleInput: {
             idToken: string;
@@ -1909,6 +2605,20 @@ export interface components {
             md: string;
             lg: string;
             xl: string;
+        };
+        Inbox: {
+            unread: number;
+            items: {
+                /** Format: uuid */
+                id: string;
+                event: string;
+                title: string;
+                body: string;
+                link: string | null;
+                read: boolean;
+                /** Format: date-time */
+                createdAt: string;
+            }[];
         };
         Manifest: {
             departure: {
@@ -1970,6 +2680,9 @@ export interface components {
                 amountUsd: number;
             } | null;
         };
+        MarkReadInput: {
+            ids?: string[];
+        };
         Me: {
             /** Format: uuid */
             id: string;
@@ -2004,6 +2717,27 @@ export interface components {
             providerStatus: "pending" | "in_review" | "approved" | "rejected" | "suspended";
             role: components["schemas"]["ProviderRole"];
             permissions: components["schemas"]["ProviderPermission"][];
+        };
+        Metrics: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            bookings: number;
+            confirmed: number;
+            gmvUsd: number;
+            commissionUsd: number;
+            occupancyPercent: number | null;
+            sellingProviders: number;
+            searches: number;
+            topSearches: {
+                text: string;
+                count: number;
+            }[];
+            emptySearches: {
+                text: string;
+                count: number;
+            }[];
         };
         Notice: {
             /** Format: uuid */
@@ -2084,6 +2818,10 @@ export interface components {
         PaymentMethod: "mobile_payment" | "bank_transfer" | "zelle" | "cash_usd";
         /** @enum {string} */
         PaymentStatus: "pending" | "confirmed" | "rejected";
+        PayRefundInput: {
+            /** @default null */
+            reference: string | null;
+        };
         Photo: {
             /** Format: uuid */
             id: string;
@@ -2429,6 +3167,14 @@ export interface components {
             /** Format: date-time */
             submittedAt: string | null;
         };
+        ProviderReport: {
+            month: string;
+            salesUsd: number;
+            confirmedBookings: number;
+            cancellations: number;
+            occupancyPercent: number | null;
+            reputation: components["schemas"]["Reputation"];
+        };
         ProviderReview: {
             company: components["schemas"]["Company"];
             documents: components["schemas"]["ProviderDocument"][];
@@ -2555,6 +3301,29 @@ export interface components {
             /** Format: email */
             email: string;
         };
+        Refund: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            bookingId: string;
+            bookingCode: string;
+            title: string;
+            /** Format: date */
+            departureDate: string;
+            traveler: string | null;
+            amountUsd: number;
+            rule: string;
+            /** @enum {string} */
+            status: "pending" | "paid";
+            reference: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            paidAt: string | null;
+        };
+        RefundList: {
+            items: components["schemas"]["Refund"][];
+        };
         RegisterInput: {
             /** Format: email */
             email: string;
@@ -2565,6 +3334,9 @@ export interface components {
         };
         RenewInput: {
             refreshToken: string;
+        };
+        ReplyInput: {
+            reply: string;
         };
         ReportPaymentInput: {
             /** @enum {string} */
@@ -2578,11 +3350,69 @@ export interface components {
             proofFileId: string | null;
             idempotencyKey: string;
         };
+        Reputation: {
+            average: number | null;
+            count: number;
+            asDescribedPercent: number | null;
+            aspects: components["schemas"]["ReviewAspects"];
+        };
         ResetInput: {
             /** Format: email */
             email: string;
             code: string;
             password: string;
+        };
+        Review: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            productId: string;
+            title: string;
+            rating: number;
+            aspects: components["schemas"]["ReviewAspects"];
+            asDescribed: boolean;
+            comment: string;
+            author: string;
+            /** Format: date */
+            tripDate: string;
+            reply: string | null;
+            /** Format: date-time */
+            repliedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            moderation: {
+                /** @enum {string} */
+                status: "visible" | "hidden";
+                reported: boolean;
+                reportReason: string | null;
+                hiddenReason: string | null;
+                providerName: string;
+            } | null;
+        };
+        ReviewAspects: {
+            punctuality?: number;
+            transport?: number;
+            food?: number;
+            guide?: number;
+            value?: number;
+        };
+        ReviewInput: {
+            rating: number;
+            /** @default {} */
+            aspects: {
+                punctuality?: number;
+                transport?: number;
+                food?: number;
+                guide?: number;
+                value?: number;
+            };
+            asDescribed: boolean;
+            /** @default  */
+            comment: string;
+        };
+        ReviewList: {
+            reputation: components["schemas"]["Reputation"];
+            items: components["schemas"]["Review"][];
         };
         SaveProductInput: {
             version: number;
@@ -2621,6 +3451,22 @@ export interface components {
             mealChoiceDeadlineHours: number;
             paymentMethods: ("mobile_payment" | "bank_transfer" | "zelle" | "cash_usd")[];
             platformCommissionPercent: number;
+        };
+        Settlement: {
+            month: string;
+            paymentsUsd: number;
+            refundsUsd: number;
+            commissionUsd: number;
+            netUsd: number;
+            lines: {
+                /** Format: date-time */
+                at: string;
+                /** @enum {string} */
+                kind: "payment" | "refund";
+                bookingCode: string | null;
+                amountUsd: number;
+                commissionUsd: number;
+            }[];
         };
         SignedIn: {
             accessToken: string;
@@ -2817,6 +3663,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PublicAgency"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getAgencyReputation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewList"];
                 };
             };
             /** @description Error */
@@ -3681,6 +4558,69 @@ export interface operations {
             };
         };
     };
+    listSettlements: {
+        parameters: {
+            query?: {
+                mes?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CentralSettlements"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getMetrics: {
+        parameters: {
+            query?: {
+                desde?: string;
+                hasta?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Metrics"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listProductQueue: {
         parameters: {
             query?: {
@@ -4077,6 +5017,199 @@ export interface operations {
             };
         };
     };
+    listAllClaims: {
+        parameters: {
+            query?: {
+                estado?: "open" | "escalated" | "resolved";
+                reserva?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    centralAnswerClaim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimMessageInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Claim"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    resolveClaim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimResolveInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Claim"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listModerationQueue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    showReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    hideReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listRates: {
         parameters: {
             query?: never;
@@ -4224,6 +5357,99 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TravelTheme"];
                 };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    searchUsers: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    blockUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    unblockUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Error */
             default: {
@@ -4596,6 +5822,72 @@ export interface operations {
             };
         };
     };
+    getSettlement: {
+        parameters: {
+            query?: {
+                mes?: string;
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Settlement"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getSettlementCsv: {
+        parameters: {
+            query?: {
+                mes?: string;
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": components["schemas"]["CsvText"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listProviderPayments: {
         parameters: {
             query?: {
@@ -4895,6 +6187,275 @@ export interface operations {
             };
         };
     };
+    listProviderClaims: {
+        parameters: {
+            query?: {
+                estado?: "open" | "escalated" | "resolved";
+                reserva?: string;
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    answerClaim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                claimId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimMessageInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Claim"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listRefunds: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    payRefund: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                refundId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayRefundInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProviderReport: {
+        parameters: {
+            query?: {
+                mes?: string;
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderReport"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listProviderReviews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    reportReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                reviewId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    replyReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                reviewId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplyInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listProviderBookings: {
         parameters: {
             query?: {
@@ -4965,6 +6526,38 @@ export interface operations {
         };
     };
     getProviderBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                bookingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    cancelProviderBooking: {
         parameters: {
             query?: never;
             header?: never;
@@ -5363,6 +6956,37 @@ export interface operations {
             };
         };
     };
+    listProductReviews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     registerProvider: {
         parameters: {
             query?: never;
@@ -5383,6 +7007,104 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listMyClaims: {
+        parameters: {
+            query?: {
+                estado?: "open" | "escalated" | "resolved";
+                reserva?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    escalateClaim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Claim"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    writeClaim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimMessageInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Claim"];
                 };
             };
             /** @description Error */
@@ -5520,6 +7242,68 @@ export interface operations {
             };
         };
     };
+    previewCancellation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Cancellation"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    cancelBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listBookingPayments: {
         parameters: {
             query?: never;
@@ -5608,6 +7392,76 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Booking"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    openClaim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Claim"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    reviewBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
                 };
             };
             /** @description Error */
@@ -5910,6 +7764,68 @@ export interface operations {
             };
         };
     };
+    registerDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeviceInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    forgetDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ForgetDeviceInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listFavorites: {
         parameters: {
             query?: never;
@@ -5978,6 +7894,66 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getInbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Inbox"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    markInboxRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkReadInput"];
+            };
+        };
         responses: {
             /** @description Éxito */
             204: {

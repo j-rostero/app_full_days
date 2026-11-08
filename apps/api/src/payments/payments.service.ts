@@ -7,6 +7,7 @@ import {
   nextBookingStatus,
   normalizeReference,
   paymentPostings,
+  refundPostings,
   type ReportPayment,
   todayInVenezuela,
 } from '@fulldays/shared';
@@ -16,6 +17,7 @@ import { CONFIG, DB } from '../common/tokens.ts';
 import { SettingsService } from '../catalogs/settings.service.ts';
 import { FilesService } from '../files/files.service.ts';
 import { BookingsService } from '../bookings/bookings.service.ts';
+import { NotificationsService } from '../notifications/notifications.service.ts';
 import type { PaymentView } from './payments.schemas.ts';
 
 const cents = (n: unknown) => Math.round(Number(n) * 100);
@@ -35,6 +37,7 @@ export class PaymentsService {
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(FilesService) private readonly files: FilesService,
     @Inject(BookingsService) private readonly bookings: BookingsService,
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
   ) {}
 
   async report(userId: string, bookingId: string, input: ReportPayment): Promise<Payment> {
@@ -145,10 +148,36 @@ export class PaymentsService {
   }
 
   async confirm(providerId: string, paymentId: string, reviewerId: string): Promise<void> {
-    await this.db.$transaction(async () => {
+    const payment = await this.db.$transaction(async () => {
       const payment = await this.review(providerId, paymentId, reviewerId, 'confirmed');
       await this.apply(payment);
+      return payment;
     });
+    await this.tell(
+      payment,
+      'payment_confirmed',
+      (code, amount) =>
+        `La agencia confirmó tu pago de ${amount} en la reserva ${code}. Tus vouchers ya están disponibles.`,
+    );
+  }
+
+  /** Avisa al viajero dueño de la reserva (las ventas propias no tienen viajero con cuenta). */
+  private async tell(
+    payment: Payment,
+    event: 'payment_confirmed' | 'payment_rejected',
+    body: (code: string, amount: string) => string,
+  ): Promise<void> {
+    const booking = await this.db.booking.findUniqueOrThrow({ where: { id: payment.bookingId } });
+    if (!booking.userId) return;
+    await this.notifications.enqueue([
+      {
+        userId: booking.userId,
+        event,
+        body: body(booking.code, `${Number(payment.amountUsd).toFixed(2)} USD`),
+        link: `reserva:${booking.id}`,
+        dedupeKey: `${event}:${payment.id}`,
+      },
+    ]);
   }
 
   async reject(
@@ -157,7 +186,7 @@ export class PaymentsService {
     reviewerId: string,
     reason: string,
   ): Promise<void> {
-    await this.db.$transaction(async () => {
+    const rejected = await this.db.$transaction(async () => {
       const payment = await this.review(providerId, paymentId, reviewerId, 'rejected', reason);
       const booking = await this.db.booking.findUniqueOrThrow({ where: { id: payment.bookingId } });
       const stillPending = await this.db.payment.count({
@@ -172,7 +201,63 @@ export class PaymentsService {
           { heldUntil: new Date(Date.now() + holdMinutes * 60_000) },
         );
       }
+      return payment;
     });
+    await this.tell(
+      rejected,
+      'payment_rejected',
+      (code, amount) =>
+        `La agencia no pudo confirmar tu pago de ${amount} en la reserva ${code}: ${reason}`,
+    );
+  }
+
+  /** La agencia envió el reembolso: se marca pagado una sola vez y se asienta el espejo del pago. */
+  async payRefund(
+    providerId: string,
+    refundId: string,
+    userId: string,
+    reference: string | null,
+  ): Promise<void> {
+    const refund = await this.db.refund.findFirst({ where: { id: refundId, providerId } });
+    if (!refund) throw notFound('Ese reembolso no existe.');
+    await this.db.$transaction(async () => {
+      const done = await this.db.refund.updateMany({
+        where: { id: refundId, providerId, status: 'pending' },
+        data: { status: 'paid', reference, paidById: userId, paidAt: new Date() },
+      });
+      if (done.count === 0) throw conflict('Ese reembolso ya fue pagado.');
+      const provider = await this.db.provider.findUniqueOrThrow({ where: { id: providerId } });
+      const { platformCommissionPercent } = await this.settings.get();
+      const commission =
+        provider.commissionPercent === null
+          ? platformCommissionPercent
+          : Number(provider.commissionPercent);
+      const transactionId = randomUUID();
+      await this.db.ledgerEntry.createMany({
+        data: refundPostings(Number(refund.amountUsd), commission, this.config.MONEY_MODEL)
+          .filter((p) => p.debitUsd !== 0 || p.creditUsd !== 0)
+          .map((p) => ({
+            transactionId,
+            providerId,
+            bookingId: refund.bookingId,
+            refundId: refund.id,
+            account: p.account,
+            debitUsd: p.debitUsd,
+            creditUsd: p.creditUsd,
+          })),
+      });
+    });
+    const booking = await this.db.booking.findUniqueOrThrow({ where: { id: refund.bookingId } });
+    if (booking.userId)
+      await this.notifications.enqueue([
+        {
+          userId: booking.userId,
+          event: 'refund_paid',
+          body: `La agencia te envió el reembolso de ${Number(refund.amountUsd).toFixed(2)} USD de la reserva ${booking.code}${reference ? ` (ref. ${reference})` : ''}.`,
+          link: `reserva:${booking.id}`,
+          dedupeKey: `refund_paid:${refund.id}`,
+        },
+      ]);
   }
 
   /** Marca el pago como revisado solo si sigue pendiente: dos personas no lo aplican dos veces. */

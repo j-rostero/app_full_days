@@ -1,10 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  type OnModuleDestroy,
-  type OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type {
   Booking,
   BookingPassenger,
@@ -12,6 +6,7 @@ import type {
   PrismaClient,
   Product,
   Provider,
+  Refund,
 } from '@fulldays/db';
 import {
   type BookingEvent,
@@ -32,28 +27,34 @@ import {
   SEAT_HOLDING_STATUSES,
   bookingCode,
   todayInVenezuela,
+  refundFor,
+  reviewWindowOpen,
 } from '@fulldays/shared';
 import type { Config } from '../config.ts';
 import { ApiException, conflict, notFound } from '../common/api-exception.ts';
 import { CONFIG, DB } from '../common/tokens.ts';
 import { SettingsService } from '../catalogs/settings.service.ts';
 import { FilesService } from '../files/files.service.ts';
+import { NotificationsService } from '../notifications/notifications.service.ts';
 import type { BookingView } from './bookings.schemas.ts';
 
 type Full = Booking & {
   departure: Departure & { product: Product };
+  refund: Refund | null;
+  review: { id: string } | null;
   provider: Provider;
   passengers: BookingPassenger[];
   payments: { amountUsd: { toString(): string }; status: string }[];
 };
 export const BOOKING_INCLUDE = {
   departure: { include: { product: true } },
+  refund: true,
+  review: { select: { id: true } },
   provider: true,
   passengers: { orderBy: { position: 'asc' } },
   payments: { select: { amountUsd: true, status: true } },
 } as const;
 
-const SWEEP_MS = 60_000;
 /** Espera por conexión: muchos compradores del último puesto hacen cola en vez de fallar. */
 const HOLD_TX = { maxWait: 20_000, timeout: 20_000 };
 const cents = (n: unknown) => Math.round(Number(n) * 100);
@@ -70,29 +71,14 @@ export interface HoldRequest {
 
 /** Apartado de cupos sin sobreventa, estados de la reserva y pasajeros. */
 @Injectable()
-export class BookingsService implements OnModuleInit, OnModuleDestroy {
-  private readonly log = new Logger(BookingsService.name);
-  private timer: NodeJS.Timeout | undefined;
-
+export class BookingsService {
   constructor(
     @Inject(DB) private readonly db: PrismaClient,
     @Inject(CONFIG) private readonly config: Config,
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(FilesService) private readonly files: FilesService,
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
   ) {}
-
-  onModuleInit(): void {
-    // Hasta que exista el worker (fase 5), la API libera los apartados vencidos.
-    if (this.config.NODE_ENV === 'test') return;
-    this.timer = setInterval(() => {
-      this.expireHolds().catch((e: Error) => this.log.warn(`Vencer apartados: ${e.message}`));
-    }, SWEEP_MS);
-    this.timer.unref();
-  }
-
-  onModuleDestroy(): void {
-    clearInterval(this.timer);
-  }
 
   /** Salida que se puede vender ahora: visible, `open` y desde hoy. */
   async sellable(
@@ -204,7 +190,7 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
     booking: Booking,
     event: BookingEvent,
     ctx: { paidUsd?: number; boarded?: boolean } = {},
-    data: { heldUntil?: Date | null; paidUsd?: number } = {},
+    data: { heldUntil?: Date | null; paidUsd?: number; cancelledBy?: string } = {},
   ): Promise<BookingStatus> {
     const to = nextBookingStatus(booking.status, event, {
       paidUsd: ctx.paidUsd ?? Number(booking.paidUsd),
@@ -263,6 +249,63 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
   async refresh(booking: Booking): Promise<void> {
     if (booking.status === 'held' && booking.heldUntil && booking.heldUntil < new Date())
       await this.move(booking, 'expire').catch(() => undefined);
+  }
+
+  /** Cuánto se devolvería si se cancela hoy, y qué regla lo dice. */
+  cancellation(
+    booking: Booking & { departure: { date: Date; sheet: unknown } },
+    by: 'traveler' | 'agency' | 'system' = 'traveler',
+  ) {
+    const daysBefore = Math.round(
+      (booking.departure.date.getTime() - Date.parse(`${todayInVenezuela()}T00:00:00Z`)) /
+        86_400_000,
+    );
+    const allowed = nextBookingStatus(booking.status, 'cancel') !== null;
+    const sheet = booking.departure.sheet as ProductSheet;
+    const { amountUsd, rule } = refundFor(
+      sheet.pricing.cancellation.template,
+      daysBefore,
+      Number(booking.paidUsd),
+      by !== 'traveler',
+    );
+    return { allowed, amountUsd, rule, daysBefore };
+  }
+
+  /**
+   * Cancela y, si corresponde, deja el reembolso pendiente para que la agencia lo pague.
+   * Quien cancela por saldo vencido es el sistema y aplica la política como si cancelara el viajero.
+   */
+  async cancel(
+    booking: Booking & { departure: { date: Date; sheet: unknown } },
+    by: 'traveler' | 'agency' | 'system',
+    event: BookingEvent = 'cancel',
+    notify = true,
+  ): Promise<number> {
+    const quoteBy = by === 'system' ? 'traveler' : by;
+    const { allowed, amountUsd, rule } = this.cancellation(booking, quoteBy);
+    if (!allowed && event === 'cancel') throw conflict('Esta reserva ya no se puede cancelar.');
+    await this.db.$transaction(async () => {
+      await this.move(booking, event, {}, { cancelledBy: by } as never);
+      if (amountUsd > 0)
+        await this.db.refund.create({
+          data: { providerId: booking.providerId, bookingId: booking.id, amountUsd, rule },
+        });
+    });
+    if (notify && booking.userId) {
+      const title = (booking.departure.sheet as ProductSheet).general.title;
+      await this.notifications.enqueue([
+        {
+          userId: booking.userId,
+          event: 'booking_cancelled',
+          body:
+            `Tu reserva ${booking.code} de ${title} quedó cancelada.` +
+            (amountUsd > 0 ? ` La agencia te devolverá ${amountUsd.toFixed(2)} USD.` : ''),
+          link: `reserva:${booking.id}`,
+          dedupeKey: `cancelled:${booking.id}`,
+        },
+      ]);
+    }
+    return amountUsd;
   }
 
   async setPassengers(
@@ -353,6 +396,20 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
         balanceUsd: Math.max(cents(b.totalUsd) - cents(b.paidUsd), 0) / 100,
         balanceDueDate: b.balanceDueDate.toISOString().slice(0, 10),
         heldUntil: b.heldUntil?.toISOString() ?? null,
+        cancelledBy: b.cancelledBy as BookingView['cancelledBy'],
+        refund: b.refund
+          ? {
+              id: b.refund.id,
+              amountUsd: Number(b.refund.amountUsd),
+              rule: b.refund.rule,
+              status: b.refund.status,
+              reference: b.refund.reference,
+            }
+          : null,
+        canReview:
+          b.status === 'completed' &&
+          b.review === null &&
+          reviewWindowOpen(b.departure.date.toISOString().slice(0, 10), todayInVenezuela()),
         contact: withContact
           ? { name: b.contactName, phone: b.contactPhone, email: b.contactEmail }
           : null,

@@ -16,6 +16,119 @@ class ReservasApi {
 
   final ApiClient apiClient;
 
+  /// Cancela la reserva; si corresponde, deja el reembolso pendiente para la agencia
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] id (required):
+  Future<Response> cancelBookingWithHttpInfo(String id, { Future<void>? abortTrigger, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/reservas/{id}/cancelar'
+      .replaceAll('{id}', id);
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+      abortTrigger: abortTrigger,
+    );
+  }
+
+  /// Cancela la reserva; si corresponde, deja el reembolso pendiente para la agencia
+  ///
+  /// Parameters:
+  ///
+  /// * [String] id (required):
+  Future<Booking?> cancelBooking(String id, { Future<void>? abortTrigger, }) async {
+    final response = await cancelBookingWithHttpInfo(id, abortTrigger: abortTrigger,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Booking',) as Booking;
+    
+    }
+    return null;
+  }
+
+  /// La agencia cancela una reserva y devuelve todo lo pagado
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] providerId (required):
+  ///
+  /// * [String] bookingId (required):
+  Future<Response> cancelProviderBookingWithHttpInfo(String providerId, String bookingId, { Future<void>? abortTrigger, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/pro/{providerId}/reservas/{bookingId}/cancelar'
+      .replaceAll('{providerId}', providerId)
+      .replaceAll('{bookingId}', bookingId);
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+      abortTrigger: abortTrigger,
+    );
+  }
+
+  /// La agencia cancela una reserva y devuelve todo lo pagado
+  ///
+  /// Parameters:
+  ///
+  /// * [String] providerId (required):
+  ///
+  /// * [String] bookingId (required):
+  Future<Booking?> cancelProviderBooking(String providerId, String bookingId, { Future<void>? abortTrigger, }) async {
+    final response = await cancelProviderBookingWithHttpInfo(providerId, bookingId, abortTrigger: abortTrigger,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Booking',) as Booking;
+    
+    }
+    return null;
+  }
+
   /// Una reserva propia con precio, abono, pagado, saldo, pasajeros e instrucciones de pago
   ///
   /// Note: This method returns the HTTP [Response].
@@ -291,6 +404,60 @@ class ReservasApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'BookingList',) as BookingList;
+    
+    }
+    return null;
+  }
+
+  /// Cuánto se devolvería si se cancela ahora y qué regla lo dice
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] id (required):
+  Future<Response> previewCancellationWithHttpInfo(String id, { Future<void>? abortTrigger, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/reservas/{id}/cancelacion'
+      .replaceAll('{id}', id);
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+      abortTrigger: abortTrigger,
+    );
+  }
+
+  /// Cuánto se devolvería si se cancela ahora y qué regla lo dice
+  ///
+  /// Parameters:
+  ///
+  /// * [String] id (required):
+  Future<Cancellation?> previewCancellation(String id, { Future<void>? abortTrigger, }) async {
+    final response = await previewCancellationWithHttpInfo(id, abortTrigger: abortTrigger,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Cancellation',) as Cancellation;
     
     }
     return null;

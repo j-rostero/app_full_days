@@ -42,6 +42,15 @@ export const ConfigSchema = z
       .optional(),
     SMTP_URL: z.string().default('smtp://localhost:1025'),
     MAIL_FROM: z.string().default('FullDays <no-responder@fulldays.local>'),
+    /** Correo de las notificaciones: `log` las escribe en la salida; `smtp` las envía. */
+    NOTIFICATION_EMAIL: z.enum(['log', 'smtp']).default('log'),
+    /**
+     * Cuenta de servicio de Firebase (JSON completo, o en base64) para enviar push con FCM.
+     * Sin ella, el push queda solo en la bandeja de la app.
+     */
+    FCM_SERVICE_ACCOUNT: z.string().optional(),
+    /** Cada cuántos segundos corren los trabajos del worker (vencer apartados, entregar, etc.). */
+    JOBS_EVERY_SECONDS: z.coerce.number().int().min(5).default(60),
     GOOGLE_CLIENT_IDS: Csv,
     /**
      * Clave que comparten la API y los servidores de las webs. Con ella, la web informa la IP
@@ -86,6 +95,8 @@ export const ConfigSchema = z
     if (config.JWT_SECRET === DEV_JWT_SECRET) reject('JWT_SECRET', 'es el secreto de desarrollo');
     if (config.OTP_FIXED_CODE) reject('OTP_FIXED_CODE', 'no se admite en producción');
     if (config.OTP_SENDER === 'log') reject('OTP_SENDER', 'producción necesita smtp');
+    if (config.NOTIFICATION_EMAIL === 'log')
+      reject('NOTIFICATION_EMAIL', 'producción necesita smtp');
     if (config.STORAGE_DRIVER === 'memory') reject('STORAGE_DRIVER', 'producción necesita s3');
     if (config.VOUCHER_SIGNING_KEY === DEV_VOUCHER_KEY)
       reject('VOUCHER_SIGNING_KEY', 'es la clave de desarrollo');

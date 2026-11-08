@@ -13,6 +13,9 @@ export const PROVIDER_OWNED_MODELS = new Set<string>([
   'departureNotice',
   'payment',
   'ledgerEntry',
+  'refund',
+  'review',
+  'claim',
 ]);
 
 const FILTERED = new Set([

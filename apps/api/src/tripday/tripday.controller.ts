@@ -30,6 +30,7 @@ import {
 import { DB } from '../common/tokens.ts';
 import { ZodPipe } from '../common/zod.pipe.ts';
 import { VOUCHER_SIGNER } from '../payments/payments.module.tokens.ts';
+import { NotificationsService } from '../notifications/notifications.service.ts';
 import type { VoucherSigner } from '../payments/vouchers.ts';
 import {
   CheckinSyncInput,
@@ -56,6 +57,7 @@ export class TripdayController {
   constructor(
     @Inject(DB) private readonly db: PrismaClient,
     @Inject(VOUCHER_SIGNER) private readonly signer: VoucherSigner,
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
   ) {}
 
   @Get('hoy')
@@ -300,7 +302,23 @@ export class TripdayController {
       data: { departureId, authorId: auth.userId, body: input.body } as never,
       include: { author: { select: { name: true } } },
     });
-    // El envío por push y mensajería llega con las notificaciones; por ahora el viajero lo ve en su reserva.
+    // Un aviso por viajero con reserva confirmada, aunque tenga varias reservas en la salida.
+    const travelers = await this.db.booking.findMany({
+      where: { departureId, status: { in: CONFIRMED }, userId: { not: null } },
+      select: { id: true, userId: true },
+      distinct: ['userId'],
+    });
+    const title = titleOf(d.sheet);
+    await this.notifications.enqueue(
+      travelers.map((b) => ({
+        userId: b.userId!,
+        event: 'notice' as const,
+        title: `Aviso: ${title}`,
+        body: input.body,
+        link: `reserva:${b.id}`,
+        dedupeKey: `notice:${notice.id}:${b.userId}`,
+      })),
+    );
     return view(notice);
   }
 
