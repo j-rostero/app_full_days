@@ -4,6 +4,46 @@ Sistema para gestionar fulldays, excursiones, tours y viajes: una API, una web p
 
 `FullDays` es un nombre de trabajo; la marca definitiva está por decidir.
 
+## Piezas
+
+| Carpeta               | Qué es                                                                | Puerto |
+| --------------------- | --------------------------------------------------------------------- | ------ |
+| `apps/api`            | API NestJS. La única que toca base de datos, Redis, archivos y correo | 4000   |
+| `apps/web`            | Web de clientes (Next.js)                                             | 3100   |
+| `apps/pro-web`        | Web de agencias (Next.js)                                             | 3101   |
+| `apps/central`        | Web del equipo interno (Next.js)                                      | 3102   |
+| `apps/mobile`         | App Flutter (viajero y operador)                                      | —      |
+| `packages/shared`     | Reglas y esquemas Zod comunes                                         |        |
+| `packages/db`         | Esquema Prisma y cliente de la base                                   |        |
+| `packages/api-client` | Contrato OpenAPI (`openapi.json`) y cliente TypeScript tipado         |        |
+| `packages/api_dart`   | Cliente Dart generado del mismo contrato                              |        |
+| `packages/tokens`     | Tokens de diseño: genera el CSS de las webs y el Dart de la app       |        |
+| `packages/ui_flutter` | Tema y componentes de la app                                          |        |
+| `infra/docker`        | PostgreSQL, Redis, almacenamiento S3, imgproxy y buzón de correo      |        |
+
+## Empezar
+
+Requisitos: Node 22.18 o más nuevo (CI usa 24), pnpm 10, Docker, Java 17 o más nuevo (genera el cliente Dart) y Flutter 3.47.
+
+```bash
+pnpm install
+cp .env.example .env
+pnpm dev            # levanta la infraestructura, la API y las tres webs
+```
+
+La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
+
+## Comandos
+
+| Comando                  | Qué hace                                                                          |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `pnpm verify`            | Verificación completa, igual que CI (necesita PostgreSQL y Redis)                 |
+| `pnpm api:client`        | Regenera `openapi.json` y los clientes TypeScript y Dart tras cambiar un endpoint |
+| `pnpm tokens`            | Regenera el CSS y el Dart desde `packages/tokens/tokens.json`                     |
+| `pnpm infra:up` / `down` | Enciende o apaga la infraestructura local                                         |
+
+Un cambio de endpoint sin regenerar el contrato hace fallar las pruebas: el código y los clientes nunca se desincronizan.
+
 ## Documentación
 
 - [`docs/referencia/`](docs/referencia/README.md): documentación técnica del sistema de referencia que se usa como especificación. Describe un sistema existente (Salimos); aquí se construye desde cero tomando sus reglas, su contrato y su arquitectura, con la app móvil en Flutter en lugar de Expo.

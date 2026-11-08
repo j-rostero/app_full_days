@@ -1,0 +1,14 @@
+import { HealthCard } from './health-card';
+
+// Se renderiza en cada petición: el estado de la API debe ser el del momento.
+export const dynamic = 'force-dynamic';
+
+export default function Home() {
+  return (
+    <main>
+      <h1>FullDays · Clientes</h1>
+      <p className="suave">Encuentra tu próximo fullday, tour o excursión.</p>
+      <HealthCard />
+    </main>
+  );
+}

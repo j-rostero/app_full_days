@@ -1,0 +1,59 @@
+# Infraestructura local de desarrollo. Ningún cliente toca estos servicios:
+# solo la API (ver docs/referencia/integracion.md).
+name: fulldays
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: fulldays
+      POSTGRES_PASSWORD: fulldays
+      POSTGRES_DB: fulldays
+    ports: ['5432:5432']
+    volumes: ['postgres:/var/lib/postgresql/data']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U fulldays']
+      interval: 2s
+      retries: 30
+
+  redis:
+    image: redis:8-alpine
+    ports: ['6379:6379']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 2s
+      retries: 30
+
+  # Almacenamiento compatible con S3 (imágenes y documentos).
+  storage:
+    image: rustfs/rustfs:latest
+    environment:
+      RUSTFS_ACCESS_KEY: fulldays
+      RUSTFS_SECRET_KEY: fulldays-secret
+      RUSTFS_CONSOLE_ENABLE: 'true'
+    ports: ['9000:9000', '9001:9001']
+    volumes: ['storage:/data']
+
+  # Sirve imágenes redimensionadas con URL firmadas.
+  imgproxy:
+    image: darthsim/imgproxy:latest
+    environment:
+      IMGPROXY_USE_S3: 'true'
+      IMGPROXY_S3_ENDPOINT: http://storage:9000
+      AWS_ACCESS_KEY_ID: fulldays
+      AWS_SECRET_ACCESS_KEY: fulldays-secret
+      AWS_REGION: us-east-1
+      # Llaves de desarrollo; en producción se generan aparte.
+      IMGPROXY_KEY: 736563726574
+      IMGPROXY_SALT: 68656C6C6F
+    ports: ['8080:8080']
+    depends_on: [storage]
+
+  # Buzón de correo de pruebas: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ['1025:1025', '8025:8025']
+
+volumes:
+  postgres:
+  storage:

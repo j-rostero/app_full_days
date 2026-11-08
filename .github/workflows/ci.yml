@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typescript:
+    name: API, webs y paquetes
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: fulldays
+          POSTGRES_PASSWORD: fulldays
+          POSTGRES_DB: fulldays
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U fulldays" --health-interval 2s --health-retries 30
+      redis:
+        image: redis:8-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 2s --health-retries 30
+    env:
+      DATABASE_URL: postgresql://fulldays:fulldays@localhost:5432/fulldays
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: pnpm install --frozen-lockfile
+      - run: VERIFICAR_PASOS="formato lint tipos build pruebas contrato" ./scripts/verificar.sh
+
+  flutter:
+    name: App Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.9
+          channel: stable
+          cache: true
+      - run: VERIFICAR_PASOS="flutter" ./scripts/verificar.sh
+      - name: Compilar APK de desarrollo
+        working-directory: apps/mobile
+        run: flutter build apk --flavor dev --debug --dart-define-from-file=env/dev.json
