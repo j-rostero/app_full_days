@@ -1,0 +1,44 @@
+@import '@fulldays/tokens/tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fd-color-fondo);
+  color: var(--fd-color-texto);
+  font-family: var(--fd-font-family);
+  font-size: var(--fd-text-cuerpo-size);
+  line-height: var(--fd-text-cuerpo-line);
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--fd-space-xxl) var(--fd-space-l);
+}
+
+h1 {
+  font-size: var(--fd-text-titulo-size);
+  line-height: var(--fd-text-titulo-line);
+  color: var(--fd-color-primario);
+  margin: 0 0 var(--fd-space-s);
+}
+
+.suave {
+  color: var(--fd-color-texto-suave);
+}
+
+.tarjeta {
+  margin-top: var(--fd-space-xl);
+  padding: var(--fd-space-l);
+  background: var(--fd-color-superficie);
+  border: 1px solid var(--fd-color-borde);
+  border-radius: var(--fd-radius-l);
+}
+
+.tarjeta h2 {
+  font-size: var(--fd-text-subtitulo-size);
+  margin: 0 0 var(--fd-space-s);
+}

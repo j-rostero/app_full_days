@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.next/
+.turbo/
+*.tsbuildinfo
+.env
+.env.local
+coverage/
+# Prisma
+packages/db/src/generated/
+# Flutter / Dart
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec_overrides.yaml
+*.iml
+.idea/
+dist-test/
+next-env.d.ts
+packages/ui_flutter/pubspec.lock
+packages/api_dart/pubspec.lock

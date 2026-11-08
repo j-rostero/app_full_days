@@ -1,0 +1,4 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Solo en debug: la API local se sirve por http (http://10.0.2.2:4000 desde el emulador). -->
+    <application android:usesCleartextTraffic="true"/>
+</manifest>

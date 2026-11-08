@@ -1,0 +1,24 @@
+name: fulldays_mobile
+description: "App FullDays para viajeros y operadores (iOS y Android)."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fulldays_api:
+    path: ../../packages/api_dart
+  fulldays_ui:
+    path: ../../packages/ui_flutter
+  http: ^1.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

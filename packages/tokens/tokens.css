@@ -1,0 +1,50 @@
+/* Generado desde packages/tokens/tokens.json con `pnpm tokens`. No editar. */
+:root {
+  --fd-color-fondo: #FAFAF7;
+  --fd-color-superficie: #FFFFFF;
+  --fd-color-texto: #16201C;
+  --fd-color-texto-suave: #55615C;
+  --fd-color-borde: #DDE3E0;
+  --fd-color-primario: #0B7A5E;
+  --fd-color-sobre-primario: #FFFFFF;
+  --fd-color-acento: #F2A93B;
+  --fd-color-exito: #1E7F4F;
+  --fd-color-aviso: #A86400;
+  --fd-color-error: #B3261E;
+  --fd-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fd-text-titulo-size: 1.75rem;
+  --fd-text-titulo-line: 2.125rem;
+  --fd-text-titulo-weight: 700;
+  --fd-text-subtitulo-size: 1.25rem;
+  --fd-text-subtitulo-line: 1.625rem;
+  --fd-text-subtitulo-weight: 600;
+  --fd-text-cuerpo-size: 1rem;
+  --fd-text-cuerpo-line: 1.5rem;
+  --fd-text-cuerpo-weight: 400;
+  --fd-text-pequeno-size: 0.875rem;
+  --fd-text-pequeno-line: 1.25rem;
+  --fd-text-pequeno-weight: 400;
+  --fd-text-etiqueta-size: 0.75rem;
+  --fd-text-etiqueta-line: 1rem;
+  --fd-text-etiqueta-weight: 600;
+  --fd-radius-s: 6px;
+  --fd-radius-m: 10px;
+  --fd-radius-l: 16px;
+  --fd-radius-pildora: 999px;
+  --fd-space-xs: 4px;
+  --fd-space-s: 8px;
+  --fd-space-m: 12px;
+  --fd-space-l: 16px;
+  --fd-space-xl: 24px;
+  --fd-space-xxl: 32px;
+}
+
+[data-product='pro'] {
+  --fd-color-primario: #1F4E8C;
+  --fd-color-fondo: #F5F7FA;
+}
+
+[data-product='central'] {
+  --fd-color-primario: #5B3E96;
+  --fd-color-fondo: #F7F5FA;
+}

@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+docs/referencia/
+packages/api-client/src/schema.d.ts
+packages/api-client/openapi.json
+packages/tokens/tokens.css
+packages/api_dart/
+apps/mobile/
+packages/ui_flutter/
+**/.next/
+**/dist/

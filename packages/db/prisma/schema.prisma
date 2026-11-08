@@ -1,0 +1,12 @@
+// Esquema único de la base de datos. Las tablas llegan con cada fase
+// (cuentas en la Fase 1; ver docs/referencia/integracion.md, sección Datos).
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}

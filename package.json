@@ -1,0 +1,31 @@
+{
+  "name": "fulldays",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "pnpm infra:up && pnpm db:migrate && turbo run dev --filter=!@fulldays/mobile",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "infra:up": "docker compose -f infra/docker/docker-compose.yml up -d --wait",
+    "infra:down": "docker compose -f infra/docker/docker-compose.yml down",
+    "db:migrate": "pnpm --filter @fulldays/db migrate:deploy",
+    "api:client": "pnpm --filter @fulldays/api build && node apps/api/dist/write-openapi.js packages/api-client/openapi.json && pnpm --filter @fulldays/api-client generate && ./scripts/generar-cliente-dart.sh",
+    "tokens": "pnpm --filter @fulldays/tokens generate",
+    "verify": "./scripts/verificar.sh"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "eslint": "^10.14.0",
+    "prettier": "^3.9.10",
+    "turbo": "^2.11.10",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.50.0"
+  }
+}
