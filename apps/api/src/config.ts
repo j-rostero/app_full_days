@@ -46,6 +46,26 @@ export const ConfigSchema = z
      * con la del servidor web. Sin la clave, esa cabecera se ignora.
      */
     WEB_SERVER_KEY: z.string().min(32).optional(),
+    /** `s3` en local y producción; `memory` en las pruebas (no necesita almacenamiento encendido). */
+    STORAGE_DRIVER: z.enum(['s3', 'memory']).default('s3'),
+    S3_ENDPOINT: z.url().default('http://localhost:9000'),
+    /** Dirección del almacenamiento que usan navegadores y apps para subir; por defecto `S3_ENDPOINT`. */
+    S3_PUBLIC_ENDPOINT: z.url().optional(),
+    S3_REGION: z.string().default('us-east-1'),
+    S3_ACCESS_KEY: z.string().default('fulldays'),
+    S3_SECRET_KEY: z.string().default('fulldays-secret'),
+    S3_BUCKET_IMAGES: z.string().default('fulldays-imagenes'),
+    S3_BUCKET_DOCUMENTS: z.string().default('fulldays-documentos'),
+    IMGPROXY_URL: z.url().default('http://localhost:8080'),
+    /** Clave y sal de imgproxy en hexadecimal (las mismas de la infraestructura). */
+    IMGPROXY_KEY: z
+      .string()
+      .regex(/^[0-9a-f]+$/i)
+      .default('736563726574'),
+    IMGPROXY_SALT: z
+      .string()
+      .regex(/^[0-9a-f]+$/i)
+      .default('68656C6C6F'),
   })
   .superRefine((config, ctx) => {
     if (config.NODE_ENV !== 'production') return;
@@ -54,6 +74,8 @@ export const ConfigSchema = z
     if (config.JWT_SECRET === DEV_JWT_SECRET) reject('JWT_SECRET', 'es el secreto de desarrollo');
     if (config.OTP_FIXED_CODE) reject('OTP_FIXED_CODE', 'no se admite en producción');
     if (config.OTP_SENDER === 'log') reject('OTP_SENDER', 'producción necesita smtp');
+    if (config.STORAGE_DRIVER === 'memory') reject('STORAGE_DRIVER', 'producción necesita s3');
+    if (config.IMGPROXY_KEY === '736563726574') reject('IMGPROXY_KEY', 'es la clave de desarrollo');
   });
 
 export type Config = z.infer<typeof ConfigSchema>;

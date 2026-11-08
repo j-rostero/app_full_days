@@ -51,3 +51,109 @@ h1 {
   gap: var(--fd-space-m);
   margin-top: var(--fd-space-l);
 }
+
+main.ancho {
+  max-width: 64rem;
+}
+
+.rejilla {
+  display: grid;
+  gap: var(--fd-space-m);
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+}
+
+.editor-cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--fd-space-m);
+  padding: var(--fd-space-m) 0;
+  background: var(--fd-color-fondo);
+  border-bottom: 1px solid var(--fd-color-borde);
+}
+
+.editor-cabecera h2 {
+  margin: 0;
+}
+
+.editor-botones {
+  display: flex;
+  gap: var(--fd-space-s);
+  align-items: center;
+}
+
+.editor-cuerpo {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.editor .fd-field {
+  margin-bottom: var(--fd-space-s);
+}
+
+.fila,
+.fila-bloque {
+  padding: var(--fd-space-s) 0;
+  border-bottom: 1px dashed var(--fd-color-borde);
+}
+
+.opciones {
+  margin-left: var(--fd-space-l);
+}
+
+.fd-etiqueta {
+  margin: var(--fd-space-m) 0 var(--fd-space-xs);
+  font-size: var(--fd-text-etiqueta-size);
+  font-weight: var(--fd-text-etiqueta-weight);
+}
+
+.boton-chico {
+  padding: var(--fd-space-xs) var(--fd-space-m);
+  margin: var(--fd-space-s) 0;
+}
+
+.fotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: var(--fd-space-s);
+}
+
+.fotos figure {
+  margin: 0;
+}
+
+.fotos img,
+.foto-vacia {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--fd-radius-m);
+  background: var(--fd-color-borde);
+  display: grid;
+  place-items: center;
+}
+
+.fotos figcaption {
+  display: flex;
+  gap: var(--fd-space-s);
+  font-size: var(--fd-text-pequeno-size);
+}
+
+.fotos figcaption button {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--fd-color-primario);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+small.error {
+  color: var(--fd-color-error);
+}

@@ -47,6 +47,161 @@
         }
       }
     },
+    "/v1/ajustes": {
+      "get": {
+        "operationId": "getSettings",
+        "summary": "Reglas de reserva vigentes",
+        "tags": [
+          "catalogos"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/archivos": {
+      "post": {
+        "operationId": "declareFile",
+        "summary": "Declara un archivo y devuelve la URL firmada para subirlo (diez minutos)",
+        "tags": [
+          "archivos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeclareFileInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeclaredFile"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/archivos/{fileId}": {
+      "get": {
+        "operationId": "getFile",
+        "summary": "Un archivo propio; los documentos traen un enlace de descarga de cinco minutos",
+        "tags": [
+          "archivos"
+        ],
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/archivos/{fileId}/confirmar": {
+      "post": {
+        "operationId": "confirmFile",
+        "summary": "Comprueba que lo subido coincide con lo declarado y deja el archivo listo",
+        "tags": [
+          "archivos"
+        ],
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/auth/entrar": {
       "post": {
         "operationId": "signIn",
@@ -375,6 +530,122 @@
         }
       }
     },
+    "/v1/catalogos/destinos": {
+      "get": {
+        "operationId": "listDestinations",
+        "summary": "Destinos con sus sitios y tasas conocidas",
+        "tags": [
+          "catalogos"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DestinationList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/catalogos/puntos-de-embarque": {
+      "get": {
+        "operationId": "listBoardingPoints",
+        "summary": "Puntos de embarque conocidos; filtro por ciudad",
+        "tags": [
+          "catalogos"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingPointList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/ajustes": {
+      "put": {
+        "operationId": "setSettings",
+        "summary": "Reemplaza las reglas de reserva",
+        "tags": [
+          "central"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/central/auditoria": {
       "get": {
         "operationId": "listAudit",
@@ -425,6 +696,339 @@
                 }
               }
             }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/catalogos/destinos": {
+      "post": {
+        "operationId": "createDestination",
+        "summary": "Crea un destino o un sitio dentro de uno",
+        "tags": [
+          "central"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DestinationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Destination"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/catalogos/destinos/{id}": {
+      "patch": {
+        "operationId": "updateDestination",
+        "summary": "Edita un destino",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DestinationUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Destination"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteDestination",
+        "summary": "Borra un destino sin sitios",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Éxito"
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/catalogos/destinos/{id}/tasas": {
+      "post": {
+        "operationId": "addDestinationFee",
+        "summary": "Añade una tasa conocida a un destino",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DestinationFeeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Destination"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/catalogos/puntos-de-embarque": {
+      "post": {
+        "operationId": "createBoardingPoint",
+        "summary": "Crea un punto de embarque",
+        "tags": [
+          "central"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardingPointInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingPoint"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/catalogos/puntos-de-embarque/{id}": {
+      "patch": {
+        "operationId": "updateBoardingPoint",
+        "summary": "Edita un punto de embarque",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardingPointUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingPoint"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteBoardingPoint",
+        "summary": "Borra un punto de embarque",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Éxito"
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/catalogos/tasas/{id}": {
+      "delete": {
+        "operationId": "deleteDestinationFee",
+        "summary": "Borra una tasa de destino",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Éxito"
           },
           "default": {
             "description": "Error",
@@ -509,6 +1113,767 @@
         }
       }
     },
+    "/v1/central/productos": {
+      "get": {
+        "operationId": "listProductQueue",
+        "summary": "Productos por estado, el cambio más antiguo primero (máximo 200)",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "in_review",
+              "type": "string",
+              "enum": [
+                "draft",
+                "in_review",
+                "published",
+                "paused"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductQueue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/productos/{id}": {
+      "get": {
+        "operationId": "getProductReview",
+        "summary": "Ficha con agencia, contactos detectados, destacado y temáticas",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductReview"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/productos/{id}/aprobar": {
+      "post": {
+        "operationId": "approveProduct",
+        "summary": "Publica un producto en revisión",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/productos/{id}/despublicar": {
+      "post": {
+        "operationId": "unpublishProduct",
+        "summary": "Pausa un producto publicado por contenido engañoso, con motivo",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/productos/{id}/devolver": {
+      "post": {
+        "operationId": "returnProduct",
+        "summary": "Devuelve a borrador un producto en revisión, con motivo",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/productos/{id}/portada": {
+      "put": {
+        "operationId": "curateProduct",
+        "summary": "Fija si es destacado y la lista completa de sus temáticas",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductReview"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/proveedores": {
+      "get": {
+        "operationId": "listProviderQueue",
+        "summary": "Agencias por estado, la enviada hace más tiempo primero (máximo 200)",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "in_review",
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_review",
+                "approved",
+                "rejected",
+                "suspended"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderQueue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/proveedores/{id}": {
+      "get": {
+        "operationId": "getProviderReview",
+        "summary": "Agencia con sus documentos descargables y sus dueños",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderReview"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/proveedores/{id}/aprobar": {
+      "post": {
+        "operationId": "approveProvider",
+        "summary": "Aprueba una agencia en revisión o suspendida",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/proveedores/{id}/comision": {
+      "put": {
+        "operationId": "setProviderCommission",
+        "summary": "Fija la comisión propia de la agencia (0 a 50) o la quita (null)",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommissionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/proveedores/{id}/rechazar": {
+      "post": {
+        "operationId": "rejectProvider",
+        "summary": "Rechaza una agencia en revisión, con motivo",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/proveedores/{id}/suspender": {
+      "post": {
+        "operationId": "suspendProvider",
+        "summary": "Suspende una agencia aprobada, con motivo: sale del catálogo público",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/tasas": {
+      "get": {
+        "operationId": "listRates",
+        "summary": "Historial de tasas (hasta 365)",
+        "tags": [
+          "central"
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "setRate",
+        "summary": "Fija la tasa de un día; repetir el día la corrige",
+        "tags": [
+          "central"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rate"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/tematicas": {
+      "post": {
+        "operationId": "createTheme",
+        "summary": "Crea una temática",
+        "tags": [
+          "central"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThemeInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelTheme"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/central/tematicas/{id}": {
+      "patch": {
+        "operationId": "updateTheme",
+        "summary": "Edita una temática",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThemeUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelTheme"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteTheme",
+        "summary": "Borra una temática; sus productos quedan sin ella",
+        "tags": [
+          "central"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Éxito"
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/pro/{providerId}/auditoria": {
       "get": {
         "operationId": "listProviderAudit",
@@ -564,6 +1929,269 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuditPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/documentos": {
+      "get": {
+        "operationId": "listCompanyDocuments",
+        "summary": "Documentos de verificación, con enlace de descarga de cinco minutos",
+        "tags": [
+          "agencia"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDocumentList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "attachCompanyDocument",
+        "summary": "Adjunta un documento ya subido (archivo propio y listo)",
+        "tags": [
+          "agencia"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttachDocumentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDocument"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/documentos/{documentId}": {
+      "delete": {
+        "operationId": "removeCompanyDocument",
+        "summary": "Quita un documento",
+        "tags": [
+          "agencia"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Éxito"
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/empresa": {
+      "get": {
+        "operationId": "getCompany",
+        "summary": "Datos de la agencia, estado y distintivo",
+        "tags": [
+          "agencia"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateCompany",
+        "summary": "Cambia los datos de la agencia (el RIF no cambia)",
+        "tags": [
+          "agencia"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/empresa/enviar": {
+      "post": {
+        "operationId": "submitCompany",
+        "summary": "Envía la agencia a verificación de Central",
+        "tags": [
+          "agencia"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
                 }
               }
             }
@@ -756,6 +2384,574 @@
         "responses": {
           "204": {
             "description": "Éxito"
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/productos": {
+      "get": {
+        "operationId": "listProducts",
+        "summary": "Productos de la agencia, el último cambiado primero",
+        "tags": [
+          "productos"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProduct",
+        "summary": "Crea un borrador de fullday, tour o excursión",
+        "tags": [
+          "productos"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/productos/{productId}": {
+      "get": {
+        "operationId": "getProduct",
+        "summary": "Ficha con completitud por bloque y fotos",
+        "tags": [
+          "productos"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "saveProduct",
+        "summary": "Guarda la ficha entera; falla si otra pestaña la cambió desde la versión leída",
+        "tags": [
+          "productos"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveProductInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/productos/{productId}/pausar": {
+      "post": {
+        "operationId": "pauseProduct",
+        "summary": "Pausa la venta de un producto publicado",
+        "tags": [
+          "productos"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/productos/{productId}/publicar": {
+      "post": {
+        "operationId": "publishProduct",
+        "summary": "Publica, o envía a revisión de Central cuando corresponde",
+        "tags": [
+          "productos"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/salidas": {
+      "get": {
+        "operationId": "listDepartures",
+        "summary": "Salidas de la agencia por fecha, desde hoy salvo que se pida otra fecha (máximo 500)",
+        "tags": [
+          "salidas"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          {
+            "name": "desde",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartureList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "scheduleDepartures",
+        "summary": "Programa una o varias fechas de un producto publicado con el mismo cupo, mínimo y precio",
+        "tags": [
+          "salidas"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleDeparturesInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartureList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pro/{providerId}/salidas/{departureId}": {
+      "patch": {
+        "operationId": "updateDeparture",
+        "summary": "Cambia cupo, mínimo, precio propio, estado o guías de una salida",
+        "tags": [
+          "salidas"
+        ],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "departureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepartureUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Departure"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/proveedores": {
+      "post": {
+        "operationId": "registerProvider",
+        "summary": "Registra una agencia u organizador; quien la registra queda como dueño",
+        "tags": [
+          "agencia"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tasa": {
+      "get": {
+        "operationId": "getRate",
+        "summary": "Tasa bolívares por dólar vigente (la más reciente que no sea futura)",
+        "tags": [
+          "catalogos"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rate"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tematicas": {
+      "get": {
+        "operationId": "listThemes",
+        "summary": "Temáticas por nombre",
+        "tags": [
+          "catalogos"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThemeList"
+                }
+              }
+            }
           },
           "default": {
             "description": "Error",
@@ -1116,6 +3312,31 @@
         "additionalProperties": false,
         "description": "Forma única de error."
       },
+      "AttachDocumentInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "rif",
+              "representative_id",
+              "rtn",
+              "commercial_registry",
+              "other"
+            ]
+          },
+          "fileId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "type",
+          "fileId"
+        ],
+        "additionalProperties": false
+      },
       "AuditEntry": {
         "type": "object",
         "properties": {
@@ -1209,6 +3430,134 @@
         ],
         "additionalProperties": false
       },
+      "BoardingPoint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "city": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "lat": {
+            "nullable": true,
+            "type": "number"
+          },
+          "lng": {
+            "nullable": true,
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "city",
+          "name",
+          "address",
+          "lat",
+          "lng"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingPointInput": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "address": {
+            "default": "",
+            "type": "string",
+            "maxLength": 200
+          },
+          "lat": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lng": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          }
+        },
+        "required": [
+          "city",
+          "name",
+          "address",
+          "lat",
+          "lng"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingPointList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BoardingPoint"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingPointUpdateInput": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "address": {
+            "default": "",
+            "type": "string",
+            "maxLength": 200
+          },
+          "lat": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lng": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          }
+        },
+        "additionalProperties": false
+      },
       "ChangeTeamRoleInput": {
         "type": "object",
         "properties": {
@@ -1224,6 +3573,735 @@
         },
         "required": [
           "role"
+        ],
+        "additionalProperties": false
+      },
+      "CommissionInput": {
+        "type": "object",
+        "properties": {
+          "commissionPercent": {
+            "nullable": true,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "commissionPercent"
+        ],
+        "additionalProperties": false
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "person",
+              "company"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "rif": {
+            "type": "string"
+          },
+          "rtn": {
+            "nullable": true,
+            "type": "string"
+          },
+          "baseCity": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "instagram": {
+            "nullable": true,
+            "type": "string"
+          },
+          "paymentInstructions": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProviderStatus"
+          },
+          "statusReason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "badge": {
+            "nullable": true,
+            "type": "string",
+            "enum": [
+              "verified",
+              "new"
+            ]
+          },
+          "commissionPercent": {
+            "nullable": true,
+            "type": "number"
+          },
+          "missingDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderDocumentType"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "legalName",
+          "rif",
+          "rtn",
+          "baseCity",
+          "phone",
+          "instagram",
+          "paymentInstructions",
+          "status",
+          "statusReason",
+          "badge",
+          "commissionPercent",
+          "missingDocuments"
+        ],
+        "additionalProperties": false
+      },
+      "Completeness": {
+        "type": "object",
+        "properties": {
+          "percent": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "publishable": {
+            "type": "boolean"
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "block": {
+                  "type": "string",
+                  "enum": [
+                    "general",
+                    "itinerary",
+                    "transfer",
+                    "meals",
+                    "essentials",
+                    "lodging",
+                    "access",
+                    "whatToBring",
+                    "pricing"
+                  ]
+                },
+                "label": {
+                  "type": "string"
+                },
+                "percent": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "missing": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "block",
+                "label",
+                "percent",
+                "missing"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "percent",
+          "publishable",
+          "missing",
+          "blocks"
+        ],
+        "additionalProperties": false
+      },
+      "CreateProductInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "fullday",
+              "tour",
+              "excursion"
+            ]
+          },
+          "sheet": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductSheet"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "CurationInput": {
+        "type": "object",
+        "properties": {
+          "featured": {
+            "type": "boolean"
+          },
+          "themeIds": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "featured",
+          "themeIds"
+        ],
+        "additionalProperties": false
+      },
+      "DeclaredFile": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "$ref": "#/components/schemas/File"
+          },
+          "upload": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "PUT"
+                ]
+              },
+              "headers": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "url",
+              "method",
+              "headers"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "file",
+          "upload"
+        ],
+        "additionalProperties": false
+      },
+      "DeclareFileInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "document"
+            ]
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10485760
+          }
+        },
+        "required": [
+          "kind",
+          "contentType",
+          "size"
+        ],
+        "additionalProperties": false
+      },
+      "Departure": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "productType": {
+            "$ref": "#/components/schemas/ProductType"
+          },
+          "title": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DepartureStatus"
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "minCapacity": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "reserved": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "seatsLeft": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "adultPriceUsd": {
+            "nullable": true,
+            "type": "number"
+          },
+          "priceUsd": {
+            "type": "number"
+          },
+          "guides": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "name": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "email",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "productType",
+          "title",
+          "date",
+          "status",
+          "capacity",
+          "minCapacity",
+          "reserved",
+          "seatsLeft",
+          "adultPriceUsd",
+          "priceUsd",
+          "guides"
+        ],
+        "additionalProperties": false
+      },
+      "DepartureList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Departure"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "DepartureStatus": {
+        "type": "string",
+        "enum": [
+          "open",
+          "paused",
+          "closed",
+          "in_progress",
+          "finished",
+          "cancelled"
+        ]
+      },
+      "DepartureUpdateInput": {
+        "type": "object",
+        "properties": {
+          "capacity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "minCapacity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "adultPriceUsd": {
+            "nullable": true,
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 100000
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "paused",
+              "closed",
+              "in_progress",
+              "finished",
+              "cancelled"
+            ]
+          },
+          "guideIds": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Destination": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "lat": {
+            "nullable": true,
+            "type": "number"
+          },
+          "lng": {
+            "nullable": true,
+            "type": "number"
+          },
+          "fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DestinationFee"
+            }
+          },
+          "sites": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Site"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "state",
+          "region",
+          "lat",
+          "lng",
+          "fees",
+          "sites"
+        ],
+        "additionalProperties": false
+      },
+      "DestinationFee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "amountUsd": {
+            "type": "number"
+          },
+          "payment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "amountUsd",
+          "payment"
+        ],
+        "additionalProperties": false
+      },
+      "DestinationFeeInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "amountUsd": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "payment": {
+            "type": "string",
+            "enum": [
+              "cash_usd",
+              "cash_bs",
+              "mobile_payment"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "amountUsd",
+          "payment"
+        ],
+        "additionalProperties": false
+      },
+      "DestinationInput": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "state": {
+            "default": "",
+            "type": "string",
+            "maxLength": 80
+          },
+          "region": {
+            "default": "",
+            "type": "string",
+            "maxLength": 80
+          },
+          "lat": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lng": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "parentId": {
+            "default": null,
+            "nullable": true,
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "state",
+          "region",
+          "lat",
+          "lng",
+          "parentId"
+        ],
+        "additionalProperties": false
+      },
+      "DestinationList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Destination"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "DestinationUpdateInput": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "state": {
+            "default": "",
+            "type": "string",
+            "maxLength": 80
+          },
+          "region": {
+            "default": "",
+            "type": "string",
+            "maxLength": 80
+          },
+          "lat": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lng": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "parentId": {
+            "default": null,
+            "nullable": true,
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "additionalProperties": false
+      },
+      "File": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "document"
+            ]
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "ready"
+            ]
+          },
+          "image": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ImageUrls"
+              }
+            ]
+          },
+          "downloadUrl": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "contentType",
+          "size",
+          "status",
+          "image",
+          "downloadUrl"
         ],
         "additionalProperties": false
       },
@@ -1282,6 +4360,30 @@
         ],
         "additionalProperties": false,
         "description": "Estado de la API y de los servicios de los que depende."
+      },
+      "ImageUrls": {
+        "type": "object",
+        "properties": {
+          "sm": {
+            "type": "string"
+          },
+          "md": {
+            "type": "string"
+          },
+          "lg": {
+            "type": "string"
+          },
+          "xl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sm",
+          "md",
+          "lg",
+          "xl"
+        ],
+        "additionalProperties": false
       },
       "Me": {
         "type": "object",
@@ -1360,6 +4462,16 @@
           "providerName": {
             "type": "string"
           },
+          "providerStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_review",
+              "approved",
+              "rejected",
+              "suspended"
+            ]
+          },
           "role": {
             "$ref": "#/components/schemas/ProviderRole"
           },
@@ -1373,6 +4485,7 @@
         "required": [
           "providerId",
           "providerName",
+          "providerStatus",
           "role",
           "permissions"
         ],
@@ -1458,6 +4571,932 @@
         ],
         "additionalProperties": false
       },
+      "Photo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "urls": {
+            "$ref": "#/components/schemas/ImageUrls"
+          }
+        },
+        "required": [
+          "id",
+          "urls"
+        ],
+        "additionalProperties": false
+      },
+      "ProductDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "providerId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ProductType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductStatus"
+          },
+          "statusReason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "sheet": {
+            "$ref": "#/components/schemas/ProductSheet"
+          },
+          "completeness": {
+            "$ref": "#/components/schemas/Completeness"
+          },
+          "cashAtDestinationUsd": {
+            "type": "number"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "providerId",
+          "type",
+          "status",
+          "statusReason",
+          "version",
+          "sheet",
+          "completeness",
+          "cashAtDestinationUsd",
+          "photos",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProductList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductSummary"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ProductQueue": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductQueueItem"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ProductQueueItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ProductType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductStatus"
+          },
+          "title": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "providerName": {
+            "type": "string"
+          },
+          "statusAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "status",
+          "title",
+          "providerId",
+          "providerName",
+          "statusAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProductReview": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/ProductDetail"
+          },
+          "providerName": {
+            "type": "string"
+          },
+          "providerHasRtn": {
+            "type": "boolean"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "themeIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "product",
+          "providerName",
+          "providerHasRtn",
+          "contacts",
+          "featured",
+          "themeIds"
+        ],
+        "additionalProperties": false
+      },
+      "ProductSheet": {
+        "type": "object",
+        "properties": {
+          "general": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "default": "",
+                "type": "string",
+                "maxLength": 120
+              },
+              "summary": {
+                "default": "",
+                "type": "string",
+                "maxLength": 200
+              },
+              "description": {
+                "default": "",
+                "type": "string",
+                "maxLength": 5000
+              },
+              "category": {
+                "default": null,
+                "nullable": true,
+                "type": "string",
+                "enum": [
+                  "beach",
+                  "island",
+                  "mountain",
+                  "nature",
+                  "river",
+                  "adventure",
+                  "culture",
+                  "gastronomy",
+                  "city"
+                ]
+              },
+              "destinationId": {
+                "default": null,
+                "nullable": true,
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "photoIds": {
+                "default": [],
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                }
+              },
+              "tags": {
+                "default": [],
+                "maxItems": 10,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "family",
+                    "couples",
+                    "friends",
+                    "kids",
+                    "pets",
+                    "accessible",
+                    "hiking",
+                    "snorkel",
+                    "camping",
+                    "photography"
+                  ]
+                }
+              },
+              "minAge": {
+                "default": 0,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 99
+              },
+              "childrenAllowed": {
+                "default": true,
+                "type": "boolean"
+              },
+              "petsAllowed": {
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "title",
+              "summary",
+              "description",
+              "category",
+              "destinationId",
+              "photoIds",
+              "tags",
+              "minAge",
+              "childrenAllowed",
+              "petsAllowed"
+            ],
+            "additionalProperties": false
+          },
+          "duration": {
+            "type": "object",
+            "properties": {
+              "days": {
+                "default": 1,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30
+              },
+              "nights": {
+                "default": 0,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 29
+              },
+              "hours": {
+                "default": null,
+                "nullable": true,
+                "type": "number",
+                "minimum": 1,
+                "maximum": 24
+              }
+            },
+            "required": [
+              "days",
+              "nights",
+              "hours"
+            ],
+            "additionalProperties": false
+          },
+          "itinerary": {
+            "default": [],
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "default": 1,
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 30
+                },
+                "time": {
+                  "default": null,
+                  "nullable": true,
+                  "type": "string",
+                  "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                },
+                "title": {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "description": {
+                  "default": "",
+                  "type": "string",
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "day",
+                "time",
+                "title",
+                "description"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "transfer": {
+            "type": "object",
+            "properties": {
+              "vehicle": {
+                "default": null,
+                "nullable": true,
+                "type": "string",
+                "enum": [
+                  "bus",
+                  "minibus",
+                  "van",
+                  "car_4x4",
+                  "boat",
+                  "plane",
+                  "none"
+                ]
+              },
+              "notes": {
+                "default": "",
+                "type": "string",
+                "maxLength": 500
+              },
+              "boardingPoints": {
+                "default": [],
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "boardingPointId": {
+                      "default": null,
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "name": {
+                      "default": "",
+                      "type": "string",
+                      "maxLength": 120
+                    },
+                    "address": {
+                      "default": "",
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    "city": {
+                      "default": "",
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "departureTime": {
+                      "default": null,
+                      "nullable": true,
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "returnTime": {
+                      "default": null,
+                      "nullable": true,
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "priceDeltaUsd": {
+                      "default": 0,
+                      "type": "number",
+                      "minimum": -1000,
+                      "maximum": 1000
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "boardingPointId",
+                    "name",
+                    "address",
+                    "city",
+                    "departureTime",
+                    "returnTime",
+                    "priceDeltaUsd"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "vehicle",
+              "notes",
+              "boardingPoints"
+            ],
+            "additionalProperties": false
+          },
+          "meals": {
+            "default": [],
+            "maxItems": 90,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "day": {
+                  "default": 1,
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 30
+                },
+                "moment": {
+                  "type": "string",
+                  "enum": [
+                    "breakfast",
+                    "lunch",
+                    "dinner",
+                    "snack"
+                  ]
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "fixed",
+                    "choice",
+                    "optional",
+                    "not_included"
+                  ]
+                },
+                "description": {
+                  "default": "",
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "options": {
+                  "default": [],
+                  "maxItems": 10,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "name": {
+                        "default": "",
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      "priceUsd": {
+                        "default": 0,
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100000
+                      },
+                      "limit": {
+                        "default": null,
+                        "nullable": true,
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 10000
+                      },
+                      "isDefault": {
+                        "default": false,
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "priceUsd",
+                      "limit",
+                      "isDefault"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "picksPerPassenger": {
+                  "default": 1,
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "priceUsd": {
+                  "default": 0,
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                }
+              },
+              "required": [
+                "id",
+                "day",
+                "moment",
+                "mode",
+                "description",
+                "options",
+                "picksPerPassenger",
+                "priceUsd"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "items": {
+            "default": [],
+            "maxItems": 60,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "hydration",
+                    "shade",
+                    "access",
+                    "service",
+                    "activity"
+                  ]
+                },
+                "name": {
+                  "default": "",
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "modality": {
+                  "type": "string",
+                  "enum": [
+                    "included",
+                    "optional",
+                    "pay_at_destination",
+                    "not_included"
+                  ]
+                },
+                "priceUsd": {
+                  "default": 0,
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "payment": {
+                  "default": null,
+                  "nullable": true,
+                  "type": "string",
+                  "enum": [
+                    "cash_usd",
+                    "cash_bs",
+                    "mobile_payment"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "name",
+                "modality",
+                "priceUsd",
+                "payment"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "noAccessFees": {
+            "default": false,
+            "type": "boolean"
+          },
+          "lodging": {
+            "default": null,
+            "nullable": true,
+            "type": "object",
+            "properties": {
+              "name": {
+                "default": "",
+                "type": "string",
+                "maxLength": 160
+              },
+              "regime": {
+                "default": null,
+                "nullable": true,
+                "type": "string",
+                "enum": [
+                  "room_only",
+                  "breakfast",
+                  "half_board",
+                  "full_board",
+                  "all_inclusive"
+                ]
+              },
+              "rooms": {
+                "default": [],
+                "maxItems": 10,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "single",
+                        "double",
+                        "triple",
+                        "quadruple",
+                        "shared",
+                        "camping"
+                      ]
+                    },
+                    "occupancy": {
+                      "default": 2,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12
+                    },
+                    "quantity": {
+                      "default": null,
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1000
+                    },
+                    "priceDeltaUsd": {
+                      "default": 0,
+                      "type": "number",
+                      "minimum": -1000,
+                      "maximum": 5000
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "occupancy",
+                    "quantity",
+                    "priceDeltaUsd"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "name",
+              "regime",
+              "rooms"
+            ],
+            "additionalProperties": false
+          },
+          "whatToBring": {
+            "default": [],
+            "maxItems": 40,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "pricing": {
+            "type": "object",
+            "properties": {
+              "fares": {
+                "type": "object",
+                "properties": {
+                  "adult": {
+                    "default": 0,
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "child": {
+                    "default": null,
+                    "nullable": true,
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "senior": {
+                    "default": null,
+                    "nullable": true,
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  },
+                  "infant": {
+                    "default": null,
+                    "nullable": true,
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100000
+                  }
+                },
+                "required": [
+                  "adult",
+                  "child",
+                  "senior",
+                  "infant"
+                ],
+                "additionalProperties": false
+              },
+              "deposit": {
+                "default": null,
+                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "percent",
+                      "amount"
+                    ]
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.01,
+                    "maximum": 100000
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ],
+                "additionalProperties": false
+              },
+              "balanceDueDaysBefore": {
+                "default": null,
+                "nullable": true,
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 60
+              },
+              "cancellation": {
+                "type": "object",
+                "properties": {
+                  "template": {
+                    "default": null,
+                    "nullable": true,
+                    "type": "string",
+                    "enum": [
+                      "flexible",
+                      "moderate",
+                      "strict"
+                    ]
+                  },
+                  "text": {
+                    "default": null,
+                    "nullable": true,
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "template",
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "fares",
+              "deposit",
+              "balanceDueDaysBefore",
+              "cancellation"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "general",
+          "duration",
+          "itinerary",
+          "transfer",
+          "meals",
+          "items",
+          "noAccessFees",
+          "lodging",
+          "whatToBring",
+          "pricing"
+        ],
+        "additionalProperties": false
+      },
+      "ProductStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "in_review",
+          "published",
+          "paused"
+        ]
+      },
+      "ProductSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ProductType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductStatus"
+          },
+          "statusReason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "percent": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "cover": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ImageUrls"
+              }
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "status",
+          "statusReason",
+          "title",
+          "percent",
+          "cover",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProductType": {
+        "type": "string",
+        "enum": [
+          "fullday",
+          "tour",
+          "excursion"
+        ]
+      },
       "ProfileUpdateInput": {
         "type": "object",
         "properties": {
@@ -1470,6 +5509,128 @@
             "nullable": true
           }
         },
+        "additionalProperties": false
+      },
+      "ProviderDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ProviderDocumentType"
+          },
+          "fileId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "downloadUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "fileId",
+          "contentType",
+          "downloadUrl",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderDocumentList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderDocument"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderDocumentType": {
+        "type": "string",
+        "enum": [
+          "rif",
+          "representative_id",
+          "rtn",
+          "commercial_registry",
+          "other"
+        ]
+      },
+      "ProviderInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "person",
+              "company"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "legalName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160
+          },
+          "rtn": {
+            "default": null,
+            "nullable": true,
+            "type": "string",
+            "maxLength": 40
+          },
+          "baseCity": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "phone": {},
+          "instagram": {
+            "default": null,
+            "nullable": true,
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._]{1,30}$"
+          },
+          "paymentInstructions": {
+            "default": null,
+            "nullable": true,
+            "type": "string",
+            "maxLength": 1000
+          },
+          "rif": {}
+        },
+        "required": [
+          "kind",
+          "name",
+          "legalName",
+          "rtn",
+          "baseCity",
+          "phone",
+          "instagram",
+          "paymentInstructions",
+          "rif"
+        ],
         "additionalProperties": false
       },
       "ProviderPermission": {
@@ -1487,6 +5648,116 @@
           "checkin"
         ]
       },
+      "ProviderQueue": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderQueueItem"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderQueueItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "person",
+              "company"
+            ]
+          },
+          "rif": {
+            "type": "string"
+          },
+          "baseCity": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProviderStatus"
+          },
+          "hasRtn": {
+            "type": "boolean"
+          },
+          "submittedAt": {
+            "nullable": true,
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "rif",
+          "baseCity",
+          "status",
+          "hasRtn",
+          "submittedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderReview": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "$ref": "#/components/schemas/Company"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderDocument"
+            }
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "name": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "email",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "company",
+          "documents",
+          "owners"
+        ],
+        "additionalProperties": false
+      },
       "ProviderRole": {
         "type": "string",
         "enum": [
@@ -1495,6 +5766,128 @@
           "finance",
           "guide"
         ]
+      },
+      "ProviderStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "in_review",
+          "approved",
+          "rejected",
+          "suspended"
+        ]
+      },
+      "ProviderUpdateInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "person",
+              "company"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "legalName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160
+          },
+          "rtn": {
+            "nullable": true,
+            "type": "string",
+            "maxLength": 40
+          },
+          "baseCity": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "phone": {},
+          "instagram": {
+            "nullable": true,
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._]{1,30}$"
+          },
+          "paymentInstructions": {
+            "nullable": true,
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "additionalProperties": false
+      },
+      "Rate": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "bsPerUsd": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "bsPerUsd"
+        ],
+        "additionalProperties": false
+      },
+      "RateInput": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "bsPerUsd": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "maximum": 1000000
+          }
+        },
+        "required": [
+          "date",
+          "bsPerUsd"
+        ],
+        "additionalProperties": false
+      },
+      "RateList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rate"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ReasonInput": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "additionalProperties": false
       },
       "RecoverInput": {
         "type": "object",
@@ -1569,6 +5962,69 @@
         ],
         "additionalProperties": false
       },
+      "SaveProductInput": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "sheet": {
+            "$ref": "#/components/schemas/ProductSheet"
+          }
+        },
+        "required": [
+          "version",
+          "sheet"
+        ],
+        "additionalProperties": false
+      },
+      "ScheduleDeparturesInput": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "dates": {
+            "minItems": 1,
+            "maxItems": 60,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            }
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "minCapacity": {
+            "default": 1,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "adultPriceUsd": {
+            "default": null,
+            "nullable": true,
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 100000
+          }
+        },
+        "required": [
+          "productId",
+          "dates",
+          "capacity",
+          "minCapacity",
+          "adultPriceUsd"
+        ],
+        "additionalProperties": false
+      },
       "SetStaffRolesInput": {
         "type": "object",
         "properties": {
@@ -1595,6 +6051,97 @@
         "required": [
           "email",
           "roles"
+        ],
+        "additionalProperties": false
+      },
+      "Settings": {
+        "type": "object",
+        "properties": {
+          "holdMinutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 120
+          },
+          "minDepositPercent": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "mealChoiceDeadlineHours": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 720
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "mobile_payment",
+                "bank_transfer",
+                "zelle",
+                "cash_usd"
+              ]
+            }
+          },
+          "platformCommissionPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "holdMinutes",
+          "minDepositPercent",
+          "mealChoiceDeadlineHours",
+          "paymentMethods",
+          "platformCommissionPercent"
+        ],
+        "additionalProperties": false
+      },
+      "SettingsInput": {
+        "type": "object",
+        "properties": {
+          "holdMinutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 120
+          },
+          "minDepositPercent": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "mealChoiceDeadlineHours": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 720
+          },
+          "paymentMethods": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "mobile_payment",
+                "bank_transfer",
+                "zelle",
+                "cash_usd"
+              ]
+            }
+          },
+          "platformCommissionPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "holdMinutes",
+          "minDepositPercent",
+          "mealChoiceDeadlineHours",
+          "paymentMethods",
+          "platformCommissionPercent"
         ],
         "additionalProperties": false
       },
@@ -1641,6 +6188,53 @@
         "required": [
           "email",
           "password"
+        ],
+        "additionalProperties": false
+      },
+      "Site": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "lat": {
+            "nullable": true,
+            "type": "number"
+          },
+          "lng": {
+            "nullable": true,
+            "type": "number"
+          },
+          "fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DestinationFee"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "state",
+          "region",
+          "lat",
+          "lng",
+          "fees"
         ],
         "additionalProperties": false
       },
@@ -1794,6 +6388,68 @@
         ],
         "additionalProperties": false
       },
+      "ThemeInput": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "description": {
+            "default": "",
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "description"
+        ],
+        "additionalProperties": false
+      },
+      "ThemeList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelTheme"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ThemeUpdateInput": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "description": {
+            "default": "",
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "additionalProperties": false
+      },
       "Tokens": {
         "type": "object",
         "properties": {
@@ -1813,6 +6469,32 @@
           "accessToken",
           "refreshToken",
           "expiresIn"
+        ],
+        "additionalProperties": false
+      },
+      "TravelTheme": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description"
         ],
         "additionalProperties": false
       },

@@ -169,6 +169,7 @@ export class UsersController {
       memberships: user.memberships.map((m) => ({
         providerId: m.providerId,
         providerName: m.provider.name,
+        providerStatus: m.provider.status,
         role: m.role,
         permissions: providerPermissions(m.role),
       })),

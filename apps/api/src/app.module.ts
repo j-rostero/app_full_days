@@ -2,6 +2,11 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR, DiscoveryModule } from '@nestjs/core';
 import { AccessGuard } from './access/access.guard.ts';
 import { AccessModule } from './access/access.module.ts';
+import { CatalogsModule } from './catalogs/catalogs.module.ts';
+import { DeparturesModule } from './departures/departures.module.ts';
+import { FilesModule } from './files/files.module.ts';
+import { ProductsModule } from './products/products.module.ts';
+import { ProvidersModule } from './providers/providers.module.ts';
 import { AuditInterceptor } from './audit/audit.interceptor.ts';
 import { AuthGuard } from './auth/auth.guard.ts';
 import { AuthModule } from './auth/auth.module.ts';
@@ -17,7 +22,19 @@ import { UsersModule } from './users/users.module.ts';
  * defecto), acceso por URL (`/v1/pro/:providerId`, `/v1/central`) y auditoría de escrituras.
  */
 @Module({
-  imports: [DiscoveryModule, CoreModule, HealthModule, AuthModule, UsersModule, AccessModule],
+  imports: [
+    DiscoveryModule,
+    CoreModule,
+    HealthModule,
+    AuthModule,
+    UsersModule,
+    AccessModule,
+    FilesModule,
+    ProvidersModule,
+    CatalogsModule,
+    ProductsModule,
+    DeparturesModule,
+  ],
   providers: [
     { provide: APP_GUARD, useClass: RateLimitGuard },
     { provide: APP_GUARD, useClass: AuthGuard },

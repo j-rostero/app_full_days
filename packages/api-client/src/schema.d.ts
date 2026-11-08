@@ -21,6 +21,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/ajustes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reglas de reserva vigentes */
+        get: operations["getSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/archivos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Declara un archivo y devuelve la URL firmada para subirlo (diez minutos) */
+        post: operations["declareFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/archivos/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Un archivo propio; los documentos traen un enlace de descarga de cinco minutos */
+        get: operations["getFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/archivos/{fileId}/confirmar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Comprueba que lo subido coincide con lo declarado y deja el archivo listo */
+        post: operations["confirmFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/entrar": {
         parameters: {
             query?: never;
@@ -174,6 +242,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/catalogos/destinos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Destinos con sus sitios y tasas conocidas */
+        get: operations["listDestinations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/catalogos/puntos-de-embarque": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Puntos de embarque conocidos; filtro por ciudad */
+        get: operations["listBoardingPoints"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/ajustes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reemplaza las reglas de reserva */
+        put: operations["setSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/central/auditoria": {
         parameters: {
             query?: never;
@@ -186,6 +305,110 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/catalogos/destinos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crea un destino o un sitio dentro de uno */
+        post: operations["createDestination"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/catalogos/destinos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borra un destino sin sitios */
+        delete: operations["deleteDestination"];
+        options?: never;
+        head?: never;
+        /** Edita un destino */
+        patch: operations["updateDestination"];
+        trace?: never;
+    };
+    "/v1/central/catalogos/destinos/{id}/tasas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Añade una tasa conocida a un destino */
+        post: operations["addDestinationFee"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/catalogos/puntos-de-embarque": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crea un punto de embarque */
+        post: operations["createBoardingPoint"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/catalogos/puntos-de-embarque/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borra un punto de embarque */
+        delete: operations["deleteBoardingPoint"];
+        options?: never;
+        head?: never;
+        /** Edita un punto de embarque */
+        patch: operations["updateBoardingPoint"];
+        trace?: never;
+    };
+    "/v1/central/catalogos/tasas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borra una tasa de destino */
+        delete: operations["deleteDestinationFee"];
         options?: never;
         head?: never;
         patch?: never;
@@ -209,6 +432,263 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/central/productos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Productos por estado, el cambio más antiguo primero (máximo 200) */
+        get: operations["listProductQueue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/productos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ficha con agencia, contactos detectados, destacado y temáticas */
+        get: operations["getProductReview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/productos/{id}/aprobar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publica un producto en revisión */
+        post: operations["approveProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/productos/{id}/despublicar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pausa un producto publicado por contenido engañoso, con motivo */
+        post: operations["unpublishProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/productos/{id}/devolver": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Devuelve a borrador un producto en revisión, con motivo */
+        post: operations["returnProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/productos/{id}/portada": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Fija si es destacado y la lista completa de sus temáticas */
+        put: operations["curateProduct"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/proveedores": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Agencias por estado, la enviada hace más tiempo primero (máximo 200) */
+        get: operations["listProviderQueue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/proveedores/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Agencia con sus documentos descargables y sus dueños */
+        get: operations["getProviderReview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/proveedores/{id}/aprobar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Aprueba una agencia en revisión o suspendida */
+        post: operations["approveProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/proveedores/{id}/comision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Fija la comisión propia de la agencia (0 a 50) o la quita (null) */
+        put: operations["setProviderCommission"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/proveedores/{id}/rechazar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rechaza una agencia en revisión, con motivo */
+        post: operations["rejectProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/proveedores/{id}/suspender": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Suspende una agencia aprobada, con motivo: sale del catálogo público */
+        post: operations["suspendProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/tasas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Historial de tasas (hasta 365) */
+        get: operations["listRates"];
+        /** Fija la tasa de un día; repetir el día la corrige */
+        put: operations["setRate"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/tematicas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crea una temática */
+        post: operations["createTheme"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/central/tematicas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borra una temática; sus productos quedan sin ella */
+        delete: operations["deleteTheme"];
+        options?: never;
+        head?: never;
+        /** Edita una temática */
+        patch: operations["updateTheme"];
+        trace?: never;
+    };
     "/v1/pro/{providerId}/auditoria": {
         parameters: {
             query?: never;
@@ -220,6 +700,76 @@ export interface paths {
         get: operations["listProviderAudit"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/documentos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Documentos de verificación, con enlace de descarga de cinco minutos */
+        get: operations["listCompanyDocuments"];
+        put?: never;
+        /** Adjunta un documento ya subido (archivo propio y listo) */
+        post: operations["attachCompanyDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/documentos/{documentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Quita un documento */
+        delete: operations["removeCompanyDocument"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/empresa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Datos de la agencia, estado y distintivo */
+        get: operations["getCompany"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cambia los datos de la agencia (el RIF no cambia) */
+        patch: operations["updateCompany"];
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/empresa/enviar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Envía la agencia a verificación de Central */
+        post: operations["submitCompany"];
         delete?: never;
         options?: never;
         head?: never;
@@ -260,6 +810,162 @@ export interface paths {
         head?: never;
         /** Cambia el rol de una persona del equipo */
         patch: operations["changeTeamRole"];
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/productos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Productos de la agencia, el último cambiado primero */
+        get: operations["listProducts"];
+        put?: never;
+        /** Crea un borrador de fullday, tour o excursión */
+        post: operations["createProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/productos/{productId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ficha con completitud por bloque y fotos */
+        get: operations["getProduct"];
+        /** Guarda la ficha entera; falla si otra pestaña la cambió desde la versión leída */
+        put: operations["saveProduct"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/productos/{productId}/pausar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pausa la venta de un producto publicado */
+        post: operations["pauseProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/productos/{productId}/publicar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publica, o envía a revisión de Central cuando corresponde */
+        post: operations["publishProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Salidas de la agencia por fecha, desde hoy salvo que se pida otra fecha (máximo 500) */
+        get: operations["listDepartures"];
+        put?: never;
+        /** Programa una o varias fechas de un producto publicado con el mismo cupo, mínimo y precio */
+        post: operations["scheduleDepartures"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/pro/{providerId}/salidas/{departureId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cambia cupo, mínimo, precio propio, estado o guías de una salida */
+        patch: operations["updateDeparture"];
+        trace?: never;
+    };
+    "/v1/proveedores": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registra una agencia u organizador; quien la registra queda como dueño */
+        post: operations["registerProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/tasa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tasa bolívares por dólar vigente (la más reciente que no sea futura) */
+        get: operations["getRate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/tematicas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Temáticas por nombre */
+        get: operations["listThemes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/yo": {
@@ -344,6 +1050,12 @@ export interface components {
                 message: string;
             }[];
         };
+        AttachDocumentInput: {
+            /** @enum {string} */
+            type: "rif" | "representative_id" | "rtn" | "commercial_registry" | "other";
+            /** Format: uuid */
+            fileId: string;
+        };
         AuditEntry: {
             /** Format: uuid */
             id: string;
@@ -370,9 +1082,212 @@ export interface components {
             /** Format: uuid */
             nextCursor: string | null;
         };
+        BoardingPoint: {
+            /** Format: uuid */
+            id: string;
+            city: string;
+            name: string;
+            address: string;
+            lat: number | null;
+            lng: number | null;
+        };
+        BoardingPointInput: {
+            city: string;
+            name: string;
+            /** @default  */
+            address: string;
+            /** @default null */
+            lat: number | null;
+            /** @default null */
+            lng: number | null;
+        };
+        BoardingPointList: {
+            items: components["schemas"]["BoardingPoint"][];
+        };
+        BoardingPointUpdateInput: {
+            city?: string;
+            name?: string;
+            /** @default  */
+            address: string;
+            /** @default null */
+            lat: number | null;
+            /** @default null */
+            lng: number | null;
+        };
         ChangeTeamRoleInput: {
             /** @enum {string} */
             role: "owner" | "operations" | "finance" | "guide";
+        };
+        CommissionInput: {
+            commissionPercent: number | null;
+        };
+        Company: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "person" | "company";
+            name: string;
+            legalName: string;
+            rif: string;
+            rtn: string | null;
+            baseCity: string;
+            phone: string;
+            instagram: string | null;
+            paymentInstructions: string | null;
+            status: components["schemas"]["ProviderStatus"];
+            statusReason: string | null;
+            /** @enum {string|null} */
+            badge: "verified" | "new" | null;
+            commissionPercent: number | null;
+            missingDocuments: components["schemas"]["ProviderDocumentType"][];
+        };
+        Completeness: {
+            percent: number;
+            publishable: boolean;
+            missing: string[];
+            blocks: {
+                /** @enum {string} */
+                block: "general" | "itinerary" | "transfer" | "meals" | "essentials" | "lodging" | "access" | "whatToBring" | "pricing";
+                label: string;
+                percent: number;
+                missing: string[];
+            }[];
+        };
+        CreateProductInput: {
+            /** @enum {string} */
+            type: "fullday" | "tour" | "excursion";
+            sheet?: components["schemas"]["ProductSheet"];
+        };
+        CurationInput: {
+            featured: boolean;
+            themeIds: string[];
+        };
+        DeclaredFile: {
+            file: components["schemas"]["File"];
+            upload: {
+                url: string;
+                /** @enum {string} */
+                method: "PUT";
+                headers: {
+                    [key: string]: string;
+                };
+            };
+        };
+        DeclareFileInput: {
+            /** @enum {string} */
+            kind: "image" | "document";
+            contentType: string;
+            size: number;
+        };
+        Departure: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            productId: string;
+            productType: components["schemas"]["ProductType"];
+            title: string;
+            /** Format: date */
+            date: string;
+            status: components["schemas"]["DepartureStatus"];
+            capacity: number;
+            minCapacity: number;
+            reserved: number;
+            seatsLeft: number;
+            adultPriceUsd: number | null;
+            priceUsd: number;
+            guides: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+            }[];
+        };
+        DepartureList: {
+            items: components["schemas"]["Departure"][];
+        };
+        /** @enum {string} */
+        DepartureStatus: "open" | "paused" | "closed" | "in_progress" | "finished" | "cancelled";
+        DepartureUpdateInput: {
+            capacity?: number;
+            minCapacity?: number;
+            adultPriceUsd?: number | null;
+            /** @enum {string} */
+            status?: "open" | "paused" | "closed" | "in_progress" | "finished" | "cancelled";
+            guideIds?: string[];
+        };
+        Destination: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            state: string;
+            region: string;
+            lat: number | null;
+            lng: number | null;
+            fees: components["schemas"]["DestinationFee"][];
+            sites: components["schemas"]["Site"][];
+        };
+        DestinationFee: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            amountUsd: number;
+            payment: string;
+        };
+        DestinationFeeInput: {
+            name: string;
+            amountUsd: number;
+            /** @enum {string} */
+            payment: "cash_usd" | "cash_bs" | "mobile_payment";
+        };
+        DestinationInput: {
+            slug: string;
+            name: string;
+            /** @default  */
+            state: string;
+            /** @default  */
+            region: string;
+            /** @default null */
+            lat: number | null;
+            /** @default null */
+            lng: number | null;
+            /**
+             * Format: uuid
+             * @default null
+             */
+            parentId: string | null;
+        };
+        DestinationList: {
+            items: components["schemas"]["Destination"][];
+        };
+        DestinationUpdateInput: {
+            slug?: string;
+            name?: string;
+            /** @default  */
+            state: string;
+            /** @default  */
+            region: string;
+            /** @default null */
+            lat: number | null;
+            /** @default null */
+            lng: number | null;
+            /**
+             * Format: uuid
+             * @default null
+             */
+            parentId: string | null;
+        };
+        File: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "image" | "document";
+            contentType: string;
+            size: number;
+            /** @enum {string} */
+            status: "pending" | "ready";
+            image: components["schemas"]["ImageUrls"] | null;
+            downloadUrl: string | null;
         };
         GoogleInput: {
             idToken: string;
@@ -387,6 +1302,12 @@ export interface components {
                 /** @enum {string} */
                 redis: "ok" | "down";
             };
+        };
+        ImageUrls: {
+            sm: string;
+            md: string;
+            lg: string;
+            xl: string;
         };
         Me: {
             /** Format: uuid */
@@ -406,6 +1327,8 @@ export interface components {
             /** Format: uuid */
             providerId: string;
             providerName: string;
+            /** @enum {string} */
+            providerStatus: "pending" | "in_review" | "approved" | "rejected" | "suspended";
             role: components["schemas"]["ProviderRole"];
             permissions: components["schemas"]["ProviderPermission"][];
         };
@@ -430,14 +1353,346 @@ export interface components {
         PassengerList: {
             items: components["schemas"]["Passenger"][];
         };
+        Photo: {
+            /** Format: uuid */
+            id: string;
+            urls: components["schemas"]["ImageUrls"];
+        };
+        ProductDetail: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            providerId: string;
+            type: components["schemas"]["ProductType"];
+            status: components["schemas"]["ProductStatus"];
+            statusReason: string | null;
+            version: number;
+            sheet: components["schemas"]["ProductSheet"];
+            completeness: components["schemas"]["Completeness"];
+            cashAtDestinationUsd: number;
+            photos: components["schemas"]["Photo"][];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ProductList: {
+            items: components["schemas"]["ProductSummary"][];
+        };
+        ProductQueue: {
+            items: components["schemas"]["ProductQueueItem"][];
+        };
+        ProductQueueItem: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["ProductType"];
+            status: components["schemas"]["ProductStatus"];
+            title: string;
+            /** Format: uuid */
+            providerId: string;
+            providerName: string;
+            /** Format: date-time */
+            statusAt: string;
+        };
+        ProductReview: {
+            product: components["schemas"]["ProductDetail"];
+            providerName: string;
+            providerHasRtn: boolean;
+            contacts: string[];
+            featured: boolean;
+            themeIds: string[];
+        };
+        ProductSheet: {
+            general: {
+                /** @default  */
+                title: string;
+                /** @default  */
+                summary: string;
+                /** @default  */
+                description: string;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                category: "beach" | "island" | "mountain" | "nature" | "river" | "adventure" | "culture" | "gastronomy" | "city" | null;
+                /**
+                 * Format: uuid
+                 * @default null
+                 */
+                destinationId: string | null;
+                /** @default [] */
+                photoIds: string[];
+                /** @default [] */
+                tags: ("family" | "couples" | "friends" | "kids" | "pets" | "accessible" | "hiking" | "snorkel" | "camping" | "photography")[];
+                /** @default 0 */
+                minAge: number;
+                /** @default true */
+                childrenAllowed: boolean;
+                /** @default false */
+                petsAllowed: boolean;
+            };
+            duration: {
+                /** @default 1 */
+                days: number;
+                /** @default 0 */
+                nights: number;
+                /** @default null */
+                hours: number | null;
+            };
+            /** @default [] */
+            itinerary: {
+                /** @default 1 */
+                day: number;
+                /** @default null */
+                time: string | null;
+                title: string;
+                /** @default  */
+                description: string;
+            }[];
+            transfer: {
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                vehicle: "bus" | "minibus" | "van" | "car_4x4" | "boat" | "plane" | "none" | null;
+                /** @default  */
+                notes: string;
+                /** @default [] */
+                boardingPoints: {
+                    /** Format: uuid */
+                    id: string;
+                    /**
+                     * Format: uuid
+                     * @default null
+                     */
+                    boardingPointId: string | null;
+                    /** @default  */
+                    name: string;
+                    /** @default  */
+                    address: string;
+                    /** @default  */
+                    city: string;
+                    /** @default null */
+                    departureTime: string | null;
+                    /** @default null */
+                    returnTime: string | null;
+                    /** @default 0 */
+                    priceDeltaUsd: number;
+                }[];
+            };
+            /** @default [] */
+            meals: {
+                /** Format: uuid */
+                id: string;
+                /** @default 1 */
+                day: number;
+                /** @enum {string} */
+                moment: "breakfast" | "lunch" | "dinner" | "snack";
+                /** @enum {string} */
+                mode: "fixed" | "choice" | "optional" | "not_included";
+                /** @default  */
+                description: string;
+                /** @default [] */
+                options: {
+                    /** Format: uuid */
+                    id: string;
+                    /** @default  */
+                    name: string;
+                    /** @default 0 */
+                    priceUsd: number;
+                    /** @default null */
+                    limit: number | null;
+                    /** @default false */
+                    isDefault: boolean;
+                }[];
+                /** @default 1 */
+                picksPerPassenger: number;
+                /** @default 0 */
+                priceUsd: number;
+            }[];
+            /** @default [] */
+            items: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                type: "hydration" | "shade" | "access" | "service" | "activity";
+                /** @default  */
+                name: string;
+                /** @enum {string} */
+                modality: "included" | "optional" | "pay_at_destination" | "not_included";
+                /** @default 0 */
+                priceUsd: number;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                payment: "cash_usd" | "cash_bs" | "mobile_payment" | null;
+            }[];
+            /** @default false */
+            noAccessFees: boolean;
+            /** @default null */
+            lodging: {
+                /** @default  */
+                name: string;
+                /**
+                 * @default null
+                 * @enum {string|null}
+                 */
+                regime: "room_only" | "breakfast" | "half_board" | "full_board" | "all_inclusive" | null;
+                /** @default [] */
+                rooms: {
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    type: "single" | "double" | "triple" | "quadruple" | "shared" | "camping";
+                    /** @default 2 */
+                    occupancy: number;
+                    /** @default null */
+                    quantity: number | null;
+                    /** @default 0 */
+                    priceDeltaUsd: number;
+                }[];
+            } | null;
+            /** @default [] */
+            whatToBring: string[];
+            pricing: {
+                fares: {
+                    /** @default 0 */
+                    adult: number;
+                    /** @default null */
+                    child: number | null;
+                    /** @default null */
+                    senior: number | null;
+                    /** @default null */
+                    infant: number | null;
+                };
+                /** @default null */
+                deposit: {
+                    /** @enum {string} */
+                    kind: "percent" | "amount";
+                    value: number;
+                } | null;
+                /** @default null */
+                balanceDueDaysBefore: number | null;
+                cancellation: {
+                    /**
+                     * @default null
+                     * @enum {string|null}
+                     */
+                    template: "flexible" | "moderate" | "strict" | null;
+                    /** @default null */
+                    text: string | null;
+                };
+            };
+        };
+        /** @enum {string} */
+        ProductStatus: "draft" | "in_review" | "published" | "paused";
+        ProductSummary: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["ProductType"];
+            status: components["schemas"]["ProductStatus"];
+            statusReason: string | null;
+            title: string;
+            percent: number;
+            cover: components["schemas"]["ImageUrls"] | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        /** @enum {string} */
+        ProductType: "fullday" | "tour" | "excursion";
         ProfileUpdateInput: {
             name?: string;
             phone?: unknown;
         };
+        ProviderDocument: {
+            /** Format: uuid */
+            id: string;
+            type: components["schemas"]["ProviderDocumentType"];
+            /** Format: uuid */
+            fileId: string;
+            contentType: string;
+            downloadUrl: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ProviderDocumentList: {
+            items: components["schemas"]["ProviderDocument"][];
+        };
+        /** @enum {string} */
+        ProviderDocumentType: "rif" | "representative_id" | "rtn" | "commercial_registry" | "other";
+        ProviderInput: {
+            /** @enum {string} */
+            kind: "person" | "company";
+            name: string;
+            legalName: string;
+            /** @default null */
+            rtn: string | null;
+            baseCity: string;
+            phone: unknown;
+            /** @default null */
+            instagram: string | null;
+            /** @default null */
+            paymentInstructions: string | null;
+            rif: unknown;
+        };
         /** @enum {string} */
         ProviderPermission: "team" | "company" | "fulldays" | "departures" | "bookings" | "notices" | "payments" | "settlements" | "reports" | "checkin";
+        ProviderQueue: {
+            items: components["schemas"]["ProviderQueueItem"][];
+        };
+        ProviderQueueItem: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** @enum {string} */
+            kind: "person" | "company";
+            rif: string;
+            baseCity: string;
+            status: components["schemas"]["ProviderStatus"];
+            hasRtn: boolean;
+            /** Format: date-time */
+            submittedAt: string | null;
+        };
+        ProviderReview: {
+            company: components["schemas"]["Company"];
+            documents: components["schemas"]["ProviderDocument"][];
+            owners: {
+                /** Format: uuid */
+                id: string;
+                email: string;
+                name: string | null;
+            }[];
+        };
         /** @enum {string} */
         ProviderRole: "owner" | "operations" | "finance" | "guide";
+        /** @enum {string} */
+        ProviderStatus: "pending" | "in_review" | "approved" | "rejected" | "suspended";
+        ProviderUpdateInput: {
+            /** @enum {string} */
+            kind?: "person" | "company";
+            name?: string;
+            legalName?: string;
+            rtn?: string | null;
+            baseCity?: string;
+            phone?: unknown;
+            instagram?: string | null;
+            paymentInstructions?: string | null;
+        };
+        Rate: {
+            /** Format: date */
+            date: string;
+            bsPerUsd: number;
+        };
+        RateInput: {
+            /** Format: date */
+            date: string;
+            bsPerUsd: number;
+        };
+        RateList: {
+            items: components["schemas"]["Rate"][];
+        };
+        ReasonInput: {
+            reason: string;
+        };
         RecoverInput: {
             /** Format: email */
             email: string;
@@ -456,10 +1711,38 @@ export interface components {
             code: string;
             password: string;
         };
+        SaveProductInput: {
+            version: number;
+            sheet: components["schemas"]["ProductSheet"];
+        };
+        ScheduleDeparturesInput: {
+            /** Format: uuid */
+            productId: string;
+            dates: string[];
+            capacity: number;
+            /** @default 1 */
+            minCapacity: number;
+            /** @default null */
+            adultPriceUsd: number | null;
+        };
         SetStaffRolesInput: {
             /** Format: email */
             email: string;
             roles: ("super" | "support" | "moderation" | "content" | "finance")[];
+        };
+        Settings: {
+            holdMinutes: number;
+            minDepositPercent: number;
+            mealChoiceDeadlineHours: number;
+            paymentMethods: ("mobile_payment" | "bank_transfer" | "zelle" | "cash_usd")[];
+            platformCommissionPercent: number;
+        };
+        SettingsInput: {
+            holdMinutes: number;
+            minDepositPercent: number;
+            mealChoiceDeadlineHours: number;
+            paymentMethods: ("mobile_payment" | "bank_transfer" | "zelle" | "cash_usd")[];
+            platformCommissionPercent: number;
         };
         SignedIn: {
             accessToken: string;
@@ -471,6 +1754,17 @@ export interface components {
             /** Format: email */
             email: string;
             password: string;
+        };
+        Site: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            state: string;
+            region: string;
+            lat: number | null;
+            lng: number | null;
+            fees: components["schemas"]["DestinationFee"][];
         };
         StaffList: {
             items: components["schemas"]["StaffPerson"][];
@@ -504,10 +1798,32 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        ThemeInput: {
+            slug: string;
+            name: string;
+            /** @default  */
+            description: string;
+        };
+        ThemeList: {
+            items: components["schemas"]["TravelTheme"][];
+        };
+        ThemeUpdateInput: {
+            slug?: string;
+            name?: string;
+            /** @default  */
+            description: string;
+        };
         Tokens: {
             accessToken: string;
             refreshToken: string;
             expiresIn: number;
+        };
+        TravelTheme: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            description: string;
         };
         VerifyInput: {
             /** Format: email */
@@ -548,6 +1864,130 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Settings"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    declareFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeclareFileInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclaredFile"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["File"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    confirmFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["File"];
                 };
             };
             /** @description Error */
@@ -842,6 +2282,99 @@ export interface operations {
             };
         };
     };
+    listDestinations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DestinationList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listBoardingPoints: {
+        parameters: {
+            query?: {
+                city?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardingPointList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    setSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Settings"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listAudit: {
         parameters: {
             query?: {
@@ -863,6 +2396,264 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AuditPage"];
                 };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DestinationInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Destination"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DestinationUpdateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Destination"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    addDestinationFee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DestinationFeeInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Destination"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createBoardingPoint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoardingPointInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardingPoint"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteBoardingPoint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateBoardingPoint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoardingPointUpdateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardingPoint"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteDestinationFee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Error */
             default: {
@@ -937,6 +2728,561 @@ export interface operations {
             };
         };
     };
+    listProductQueue: {
+        parameters: {
+            query?: {
+                status?: "draft" | "in_review" | "published" | "paused";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductQueue"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProductReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductReview"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    approveProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    unpublishProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    returnProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    curateProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CurationInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductReview"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listProviderQueue: {
+        parameters: {
+            query?: {
+                status?: "pending" | "in_review" | "approved" | "rejected" | "suspended";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderQueue"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProviderReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderReview"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    approveProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    setProviderCommission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommissionInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    rejectProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    suspendProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listRates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    setRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rate"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ThemeInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelTheme"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ThemeUpdateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TravelTheme"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     listProviderAudit: {
         parameters: {
             query?: {
@@ -959,6 +3305,199 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuditPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listCompanyDocuments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderDocumentList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    attachCompanyDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttachDocumentInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderDocument"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    removeCompanyDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProviderUpdateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    submitCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
                 };
             };
             /** @description Error */
@@ -1091,6 +3630,400 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TeamMember"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listProducts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProductInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    saveProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveProductInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    pauseProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    publishProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listDepartures: {
+        parameters: {
+            query?: {
+                productId?: string;
+                desde?: string;
+            };
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartureList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    scheduleDepartures: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleDeparturesInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartureList"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateDeparture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+                departureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DepartureUpdateInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Departure"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    registerProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProviderInput"];
+            };
+        };
+        responses: {
+            /** @description Éxito */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Company"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getRate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rate"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listThemes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Éxito */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ThemeList"];
                 };
             };
             /** @description Error */

@@ -2,6 +2,7 @@ import {
   PassengerInputSchema,
   PROVIDER_PERMISSIONS,
   PROVIDER_ROLES,
+  PROVIDER_STATUSES,
   ProfileUpdateSchema,
   STAFF_PERMISSIONS,
   STAFF_ROLES,
@@ -19,6 +20,7 @@ export const MembershipSchema = z
   .object({
     providerId: z.uuid(),
     providerName: z.string(),
+    providerStatus: z.enum(PROVIDER_STATUSES),
     role: ProviderRoleSchema,
     permissions: z.array(ProviderPermissionSchema),
   })

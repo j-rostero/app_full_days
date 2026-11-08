@@ -70,3 +70,116 @@
 .fd-link {
   color: var(--fd-color-primario);
 }
+
+.fd-form-ok {
+  margin: 0;
+  padding: var(--fd-space-s) var(--fd-space-m);
+  border-radius: var(--fd-radius-m);
+  color: var(--fd-color-exito);
+  border: 1px solid var(--fd-color-exito);
+}
+
+.fd-field select,
+.fd-field textarea {
+  font: inherit;
+  font-weight: normal;
+  font-size: var(--fd-text-cuerpo-size);
+  padding: var(--fd-space-s) var(--fd-space-m);
+  border: 1px solid var(--fd-color-borde);
+  border-radius: var(--fd-radius-m);
+  background: var(--fd-color-superficie);
+  color: var(--fd-color-texto);
+}
+
+.fd-field textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.fd-check {
+  display: flex;
+  align-items: center;
+  gap: var(--fd-space-s);
+  font-size: var(--fd-text-cuerpo-size);
+}
+
+.fd-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--fd-space-s);
+}
+
+.fd-inline .fd-field {
+  flex: 1 1 10rem;
+}
+
+.fd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fd-text-pequeno-size);
+}
+
+.fd-table th,
+.fd-table td {
+  text-align: left;
+  padding: var(--fd-space-s);
+  border-bottom: 1px solid var(--fd-color-borde);
+  vertical-align: top;
+}
+
+.fd-pill {
+  display: inline-block;
+  padding: 0 var(--fd-space-s);
+  border-radius: var(--fd-radius-pildora);
+  border: 1px solid var(--fd-color-borde);
+  font-size: var(--fd-text-pequeno-size);
+}
+
+.fd-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fd-space-m);
+  margin: var(--fd-space-m) 0 var(--fd-space-l);
+  padding-bottom: var(--fd-space-s);
+  border-bottom: 1px solid var(--fd-color-borde);
+}
+
+.fd-nav a {
+  color: var(--fd-color-primario);
+  text-decoration: none;
+  font-weight: var(--fd-text-etiqueta-weight);
+}
+
+.fd-progress {
+  height: 0.5rem;
+  border-radius: var(--fd-radius-pildora);
+  background: var(--fd-color-borde);
+  overflow: hidden;
+}
+
+.fd-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--fd-color-primario);
+}
+
+.fd-link-button {
+  font: inherit;
+  color: var(--fd-color-error);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Acción secundaria dentro de una línea de texto (por ejemplo, «Borrar»). */
+.fd-quiet {
+  display: inline;
+  margin-left: var(--fd-space-s);
+}
+.fd-quiet p {
+  display: inline;
+  margin-left: var(--fd-space-s);
+}
