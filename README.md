@@ -20,7 +20,8 @@ Sistema para gestionar fulldays, excursiones, tours y viajes: una API, una web p
 | `packages/web-session` | Sesión de las webs: cookies seguras, renovación y pantallas de acceso |        |
 | `packages/tokens`      | Tokens de diseño: genera el CSS de las webs y el Dart de la app       |        |
 | `packages/ui_flutter`  | Tema y componentes de la app                                          |        |
-| `infra/docker`         | PostgreSQL, Redis, almacenamiento S3, imgproxy y buzón de correo      |        |
+| `e2e`                  | Recorridos de punta a punta con Playwright entre la API y las webs    |        |
+| `infra/docker`         | Infraestructura local, imágenes de producción y compose de ejemplo    |        |
 
 ## Empezar
 
@@ -62,6 +63,7 @@ La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
 | Comando                  | Qué hace                                                                          |
 | ------------------------ | --------------------------------------------------------------------------------- |
 | `pnpm verify`            | Verificación completa, igual que CI (necesita PostgreSQL y Redis)                 |
+| `pnpm e2e`               | Recorridos de punta a punta en navegador (después de `pnpm build`)                |
 | `pnpm api:client`        | Regenera `openapi.json` y los clientes TypeScript y Dart tras cambiar un endpoint |
 | `pnpm tokens`            | Regenera el CSS y el Dart desde `packages/tokens/tokens.json`                     |
 | `pnpm infra:up` / `down` | Enciende o apaga la infraestructura local                                         |
@@ -70,4 +72,5 @@ Un cambio de endpoint sin regenerar el contrato hace fallar las pruebas: el cód
 
 ## Documentación
 
+- [Despliegue y lista de lanzamiento](docs/despliegue.md)
 - [`docs/referencia/`](docs/referencia/README.md): documentación técnica del sistema de referencia que se usa como especificación. Describe un sistema existente (Salimos); aquí se construye desde cero tomando sus reglas, su contrato y su arquitectura, con la app móvil en Flutter en lugar de Expo.

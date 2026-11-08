@@ -1,0 +1,20 @@
+{
+  "name": "@fulldays/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test --trace off",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@fulldays/db": "workspace:*",
+    "@fulldays/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@fulldays/config": "workspace:*",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^24.0.0"
+  }
+}

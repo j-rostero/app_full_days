@@ -2,7 +2,8 @@
 # Punto único de verificación: lo que pasa aquí es lo que pasa en CI.
 # Uso: scripts/verificar.sh            (todos los pasos)
 #      VERIFICAR_PASOS="lint test" scripts/verificar.sh
-# Necesita PostgreSQL y Redis encendidos para las pruebas de la API (pnpm infra:up).
+# Necesita PostgreSQL y Redis encendidos para las pruebas de la API y e2e (pnpm infra:up).
+# El paso e2e no va por defecto: VERIFICAR_PASOS="build e2e" (necesita el build).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -19,6 +20,7 @@ for p in $PASOS; do
     build) paso 'Build'; pnpm build ;;
     pruebas) paso 'Pruebas (API contra servicios reales, shared, tokens, contrato TypeScript)'; pnpm test ;;
     contrato) paso 'Cliente Dart al día con openapi.json'; ./scripts/generar-cliente-dart.sh --check ;;
+    e2e) paso 'De punta a punta (Playwright: API y las tres webs)'; pnpm e2e ;;
     flutter)
       paso 'Flutter: análisis y pruebas'
       for dir in packages/ui_flutter apps/mobile; do

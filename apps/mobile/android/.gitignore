@@ -12,3 +12,8 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# Llave de publicación: nunca en el repositorio.
+key.properties
+*.jks
+*.keystore

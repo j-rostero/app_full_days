@@ -18,7 +18,8 @@
     "db:migrate": "pnpm --filter @fulldays/db migrate:deploy",
     "api:client": "pnpm --filter @fulldays/api build && node apps/api/dist/write-openapi.js packages/api-client/openapi.json && pnpm --filter @fulldays/api-client generate && ./scripts/generar-cliente-dart.sh",
     "tokens": "pnpm --filter @fulldays/tokens generate",
-    "verify": "./scripts/verificar.sh"
+    "verify": "./scripts/verificar.sh",
+    "e2e": "pnpm --filter @fulldays/e2e e2e"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

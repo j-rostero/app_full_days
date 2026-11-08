@@ -24,5 +24,8 @@
   "devDependencies": {
     "@fulldays/config": "workspace:*",
     "@types/node": "^24.0.0"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

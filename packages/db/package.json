@@ -28,5 +28,10 @@
     "@fulldays/config": "workspace:*",
     "@types/node": "^24.0.0",
     "prisma": "^7.10.1"
-  }
+  },
+  "files": [
+    "dist",
+    "prisma",
+    "prisma.config.ts"
+  ]
 }
