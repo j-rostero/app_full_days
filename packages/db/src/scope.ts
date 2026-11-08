@@ -9,6 +9,9 @@ export const PROVIDER_OWNED_MODELS = new Set<string>([
   'providerDocument',
   'product',
   'departure',
+  'booking',
+  'payment',
+  'ledgerEntry',
 ]);
 
 const FILTERED = new Set([

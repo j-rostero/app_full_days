@@ -32,6 +32,8 @@ export default async function ProviderLayout({
         {can('company') ? <Link href={`${base}/empresa`}>Empresa</Link> : null}
         {can('fulldays') ? <Link href={`${base}/productos`}>Productos</Link> : null}
         {can('departures') ? <Link href={`${base}/salidas`}>Salidas</Link> : null}
+        {can('bookings') ? <Link href={`${base}/reservas`}>Reservas</Link> : null}
+        {can('payments') ? <Link href={`${base}/pagos`}>Pagos</Link> : null}
         {can('team') ? <Link href={`${base}/equipo`}>Equipo</Link> : null}
       </nav>
       {children}

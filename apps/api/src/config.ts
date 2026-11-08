@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/** Semilla pública de desarrollo: sus vouchers no valen en producción. */
+const DEV_VOUCHER_KEY = 'd1'.repeat(32);
+
 const Csv = z
   .string()
   .default('')
@@ -66,6 +69,15 @@ export const ConfigSchema = z
       .string()
       .regex(/^[0-9a-f]+$/i)
       .default('68656C6C6F'),
+    /** Semilla Ed25519 (64 caracteres hex) con que se firman los vouchers. */
+    VOUCHER_SIGNING_KEY: z
+      .string()
+      .regex(/^[0-9a-f]{64}$/i, 'debe ser una semilla Ed25519 de 32 bytes en hexadecimal')
+      .default(DEV_VOUCHER_KEY),
+    /** Claves públicas retiradas (base64url, separadas por comas) cuyos vouchers siguen valiendo. */
+    VOUCHER_RETIRED_PUBLIC_KEYS: Csv,
+    /** `direct`: el viajero paga a la agencia; `retained`: la plataforma cobra y liquida después. */
+    MONEY_MODEL: z.enum(['direct', 'retained']).default('direct'),
   })
   .superRefine((config, ctx) => {
     if (config.NODE_ENV !== 'production') return;
@@ -75,6 +87,8 @@ export const ConfigSchema = z
     if (config.OTP_FIXED_CODE) reject('OTP_FIXED_CODE', 'no se admite en producción');
     if (config.OTP_SENDER === 'log') reject('OTP_SENDER', 'producción necesita smtp');
     if (config.STORAGE_DRIVER === 'memory') reject('STORAGE_DRIVER', 'producción necesita s3');
+    if (config.VOUCHER_SIGNING_KEY === DEV_VOUCHER_KEY)
+      reject('VOUCHER_SIGNING_KEY', 'es la clave de desarrollo');
     if (config.IMGPROXY_KEY === '736563726574') reject('IMGPROXY_KEY', 'es la clave de desarrollo');
   });
 

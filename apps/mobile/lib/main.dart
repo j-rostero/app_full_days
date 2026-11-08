@@ -5,9 +5,9 @@ import 'package:fulldays_ui/fulldays_ui.dart';
 import 'src/config.dart';
 import 'src/health_screen.dart';
 import 'src/screens/auth_screens.dart';
-import 'src/screens/home_screen.dart';
 import 'src/session/session.dart';
 import 'src/session/token_store.dart';
+import 'src/traveler/traveler_shell.dart';
 
 void main() {
   final config = AppConfig.fromEnvironment();
@@ -42,7 +42,7 @@ class FullDaysApp extends StatelessWidget {
               ),
             ),
           ),
-          SessionStatus.signedIn => HomeScreen(session: session),
+          SessionStatus.signedIn => TravelerShell(session: session),
         },
       ),
     );

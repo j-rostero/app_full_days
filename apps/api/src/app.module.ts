@@ -3,6 +3,9 @@ import { APP_GUARD, APP_INTERCEPTOR, DiscoveryModule } from '@nestjs/core';
 import { AccessGuard } from './access/access.guard.ts';
 import { AccessModule } from './access/access.module.ts';
 import { CatalogsModule } from './catalogs/catalogs.module.ts';
+import { SearchModule } from './search/search.module.ts';
+import { BookingsModule } from './bookings/bookings.module.ts';
+import { PaymentsModule } from './payments/payments.module.ts';
 import { DeparturesModule } from './departures/departures.module.ts';
 import { FilesModule } from './files/files.module.ts';
 import { ProductsModule } from './products/products.module.ts';
@@ -34,6 +37,9 @@ import { UsersModule } from './users/users.module.ts';
     CatalogsModule,
     ProductsModule,
     DeparturesModule,
+    SearchModule,
+    BookingsModule,
+    PaymentsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: RateLimitGuard },

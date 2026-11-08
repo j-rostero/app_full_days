@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { PROVIDER_DOCUMENT_LABELS, type ProviderDocumentType } from '@fulldays/shared';
-import { uploadFile } from '../../../../lib/upload';
+import { uploadFile } from '@fulldays/web-session/upload';
 import { attachDocument, removeDocument, submitCompany } from './actions';
 
 interface Doc {

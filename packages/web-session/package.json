@@ -12,7 +12,9 @@
     "./pages": "./src/pages.tsx",
     "./sign-out": "./src/sign-out.tsx",
     "./act": "./src/act.ts",
-    "./action-form": "./src/action-form.tsx"
+    "./action-form": "./src/action-form.tsx",
+    "./files": "./src/files.ts",
+    "./upload": "./src/upload.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

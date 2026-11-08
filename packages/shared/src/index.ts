@@ -7,3 +7,7 @@ export * from './departure.ts';
 export * from './product.ts';
 export * from './providers.ts';
 export * from './example.ts';
+export * from './booking.ts';
+export * from './payment.ts';
+export * from './search.ts';
+export * from './voucher.ts';
