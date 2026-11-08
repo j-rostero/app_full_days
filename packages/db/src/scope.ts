@@ -3,7 +3,13 @@
  * cliente (`db.providerMember`). Un modelo nuevo con `providerId` que no se agregue aquí
  * queda sin aislar: esta lista es la defensa.
  */
-export const PROVIDER_OWNED_MODELS = new Set<string>(['providerMember', 'auditLog']);
+export const PROVIDER_OWNED_MODELS = new Set<string>([
+  'providerMember',
+  'auditLog',
+  'providerDocument',
+  'product',
+  'departure',
+]);
 
 const FILTERED = new Set([
   'findUnique',

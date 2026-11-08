@@ -1,6 +1,12 @@
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { type Api, type Session, startApi, uniqueEmail } from '../testing/harness.ts';
+import {
+  type Api,
+  createProvider,
+  type Session,
+  startApi,
+  uniqueEmail,
+} from '../testing/harness.ts';
 
 let api: Api;
 before(async () => {
@@ -8,13 +14,9 @@ before(async () => {
 });
 after(() => api.close());
 
-/** Agencia nueva con `owner` como dueño. (El alta de agencias llega en la Fase 2.) */
-async function agency(owner: Session): Promise<string> {
-  const provider = await api.db.provider.create({ data: { name: 'Viajes Prueba' } });
-  await api.db.providerMember.create({
-    data: { providerId: provider.id, userId: owner.user.id, role: 'owner' },
-  });
-  return provider.id;
+/** Agencia nueva con `owner` como dueño. */
+function agency(owner: Session): Promise<string> {
+  return createProvider(api.db, owner.user.id);
 }
 
 test('el dueño gestiona el equipo; cada cambio queda auditado', async () => {

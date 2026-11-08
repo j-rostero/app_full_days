@@ -55,11 +55,26 @@ String parameterToString(dynamic value) {
   if (value is DateTime) {
     return value.toUtc().toIso8601String();
   }
+  if (value is DepartureStatus) {
+    return DepartureStatusTypeTransformer().encode(value).toString();
+  }
+  if (value is ProductStatus) {
+    return ProductStatusTypeTransformer().encode(value).toString();
+  }
+  if (value is ProductType) {
+    return ProductTypeTypeTransformer().encode(value).toString();
+  }
+  if (value is ProviderDocumentType) {
+    return ProviderDocumentTypeTypeTransformer().encode(value).toString();
+  }
   if (value is ProviderPermission) {
     return ProviderPermissionTypeTransformer().encode(value).toString();
   }
   if (value is ProviderRole) {
     return ProviderRoleTypeTransformer().encode(value).toString();
+  }
+  if (value is ProviderStatus) {
+    return ProviderStatusTypeTransformer().encode(value).toString();
   }
   if (value is StaffPermission) {
     return StaffPermissionTypeTransformer().encode(value).toString();

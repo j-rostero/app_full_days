@@ -191,20 +191,72 @@ class ApiClient {
           return ApiError.fromJson(value);
         case 'ApiErrorIssuesInner':
           return ApiErrorIssuesInner.fromJson(value);
+        case 'AttachDocumentInput':
+          return AttachDocumentInput.fromJson(value);
         case 'AuditEntry':
           return AuditEntry.fromJson(value);
         case 'AuditEntryActor':
           return AuditEntryActor.fromJson(value);
         case 'AuditPage':
           return AuditPage.fromJson(value);
+        case 'BoardingPoint':
+          return BoardingPoint.fromJson(value);
+        case 'BoardingPointInput':
+          return BoardingPointInput.fromJson(value);
+        case 'BoardingPointList':
+          return BoardingPointList.fromJson(value);
+        case 'BoardingPointUpdateInput':
+          return BoardingPointUpdateInput.fromJson(value);
         case 'ChangeTeamRoleInput':
           return ChangeTeamRoleInput.fromJson(value);
+        case 'CommissionInput':
+          return CommissionInput.fromJson(value);
+        case 'Company':
+          return Company.fromJson(value);
+        case 'Completeness':
+          return Completeness.fromJson(value);
+        case 'CompletenessBlocksInner':
+          return CompletenessBlocksInner.fromJson(value);
+        case 'CreateProductInput':
+          return CreateProductInput.fromJson(value);
+        case 'CurationInput':
+          return CurationInput.fromJson(value);
+        case 'DeclareFileInput':
+          return DeclareFileInput.fromJson(value);
+        case 'DeclaredFile':
+          return DeclaredFile.fromJson(value);
+        case 'DeclaredFileUpload':
+          return DeclaredFileUpload.fromJson(value);
+        case 'Departure':
+          return Departure.fromJson(value);
+        case 'DepartureList':
+          return DepartureList.fromJson(value);
+        case 'DepartureStatus':
+          return DepartureStatusTypeTransformer().decode(value);
+        case 'DepartureUpdateInput':
+          return DepartureUpdateInput.fromJson(value);
+        case 'Destination':
+          return Destination.fromJson(value);
+        case 'DestinationFee':
+          return DestinationFee.fromJson(value);
+        case 'DestinationFeeInput':
+          return DestinationFeeInput.fromJson(value);
+        case 'DestinationInput':
+          return DestinationInput.fromJson(value);
+        case 'DestinationList':
+          return DestinationList.fromJson(value);
+        case 'DestinationUpdateInput':
+          return DestinationUpdateInput.fromJson(value);
+        case 'File':
+          return File.fromJson(value);
         case 'GoogleInput':
           return GoogleInput.fromJson(value);
         case 'Health':
           return Health.fromJson(value);
         case 'HealthChecks':
           return HealthChecks.fromJson(value);
+        case 'ImageUrls':
+          return ImageUrls.fromJson(value);
         case 'Me':
           return Me.fromJson(value);
         case 'MeStaff':
@@ -217,12 +269,86 @@ class ApiClient {
           return PassengerInput.fromJson(value);
         case 'PassengerList':
           return PassengerList.fromJson(value);
+        case 'Photo':
+          return Photo.fromJson(value);
+        case 'ProductDetail':
+          return ProductDetail.fromJson(value);
+        case 'ProductList':
+          return ProductList.fromJson(value);
+        case 'ProductQueue':
+          return ProductQueue.fromJson(value);
+        case 'ProductQueueItem':
+          return ProductQueueItem.fromJson(value);
+        case 'ProductReview':
+          return ProductReview.fromJson(value);
+        case 'ProductSheet':
+          return ProductSheet.fromJson(value);
+        case 'ProductSheetDuration':
+          return ProductSheetDuration.fromJson(value);
+        case 'ProductSheetGeneral':
+          return ProductSheetGeneral.fromJson(value);
+        case 'ProductSheetItemsInner':
+          return ProductSheetItemsInner.fromJson(value);
+        case 'ProductSheetItineraryInner':
+          return ProductSheetItineraryInner.fromJson(value);
+        case 'ProductSheetLodging':
+          return ProductSheetLodging.fromJson(value);
+        case 'ProductSheetLodgingRoomsInner':
+          return ProductSheetLodgingRoomsInner.fromJson(value);
+        case 'ProductSheetMealsInner':
+          return ProductSheetMealsInner.fromJson(value);
+        case 'ProductSheetMealsInnerOptionsInner':
+          return ProductSheetMealsInnerOptionsInner.fromJson(value);
+        case 'ProductSheetPricing':
+          return ProductSheetPricing.fromJson(value);
+        case 'ProductSheetPricingCancellation':
+          return ProductSheetPricingCancellation.fromJson(value);
+        case 'ProductSheetPricingDeposit':
+          return ProductSheetPricingDeposit.fromJson(value);
+        case 'ProductSheetPricingFares':
+          return ProductSheetPricingFares.fromJson(value);
+        case 'ProductSheetTransfer':
+          return ProductSheetTransfer.fromJson(value);
+        case 'ProductSheetTransferBoardingPointsInner':
+          return ProductSheetTransferBoardingPointsInner.fromJson(value);
+        case 'ProductStatus':
+          return ProductStatusTypeTransformer().decode(value);
+        case 'ProductSummary':
+          return ProductSummary.fromJson(value);
+        case 'ProductType':
+          return ProductTypeTypeTransformer().decode(value);
         case 'ProfileUpdateInput':
           return ProfileUpdateInput.fromJson(value);
+        case 'ProviderDocument':
+          return ProviderDocument.fromJson(value);
+        case 'ProviderDocumentList':
+          return ProviderDocumentList.fromJson(value);
+        case 'ProviderDocumentType':
+          return ProviderDocumentTypeTypeTransformer().decode(value);
+        case 'ProviderInput':
+          return ProviderInput.fromJson(value);
         case 'ProviderPermission':
           return ProviderPermissionTypeTransformer().decode(value);
+        case 'ProviderQueue':
+          return ProviderQueue.fromJson(value);
+        case 'ProviderQueueItem':
+          return ProviderQueueItem.fromJson(value);
+        case 'ProviderReview':
+          return ProviderReview.fromJson(value);
         case 'ProviderRole':
           return ProviderRoleTypeTransformer().decode(value);
+        case 'ProviderStatus':
+          return ProviderStatusTypeTransformer().decode(value);
+        case 'ProviderUpdateInput':
+          return ProviderUpdateInput.fromJson(value);
+        case 'Rate':
+          return Rate.fromJson(value);
+        case 'RateInput':
+          return RateInput.fromJson(value);
+        case 'RateList':
+          return RateList.fromJson(value);
+        case 'ReasonInput':
+          return ReasonInput.fromJson(value);
         case 'RecoverInput':
           return RecoverInput.fromJson(value);
         case 'RegisterInput':
@@ -231,12 +357,22 @@ class ApiClient {
           return RenewInput.fromJson(value);
         case 'ResetInput':
           return ResetInput.fromJson(value);
+        case 'SaveProductInput':
+          return SaveProductInput.fromJson(value);
+        case 'ScheduleDeparturesInput':
+          return ScheduleDeparturesInput.fromJson(value);
         case 'SetStaffRolesInput':
           return SetStaffRolesInput.fromJson(value);
+        case 'Settings':
+          return Settings.fromJson(value);
+        case 'SettingsInput':
+          return SettingsInput.fromJson(value);
         case 'SignInInput':
           return SignInInput.fromJson(value);
         case 'SignedIn':
           return SignedIn.fromJson(value);
+        case 'Site':
+          return Site.fromJson(value);
         case 'StaffList':
           return StaffList.fromJson(value);
         case 'StaffPermission':
@@ -249,8 +385,16 @@ class ApiClient {
           return TeamList.fromJson(value);
         case 'TeamMember':
           return TeamMember.fromJson(value);
+        case 'ThemeInput':
+          return ThemeInput.fromJson(value);
+        case 'ThemeList':
+          return ThemeList.fromJson(value);
+        case 'ThemeUpdateInput':
+          return ThemeUpdateInput.fromJson(value);
         case 'Tokens':
           return Tokens.fromJson(value);
+        case 'TravelTheme':
+          return TravelTheme.fromJson(value);
         case 'VerifyInput':
           return VerifyInput.fromJson(value);
         default:

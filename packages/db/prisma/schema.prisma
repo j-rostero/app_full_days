@@ -33,6 +33,8 @@ model User {
   memberships ProviderMember[]
   staffRoles  StaffMember[]
   auditLog    AuditLog[]
+  files       File[]
+  guiding     DepartureGuide[]
 
   @@map("users")
 }
@@ -82,17 +84,302 @@ model Passenger {
   @@map("passengers")
 }
 
-/// Agencia u organizador. La Fase 2 agrega sus datos fiscales, documentos y verificación.
+enum ProviderKind {
+  person
+  company
+
+  @@map("provider_kind")
+}
+
+enum ProviderStatus {
+  pending
+  in_review
+  approved
+  rejected
+  suspended
+
+  @@map("provider_status")
+}
+
+/// Agencia u organizador. Solo una aprobada vende.
 model Provider {
+  id                  String         @id @default(uuid(7)) @db.Uuid
+  kind                ProviderKind
+  name                String
+  legalName           String         @map("legal_name")
+  rif                 String         @unique
+  /// Registro Turístico Nacional. Con él la agencia luce el distintivo de verificada.
+  rtn                 String?
+  baseCity            String         @map("base_city")
+  phone               String
+  instagram           String?
+  paymentInstructions String?        @map("payment_instructions")
+  status              ProviderStatus @default(pending)
+  /// Motivo del último rechazo o suspensión.
+  statusReason        String?        @map("status_reason")
+  /// Comisión propia (0 a 50 %); nula usa la de la plataforma.
+  commissionPercent   Decimal?       @map("commission_percent") @db.Decimal(5, 2)
+  submittedAt         DateTime?      @map("submitted_at")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+
+  members    ProviderMember[]
+  auditLog   AuditLog[]
+  documents  ProviderDocument[]
+  products   Product[]
+  departures Departure[]
+
+  @@index([status, submittedAt])
+  @@map("providers")
+}
+
+enum ProviderDocumentType {
+  rif
+  representative_id
+  rtn
+  commercial_registry
+  other
+
+  @@map("provider_document_type")
+}
+
+/// Documento de verificación de una agencia: un archivo privado ya subido.
+model ProviderDocument {
+  id         String               @id @default(uuid(7)) @db.Uuid
+  providerId String               @map("provider_id") @db.Uuid
+  type       ProviderDocumentType
+  fileId     String               @unique @map("file_id") @db.Uuid
+  createdAt  DateTime             @default(now()) @map("created_at")
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  file     File     @relation(fields: [fileId], references: [id])
+
+  @@index([providerId])
+  @@map("provider_documents")
+}
+
+enum FileKind {
+  image
+  document
+
+  @@map("file_kind")
+}
+
+enum FileStatus {
+  pending
+  ready
+
+  @@map("file_status")
+}
+
+/// Archivo subido directo al almacenamiento. Pertenece a quien lo subió hasta que otro registro lo adjunta.
+model File {
+  id          String     @id @default(uuid(7)) @db.Uuid
+  uploaderId  String     @map("uploader_id") @db.Uuid
+  kind        FileKind
+  contentType String     @map("content_type")
+  size        Int
+  /// Clave del objeto en su depósito.
+  key         String     @unique
+  status      FileStatus @default(pending)
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  uploader User              @relation(fields: [uploaderId], references: [id])
+  document ProviderDocument?
+
+  @@index([uploaderId])
+  @@map("files")
+}
+
+/// Destino o sitio dentro de un destino (Los Roques → Cayo de Agua).
+model Destination {
   id        String   @id @default(uuid(7)) @db.Uuid
+  slug      String   @unique
   name      String
+  state     String   @default("")
+  region    String   @default("")
+  lat       Float?
+  lng       Float?
+  parentId  String?  @map("parent_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
+
+  parent   Destination?     @relation("DestinationTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children Destination[]    @relation("DestinationTree")
+  fees     DestinationFee[]
+
+  @@map("destinations")
+}
+
+/// Tasa o entrada conocida de un destino, para orientar a las agencias.
+model DestinationFee {
+  id            String  @id @default(uuid(7)) @db.Uuid
+  destinationId String  @map("destination_id") @db.Uuid
+  name          String
+  amountUsd     Decimal @map("amount_usd") @db.Decimal(12, 2)
+  payment       String
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId])
+  @@map("destination_fees")
+}
+
+/// Punto de embarque conocido (terminal, plaza, centro comercial).
+model BoardingPoint {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  city      String
+  name      String
+  address   String   @default("")
+  lat       Float?
+  lng       Float?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([city])
+  @@map("boarding_points")
+}
+
+enum ProductType {
+  fullday
+  tour
+  excursion
+
+  @@map("product_type")
+}
+
+enum ProductStatus {
+  draft
+  in_review
+  published
+  paused
+
+  @@map("product_status")
+}
+
+/// Fullday, tour o excursión. La ficha es un documento validado por `ProductSheetSchema`.
+model Product {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  providerId   String        @map("provider_id") @db.Uuid
+  type         ProductType
+  status       ProductStatus @default(draft)
+  /// Motivo con que Central lo devolvió o despublicó. Mientras no sea nulo, publicar pasa por revisión.
+  statusReason String?       @map("status_reason")
+  sheet        Json
+  /// Control optimista: cada guardado debe traer la versión que leyó.
+  version      Int           @default(1)
+  featured     Boolean       @default(false)
+  statusAt     DateTime      @default(now()) @map("status_at")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  provider   Provider       @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  departures Departure[]
+  themes     ProductTheme[]
+
+  @@index([providerId, id])
+  @@index([status, statusAt])
+  @@map("products")
+}
+
+/// Temática que navegan los viajeros (Playas, Para ir con niños, Semana Santa).
+model Theme {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  slug        String   @unique
+  name        String
+  description String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  products ProductTheme[]
+
+  @@map("themes")
+}
+
+model ProductTheme {
+  productId String @map("product_id") @db.Uuid
+  themeId   String @map("theme_id") @db.Uuid
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  theme   Theme   @relation(fields: [themeId], references: [id], onDelete: Cascade)
+
+  @@id([productId, themeId])
+  @@map("product_themes")
+}
+
+enum DepartureStatus {
+  open
+  paused
+  closed
+  in_progress
+  finished
+  cancelled
+
+  @@map("departure_status")
+}
+
+/// Una fecha en que corre un producto. Guarda la ficha con que se vende y columnas de búsqueda derivadas.
+model Departure {
+  id            String          @id @default(uuid(7)) @db.Uuid
+  providerId    String          @map("provider_id") @db.Uuid
+  productId     String          @map("product_id") @db.Uuid
+  date          DateTime        @db.Date
+  status        DepartureStatus @default(open)
+  capacity      Int
+  minCapacity   Int             @default(1) @map("min_capacity")
+  /// Puestos apartados o vendidos. Una restricción CHECK impide pasar del cupo.
+  reserved      Int             @default(0)
+  /// Precio de adulto de esta salida; nulo usa el de la ficha.
+  adultPriceUsd Decimal?        @map("adult_price_usd") @db.Decimal(12, 2)
+  sheet         Json
+  // Facetas de búsqueda, derivadas de la ficha al programar o al guardarla.
+  productType   ProductType     @map("product_type")
+  category      String?
+  destinationId String?         @map("destination_id") @db.Uuid
+  priceUsd      Decimal         @map("price_usd") @db.Decimal(12, 2)
+  cities        String[]
+  includes      String[]
+  tags          String[]
+  searchText    String          @default("") @map("search_text")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  provider Provider         @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  product  Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  guides   DepartureGuide[]
+
+  @@unique([productId, date])
+  @@index([providerId, date])
+  @@index([status, date])
+  @@map("departures")
+}
+
+/// Guía asignado a una salida. Debe ser miembro de la agencia.
+model DepartureGuide {
+  departureId String @map("departure_id") @db.Uuid
+  userId      String @map("user_id") @db.Uuid
+
+  departure Departure @relation(fields: [departureId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([departureId, userId])
+  @@map("departure_guides")
+}
+
+/// Tasa bolívares por dólar de un día, cargada por Central.
+model ExchangeRate {
+  date      DateTime @id @db.Date
+  bsPerUsd  Decimal  @map("bs_per_usd") @db.Decimal(14, 4)
+  setById   String   @map("set_by_id") @db.Uuid
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  members  ProviderMember[]
-  auditLog AuditLog[]
+  @@map("exchange_rates")
+}
 
-  @@map("providers")
+/// Ajustes de reserva de la plataforma. Una sola fila (`id = 1`).
+model Setting {
+  id        Int      @id @default(1)
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
 }
 
 enum ProviderRole {

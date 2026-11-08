@@ -17,6 +17,7 @@ export async function startApi(env: Record<string, string> = {}): Promise<Api> {
   Object.assign(process.env, {
     NODE_ENV: 'test',
     OTP_FIXED_CODE: CODE,
+    STORAGE_DRIVER: 'memory',
     OTP_MAX_SENDS: '1000',
     RATE_LIMIT_PER_MINUTE: '100000',
     AUTH_RATE_LIMIT_PER_MINUTE: '100000',
@@ -84,4 +85,38 @@ export interface Session {
 
 export function uniqueEmail(prefix = 'prueba'): string {
   return `${prefix}-${randomUUID().slice(0, 8)}@ejemplo.com`;
+}
+
+/** RIF aleatorio válido (`J-########-#`). */
+export function randomRif(): string {
+  const digits = String(Math.floor(Math.random() * 1e8)).padStart(8, '0');
+  return `J-${digits}-${Math.floor(Math.random() * 10)}`;
+}
+
+/** Agencia creada directo en la base, con `ownerId` como dueño. */
+export async function createProvider(
+  db: PrismaClient,
+  ownerId: string,
+  data: Partial<{
+    name: string;
+    status: 'pending' | 'in_review' | 'approved';
+    rtn: string | null;
+  }> = {},
+): Promise<string> {
+  const provider = await db.provider.create({
+    data: {
+      kind: 'company',
+      name: data.name ?? 'Viajes Prueba',
+      legalName: 'Viajes Prueba C.A.',
+      rif: randomRif(),
+      rtn: data.rtn ?? null,
+      baseCity: 'Caracas',
+      phone: '+584141234567',
+      status: data.status ?? 'pending',
+    },
+  });
+  await db.providerMember.create({
+    data: { providerId: provider.id, userId: ownerId, role: 'owner' },
+  });
+  return provider.id;
 }

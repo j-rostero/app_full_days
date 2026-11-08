@@ -15,6 +15,7 @@ class Membership {
   Membership({
     required this.providerId,
     required this.providerName,
+    required this.providerStatus,
     required this.role,
     this.permissions = const [],
   });
@@ -22,6 +23,8 @@ class Membership {
   String providerId;
 
   String providerName;
+
+  MembershipProviderStatusEnum providerStatus;
 
   ProviderRole role;
 
@@ -31,6 +34,7 @@ class Membership {
   bool operator ==(Object other) => identical(this, other) || other is Membership &&
     other.providerId == providerId &&
     other.providerName == providerName &&
+    other.providerStatus == providerStatus &&
     other.role == role &&
     _deepEquality.equals(other.permissions, permissions);
 
@@ -39,16 +43,18 @@ class Membership {
     // ignore: unnecessary_parenthesis
     (providerId.hashCode) +
     (providerName.hashCode) +
+    (providerStatus.hashCode) +
     (role.hashCode) +
     (permissions.hashCode);
 
   @override
-  String toString() => 'Membership[providerId=$providerId, providerName=$providerName, role=$role, permissions=$permissions]';
+  String toString() => 'Membership[providerId=$providerId, providerName=$providerName, providerStatus=$providerStatus, role=$role, permissions=$permissions]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'providerId'] = this.providerId;
       json[r'providerName'] = this.providerName;
+      json[r'providerStatus'] = this.providerStatus;
       json[r'role'] = this.role;
       json[r'permissions'] = this.permissions;
     return json;
@@ -69,6 +75,8 @@ class Membership {
         assert(json[r'providerId'] != null, 'Required key "Membership[providerId]" has a null value in JSON.');
         assert(json.containsKey(r'providerName'), 'Required key "Membership[providerName]" is missing from JSON.');
         assert(json[r'providerName'] != null, 'Required key "Membership[providerName]" has a null value in JSON.');
+        assert(json.containsKey(r'providerStatus'), 'Required key "Membership[providerStatus]" is missing from JSON.');
+        assert(json[r'providerStatus'] != null, 'Required key "Membership[providerStatus]" has a null value in JSON.');
         assert(json.containsKey(r'role'), 'Required key "Membership[role]" is missing from JSON.');
         assert(json[r'role'] != null, 'Required key "Membership[role]" has a null value in JSON.');
         assert(json.containsKey(r'permissions'), 'Required key "Membership[permissions]" is missing from JSON.');
@@ -79,6 +87,7 @@ class Membership {
       return Membership(
         providerId: mapValueOfType<String>(json, r'providerId')!,
         providerName: mapValueOfType<String>(json, r'providerName')!,
+        providerStatus: MembershipProviderStatusEnum.fromJson(json[r'providerStatus'])!,
         role: ProviderRole.fromJson(json[r'role'])!,
         permissions: ProviderPermission.listFromJson(json[r'permissions']),
       );
@@ -130,8 +139,93 @@ class Membership {
   static const requiredKeys = <String>{
     'providerId',
     'providerName',
+    'providerStatus',
     'role',
     'permissions',
   };
 }
+
+
+enum MembershipProviderStatusEnum {
+  pending._(r'pending'),
+  inReview._(r'in_review'),
+  approved._(r'approved'),
+  rejected._(r'rejected'),
+  suspended._(r'suspended'),
+  ;
+
+  /// Instantiate a new enum with the provided value.
+  const MembershipProviderStatusEnum._(this._value);
+
+  /// The underlying value of this enum member.
+  final String _value;
+
+  @override
+  String toString() => _value;
+
+  /// Encodes this enum as a value suitable for JSON.
+  String toJson() => _value;
+
+  /// Returns the instance of [MembershipProviderStatusEnum] that was successfully decoded
+  /// from the passed [value] on success, null otherwise.
+  static MembershipProviderStatusEnum? fromJson(dynamic value) => MembershipProviderStatusEnumTypeTransformer().decode(value);
+
+  /// Returns a [List] containing instances of [MembershipProviderStatusEnum]
+  /// that were successfully decoded from the passed [JSON][json].
+  static List<MembershipProviderStatusEnum> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <MembershipProviderStatusEnum>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = MembershipProviderStatusEnum.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+}
+
+/// Transformation class that can [encode] an instance of [MembershipProviderStatusEnum] to String,
+/// and [decode] dynamic data back to [MembershipProviderStatusEnum].
+class MembershipProviderStatusEnumTypeTransformer {
+  factory MembershipProviderStatusEnumTypeTransformer() => _instance ??= const MembershipProviderStatusEnumTypeTransformer._();
+
+  const MembershipProviderStatusEnumTypeTransformer._();
+
+  String encode(MembershipProviderStatusEnum data) => data._value;
+
+  /// Returns the instance of [MembershipProviderStatusEnum] that was successfully decoded
+  /// from the passed [data] value on success, null otherwise.
+  ///
+  /// If [allowNull] is true and the [dynamic value][data] cannot be decoded successfully,
+  /// then null is returned. However, if [allowNull] is false and the [dynamic value][data]
+  /// cannot be decoded successfully, then an [UnimplementedError] is thrown.
+  ///
+  /// The [allowNull] is very handy when an API changes and a new enum value is added or removed,
+  /// and users are still using an old app with the old code.
+  MembershipProviderStatusEnum? decode(dynamic data, {bool allowNull = true}) {
+    if (data is MembershipProviderStatusEnum) {
+      return data;
+    }
+    if (data != null) {
+      switch (data) {
+        case r'pending': return MembershipProviderStatusEnum.pending;
+        case r'in_review': return MembershipProviderStatusEnum.inReview;
+        case r'approved': return MembershipProviderStatusEnum.approved;
+        case r'rejected': return MembershipProviderStatusEnum.rejected;
+        case r'suspended': return MembershipProviderStatusEnum.suspended;
+        default:
+          if (!allowNull) {
+            throw ArgumentError('Unknown enum value to decode: $data');
+          }
+      }
+    }
+    return null;
+  }
+
+  /// The singleton instance of this transformer.
+  static MembershipProviderStatusEnumTypeTransformer? _instance;
+}
+
 

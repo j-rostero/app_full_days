@@ -10,7 +10,9 @@
     "./forms": "./src/forms.tsx",
     "./session.css": "./src/session.css",
     "./pages": "./src/pages.tsx",
-    "./sign-out": "./src/sign-out.tsx"
+    "./sign-out": "./src/sign-out.tsx",
+    "./act": "./src/act.ts",
+    "./action-form": "./src/action-form.tsx"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -23,13 +25,16 @@
   },
   "peerDependencies": {
     "next": "^16.4.5",
-    "react": "^19.3.1"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@fulldays/config": "workspace:*",
     "@types/node": "^24.0.0",
     "@types/react": "^19.3.0",
     "next": "^16.4.5",
-    "react": "^19.3.1"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "@types/react-dom": "^19.3.0"
   }
 }

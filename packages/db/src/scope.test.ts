@@ -12,10 +12,18 @@ after(() => db.$disconnect());
 
 async function fixture() {
   const tag = randomUUID().slice(0, 8);
-  const [a, b] = await Promise.all([
-    db.provider.create({ data: { name: `A ${tag}` } }),
-    db.provider.create({ data: { name: `B ${tag}` } }),
-  ]);
+  const provider = (name: string) =>
+    db.provider.create({
+      data: {
+        kind: 'company',
+        name,
+        legalName: `${name} C.A.`,
+        rif: `J-${String(Math.floor(Math.random() * 1e8)).padStart(8, '0')}-${Math.floor(Math.random() * 10)}`,
+        baseCity: 'Caracas',
+        phone: '+584120000000',
+      },
+    });
+  const [a, b] = await Promise.all([provider(`A ${tag}`), provider(`B ${tag}`)]);
   const [ana, beto] = await Promise.all([
     db.user.create({ data: { email: `ana-${tag}@x.com` } }),
     db.user.create({ data: { email: `beto-${tag}@x.com` } }),

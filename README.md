@@ -43,6 +43,13 @@ La app: ver [`apps/mobile/README.md`](apps/mobile/README.md).
   pnpm --filter @fulldays/api build && pnpm --filter @fulldays/api grant-super tu@correo.com
   ```
 
+- Los catálogos iniciales (destinos, sitios, puntos de embarque y temáticas de ejemplo) se cargan una vez:
+
+  ```bash
+  pnpm --filter @fulldays/api build && pnpm --filter @fulldays/api seed-catalogs
+  ```
+
+- Una agencia se registra en la web Pro, envía sus documentos y Central la aprueba en `/agencias`; desde ahí publica fichas que Central revisa en `/productos`.
 - Entrar con Google necesita `GOOGLE_CLIENT_IDS` (sin él, la API responde que aún no está disponible).
 
 ## Comandos

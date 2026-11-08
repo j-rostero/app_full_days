@@ -51,3 +51,34 @@ h1 {
   gap: var(--fd-space-m);
   margin-top: var(--fd-space-l);
 }
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.bloque {
+  border-top: 1px solid var(--fd-line, #ddd);
+  padding: 0.75rem 0;
+}
+.fotos {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+.fotos img {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.texto-largo {
+  white-space: pre-line;
+}
+pre {
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 20rem;
+  overflow: auto;
+}

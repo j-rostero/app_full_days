@@ -10,9 +10,12 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "tsc -p tsconfig.json --outDir dist-test && node --test \"dist-test/**/*.spec.js\"",
-    "grant-super": "node --env-file-if-exists=../../.env dist/cli/grant-super.js"
+    "grant-super": "node --env-file-if-exists=../../.env dist/cli/grant-super.js",
+    "seed-catalogs": "node --env-file-if-exists=../../.env dist/cli/seed-catalogs.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1164.0",
+    "@aws-sdk/s3-request-presigner": "^3.1164.0",
     "@fulldays/db": "workspace:*",
     "@fulldays/shared": "workspace:*",
     "@nestjs/common": "^12.4.0",

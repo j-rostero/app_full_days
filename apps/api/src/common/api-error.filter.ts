@@ -43,6 +43,8 @@ export function toApiError(exception: unknown): ApiError {
       ...(exception.extra.issues ? { issues: exception.extra.issues } : {}),
     };
   }
+  const prisma = prismaError(exception);
+  if (prisma) return prisma;
   if (exception instanceof HttpException) {
     const status = exception.getStatus();
     if (status < 500) {
@@ -58,4 +60,26 @@ export function toApiError(exception: unknown): ApiError {
     code: 'internal_error',
     message: 'Algo salió mal. Inténtalo de nuevo.',
   };
+}
+
+/**
+ * Errores de la base que se explican a la persona: clave repetida o referencia a algo que
+ * no existe (409) y registro inexistente (404). Los demás quedan como 500.
+ */
+function prismaError(exception: unknown): ApiError | null {
+  const code = (exception as { code?: unknown } | null)?.code;
+  const isPrisma =
+    (exception as { name?: string } | null)?.name === 'PrismaClientKnownRequestError';
+  if (!isPrisma || typeof code !== 'string') return null;
+  if (code === 'P2002')
+    return { statusCode: 409, code: 'conflict', message: 'Ya existe un registro con esos datos.' };
+  if (code === 'P2003') {
+    return {
+      statusCode: 409,
+      code: 'conflict',
+      message: 'Otro registro depende de este o hace referencia a algo que no existe.',
+    };
+  }
+  if (code === 'P2025') return { statusCode: 404, code: 'not_found', message: MESSAGES[404]! };
+  return null;
 }
