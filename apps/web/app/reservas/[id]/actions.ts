@@ -61,3 +61,93 @@ export async function reportPayment(
   revalidatePath(`/reservas/${bookingId}`);
   return { ok: 'Pago reportado. La agencia lo revisará y te avisaremos.' };
 }
+
+export async function cancelBooking(bookingId: string, _: ActionState): Promise<ActionState> {
+  const api = await sessionApi();
+  return act(
+    () => api.POST('/v1/reservas/{id}/cancelar', { params: { path: { id: bookingId } } }),
+    { ok: 'Reserva cancelada.', revalidate: [`/reservas/${bookingId}`, '/reservas'] },
+  );
+}
+
+export async function reviewBooking(
+  bookingId: string,
+  _: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const aspects: Record<string, number> = {};
+  for (const key of ['punctuality', 'transport', 'food', 'guide', 'value']) {
+    const v = Number(form.get(`aspect.${key}`));
+    if (v >= 1 && v <= 5) aspects[key] = v;
+  }
+  const api = await sessionApi();
+  return act(
+    () =>
+      api.POST('/v1/reservas/{id}/resena', {
+        params: { path: { id: bookingId } },
+        body: {
+          rating: Number(form.get('rating')),
+          aspects,
+          asDescribed: form.get('asDescribed') === 'si',
+          comment: text(form, 'comment'),
+        },
+      }),
+    { ok: '¡Gracias por tu reseña!', revalidate: [`/reservas/${bookingId}`] },
+  );
+}
+
+export async function openClaim(
+  bookingId: string,
+  _: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const api = await sessionApi();
+  return act(
+    () =>
+      api.POST('/v1/reservas/{id}/reclamos', {
+        params: { path: { id: bookingId } },
+        body: { subject: text(form, 'subject'), message: text(form, 'message') },
+      }),
+    {
+      ok: 'Reclamo enviado a la agencia.',
+      revalidate: [`/reservas/${bookingId}`, '/reclamos'],
+    },
+  );
+}
+
+export async function writeClaim(
+  claimId: string,
+  back: string,
+  _: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const api = await sessionApi();
+  return act(
+    () =>
+      api.POST('/v1/reclamos/{id}/mensajes', {
+        params: { path: { id: claimId } },
+        body: { body: text(form, 'body') },
+      }),
+    { ok: 'Mensaje enviado.', revalidate: [back, '/reclamos'] },
+  );
+}
+
+export async function escalateClaim(
+  claimId: string,
+  back: string,
+  _: ActionState,
+): Promise<ActionState> {
+  const api = await sessionApi();
+  return act(() => api.POST('/v1/reclamos/{id}/escalar', { params: { path: { id: claimId } } }), {
+    ok: 'FullDays revisará tu reclamo.',
+    revalidate: [back, '/reclamos'],
+  });
+}
+
+export async function markAllRead(_: ActionState): Promise<ActionState> {
+  const api = await sessionApi();
+  return act(() => api.POST('/v1/yo/notificaciones/leidas', { body: {} }), {
+    ok: 'Listo.',
+    revalidate: ['/avisos'],
+  });
+}

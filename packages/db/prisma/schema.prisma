@@ -28,16 +28,21 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  sessions    Session[]
-  passengers  Passenger[]
-  memberships ProviderMember[]
-  staffRoles  StaffMember[]
-  auditLog    AuditLog[]
-  files       File[]
-  guiding     DepartureGuide[]
-  bookings    Booking[]
-  favorites   Favorite[]
-  notices     DepartureNotice[]
+  sessions      Session[]
+  passengers    Passenger[]
+  memberships   ProviderMember[]
+  staffRoles    StaffMember[]
+  auditLog      AuditLog[]
+  files         File[]
+  guiding       DepartureGuide[]
+  bookings      Booking[]
+  favorites     Favorite[]
+  notices       DepartureNotice[]
+  reviews       Review[]
+  claims        Claim[]
+  claimNotes    ClaimMessage[]
+  notifications Notification[]
+  devices       DeviceToken[]
 
   @@map("users")
 }
@@ -133,7 +138,12 @@ model Provider {
   departures Departure[]
   bookings   Booking[]
   payments   Payment[]
+  refund     Refund?            @relation(fields: [refundId], references: [id])
+  review     Review?            @relation(fields: [reviewId], references: [id])
+  claims     Claim[]
   ledger     LedgerEntry[]
+  refundId   String?            @db.Uuid
+  reviewId   String?            @db.Uuid
 
   @@index([status, submittedAt])
   @@map("providers")
@@ -528,6 +538,8 @@ model Booking {
   contactPhone   String?       @map("contact_phone")
   contactEmail   String?       @map("contact_email")
   cancelledAt    DateTime?     @map("cancelled_at")
+  /// Quién canceló: `traveler`, `agency` o `system` (salida cancelada o saldo vencido).
+  cancelledBy    String?       @map("cancelled_by")
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
 
@@ -536,6 +548,9 @@ model Booking {
   user       User?              @relation(fields: [userId], references: [id])
   passengers BookingPassenger[]
   payments   Payment[]
+  refund     Refund?
+  review     Review?
+  claims     Claim[]
 
   @@index([providerId, departureId])
   @@index([userId, createdAt])
@@ -635,6 +650,7 @@ model LedgerEntry {
   providerId    String   @map("provider_id") @db.Uuid
   bookingId     String?  @map("booking_id") @db.Uuid
   paymentId     String?  @map("payment_id") @db.Uuid
+  refundId      String?  @map("refund_id") @db.Uuid
   account       String
   debitUsd      Decimal  @default(0) @map("debit_usd") @db.Decimal(12, 2)
   creditUsd     Decimal  @default(0) @map("credit_usd") @db.Decimal(12, 2)
@@ -685,4 +701,173 @@ model DepartureNotice {
 
   @@index([departureId, createdAt])
   @@map("departure_notices")
+}
+
+enum RefundStatus {
+  pending
+  paid
+
+  @@map("refund_status")
+}
+
+/// Dinero que la agencia debe devolver al cancelar. Se asienta en el libro al pagarlo.
+model Refund {
+  id         String       @id @default(uuid(7)) @db.Uuid
+  providerId String       @map("provider_id") @db.Uuid
+  bookingId  String       @unique @map("booking_id") @db.Uuid
+  amountUsd  Decimal      @map("amount_usd") @db.Decimal(12, 2)
+  rule       String
+  status     RefundStatus @default(pending)
+  reference  String?
+  paidById   String?      @map("paid_by_id") @db.Uuid
+  paidAt     DateTime?    @map("paid_at")
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  booking   Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  providers Provider[]
+
+  @@index([providerId, status])
+  @@map("refunds")
+}
+
+enum ReviewStatus {
+  visible
+  hidden
+
+  @@map("review_status")
+}
+
+/// Reseña de una reserva realizada; una por reserva.
+model Review {
+  id           String       @id @default(uuid(7)) @db.Uuid
+  providerId   String       @map("provider_id") @db.Uuid
+  productId    String       @map("product_id") @db.Uuid
+  bookingId    String       @unique @map("booking_id") @db.Uuid
+  userId       String       @map("user_id") @db.Uuid
+  rating       Int
+  /// Notas por aspecto (1 a 5): puntualidad, transporte, comida, guía, precio-calidad.
+  aspects      Json         @default("{}")
+  asDescribed  Boolean      @map("as_described")
+  comment      String       @default("")
+  status       ReviewStatus @default(visible)
+  reported     Boolean      @default(false)
+  reportReason String?      @map("report_reason")
+  hiddenReason String?      @map("hidden_reason")
+  reply        String?
+  repliedAt    DateTime?    @map("replied_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  booking   Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  providers Provider[]
+
+  @@index([providerId, status])
+  @@index([productId, status])
+  @@map("reviews")
+}
+
+enum ClaimStatus {
+  open
+  escalated
+  resolved
+
+  @@map("claim_status")
+}
+
+model Claim {
+  id         String      @id @default(uuid(7)) @db.Uuid
+  providerId String      @map("provider_id") @db.Uuid
+  bookingId  String      @map("booking_id") @db.Uuid
+  userId     String      @map("user_id") @db.Uuid
+  subject    String
+  status     ClaimStatus @default(open)
+  resolution String?
+  resolvedAt DateTime?   @map("resolved_at")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  booking  Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ClaimMessage[]
+  provider Provider       @relation(fields: [providerId], references: [id])
+
+  @@index([providerId, status])
+  @@index([status, updatedAt])
+  @@map("claims")
+}
+
+model ClaimMessage {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  claimId   String   @map("claim_id") @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  /// `traveler`, `agency` o `central`.
+  role      String
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  claim  Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id])
+
+  @@index([claimId, createdAt])
+  @@map("claim_messages")
+}
+
+enum NotificationChannel {
+  push
+  email
+
+  @@map("notification_channel")
+}
+
+enum NotificationStatus {
+  pending
+  sent
+  failed
+  skipped
+
+  @@map("notification_status")
+}
+
+/// Un mensaje para una persona por un canal. La bandeja de la app lee las filas `push`.
+model Notification {
+  id            String              @id @default(uuid(7)) @db.Uuid
+  userId        String              @map("user_id") @db.Uuid
+  event         String
+  title         String
+  body          String
+  /// Adónde lleva al tocarla, por ejemplo `reserva:<id>`.
+  link          String?
+  channel       NotificationChannel
+  status        NotificationStatus  @default(pending)
+  attempts      Int                 @default(0)
+  /// Antes de esta hora nadie la toma: reserva el envío en curso y espacia los reintentos.
+  nextAttemptAt DateTime            @default(now()) @map("next_attempt_at")
+  error         String?
+  /// Evita encolar dos veces el mismo mensaje (por ejemplo un recordatorio por reserva).
+  dedupeKey     String?             @map("dedupe_key")
+  readAt        DateTime?           @map("read_at")
+  sentAt        DateTime?           @map("sent_at")
+  createdAt     DateTime            @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([dedupeKey, channel])
+  @@index([status, nextAttemptAt])
+  @@index([userId, channel, createdAt])
+  @@map("notifications")
+}
+
+/// Token de Firebase Cloud Messaging de un teléfono.
+model DeviceToken {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  platform  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("device_tokens")
 }

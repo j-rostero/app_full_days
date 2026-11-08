@@ -348,6 +348,115 @@ class PagosApi {
     return null;
   }
 
+  /// Reembolsos de la agencia, pendientes primero (máximo 200)
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] providerId (required):
+  Future<Response> listRefundsWithHttpInfo(String providerId, { Future<void>? abortTrigger, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/pro/{providerId}/reembolsos'
+      .replaceAll('{providerId}', providerId);
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+      abortTrigger: abortTrigger,
+    );
+  }
+
+  /// Reembolsos de la agencia, pendientes primero (máximo 200)
+  ///
+  /// Parameters:
+  ///
+  /// * [String] providerId (required):
+  Future<RefundList?> listRefunds(String providerId, { Future<void>? abortTrigger, }) async {
+    final response = await listRefundsWithHttpInfo(providerId, abortTrigger: abortTrigger,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RefundList',) as RefundList;
+    
+    }
+    return null;
+  }
+
+  /// Registra que se envió el reembolso (referencia opcional) y lo asienta en el libro
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] providerId (required):
+  ///
+  /// * [String] refundId (required):
+  ///
+  /// * [PayRefundInput] payRefundInput (required):
+  Future<Response> payRefundWithHttpInfo(String providerId, String refundId, PayRefundInput payRefundInput, { Future<void>? abortTrigger, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/v1/pro/{providerId}/reembolsos/{refundId}/pagar'
+      .replaceAll('{providerId}', providerId)
+      .replaceAll('{refundId}', refundId);
+
+    // ignore: prefer_final_locals
+    Object? postBody = payRefundInput;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'POST',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+      abortTrigger: abortTrigger,
+    );
+  }
+
+  /// Registra que se envió el reembolso (referencia opcional) y lo asienta en el libro
+  ///
+  /// Parameters:
+  ///
+  /// * [String] providerId (required):
+  ///
+  /// * [String] refundId (required):
+  ///
+  /// * [PayRefundInput] payRefundInput (required):
+  Future<void> payRefund(String providerId, String refundId, PayRefundInput payRefundInput, { Future<void>? abortTrigger, }) async {
+    final response = await payRefundWithHttpInfo(providerId, refundId, payRefundInput, abortTrigger: abortTrigger,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
   /// Rechaza un pago pendiente con un motivo para el viajero
   ///
   /// Note: This method returns the HTTP [Response].

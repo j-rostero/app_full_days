@@ -8,6 +8,7 @@ import {
   PRODUCT_TYPE_LABELS,
   VEHICLES,
 } from '@fulldays/shared';
+import { Reviews } from '../../../components/reviews';
 import { getMe, sessionApi } from '@fulldays/web-session';
 import { longDate, SITE_URL, usd } from '../../../lib/format';
 import { toggleFavorite } from './actions';
@@ -39,7 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const [p, me] = await Promise.all([load(id), getMe()]);
+  const [p, me, reviews] = await Promise.all([
+    load(id),
+    getMe(),
+    sessionApi().then((api) =>
+      api.GET('/v1/productos/{id}/resenas', { params: { path: { id } } }).then((r) => r.data),
+    ),
+  ]);
   if (!p) notFound();
   const { salida } = await searchParams;
   const saved = me
@@ -201,6 +208,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
           {s.pricing.cancellation.text ? (
             <p className="suave">{s.pricing.cancellation.text}</p>
           ) : null}
+          {reviews ? <Reviews list={reviews} /> : null}
         </div>
         <aside className="tarjeta reservar">
           <h2>Fechas</h2>

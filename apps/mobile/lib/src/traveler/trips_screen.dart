@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fulldays_api/api.dart';
 
 import '../session/session.dart';
+import 'claims_screen.dart';
 import 'common.dart';
+import 'inbox_screen.dart';
 import 'trip_screen.dart';
 
 /// Mis viajes: las reservas propias, la más nueva primero.
@@ -14,7 +16,23 @@ class TripsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mis viajes')),
+      appBar: AppBar(
+        title: const Text('Mis viajes'),
+        actions: [
+          IconButton(
+            tooltip: 'Reclamos',
+            icon: const Icon(Icons.support_agent),
+            onPressed: () =>
+                Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ClaimsScreen(session: session))),
+          ),
+          IconButton(
+            tooltip: 'Avisos',
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () =>
+                Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => InboxScreen(session: session))),
+          ),
+        ],
+      ),
       body: Loader<BookingList>(
         load: () => call(() => ReservasApi(session.client).listMyBookings()),
         builder: (context, list, reload) => RefreshIndicator(

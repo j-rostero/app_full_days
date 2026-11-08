@@ -66,3 +66,26 @@ export const VoucherKeysSchema = z
   .meta({ id: 'VoucherKeys' });
 
 export type PaymentView = z.infer<typeof PaymentSchema>;
+
+export const RefundSchema = z
+  .object({
+    id: z.uuid(),
+    bookingId: z.uuid(),
+    bookingCode: z.string(),
+    title: z.string(),
+    departureDate: z.iso.date(),
+    traveler: z.string().nullable(),
+    amountUsd: z.number(),
+    rule: z.string(),
+    status: z.enum(['pending', 'paid']),
+    reference: z.string().nullable(),
+    createdAt: z.iso.datetime(),
+    paidAt: z.iso.datetime().nullable(),
+  })
+  .meta({ id: 'Refund' });
+export const RefundListSchema = z
+  .object({ items: z.array(RefundSchema) })
+  .meta({ id: 'RefundList' });
+export const PayRefundInput = z
+  .strictObject({ reference: z.string().trim().max(80).nullable().default(null) })
+  .meta({ id: 'PayRefundInput' });

@@ -12,3 +12,4 @@ export * from './payment.ts';
 export * from './search.ts';
 export * from './voucher.ts';
 export * from './tripday.ts';
+export * from './posttrip.ts';

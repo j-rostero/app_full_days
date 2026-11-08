@@ -187,6 +187,12 @@ class ApiClient {
           return Account.fromJson(value);
         case 'AddTeamMemberInput':
           return AddTeamMemberInput.fromJson(value);
+        case 'AdminUserList':
+          return AdminUserList.fromJson(value);
+        case 'AdminUserListItemsInner':
+          return AdminUserListItemsInner.fromJson(value);
+        case 'AdminUserListItemsInnerBookingsInner':
+          return AdminUserListItemsInnerBookingsInner.fromJson(value);
         case 'ApiError':
           return ApiError.fromJson(value);
         case 'ApiErrorIssuesInner':
@@ -227,6 +233,8 @@ class ApiClient {
           return BookingProduct.fromJson(value);
         case 'BookingProvider':
           return BookingProvider.fromJson(value);
+        case 'BookingRefund':
+          return BookingRefund.fromJson(value);
         case 'BookingSelection':
           return BookingSelection.fromJson(value);
         case 'BookingSelectionRoomsInner':
@@ -235,12 +243,30 @@ class ApiClient {
           return BookingSelectionTravelers.fromJson(value);
         case 'BookingStatus':
           return BookingStatusTypeTransformer().decode(value);
+        case 'Cancellation':
+          return Cancellation.fromJson(value);
+        case 'CentralSettlements':
+          return CentralSettlements.fromJson(value);
+        case 'CentralSettlementsItemsInner':
+          return CentralSettlementsItemsInner.fromJson(value);
         case 'ChangeTeamRoleInput':
           return ChangeTeamRoleInput.fromJson(value);
         case 'CheckinSyncInput':
           return CheckinSyncInput.fromJson(value);
         case 'CheckinSyncInputEventsInner':
           return CheckinSyncInputEventsInner.fromJson(value);
+        case 'Claim':
+          return Claim.fromJson(value);
+        case 'ClaimInput':
+          return ClaimInput.fromJson(value);
+        case 'ClaimList':
+          return ClaimList.fromJson(value);
+        case 'ClaimMessageInput':
+          return ClaimMessageInput.fromJson(value);
+        case 'ClaimMessagesInner':
+          return ClaimMessagesInner.fromJson(value);
+        case 'ClaimResolveInput':
+          return ClaimResolveInput.fromJson(value);
         case 'CommissionInput':
           return CommissionInput.fromJson(value);
         case 'Company':
@@ -283,10 +309,14 @@ class ApiClient {
           return DestinationList.fromJson(value);
         case 'DestinationUpdateInput':
           return DestinationUpdateInput.fromJson(value);
+        case 'DeviceInput':
+          return DeviceInput.fromJson(value);
         case 'FavoriteList':
           return FavoriteList.fromJson(value);
         case 'File':
           return File.fromJson(value);
+        case 'ForgetDeviceInput':
+          return ForgetDeviceInput.fromJson(value);
         case 'GoogleInput':
           return GoogleInput.fromJson(value);
         case 'Health':
@@ -297,6 +327,10 @@ class ApiClient {
           return HoldInput.fromJson(value);
         case 'ImageUrls':
           return ImageUrls.fromJson(value);
+        case 'Inbox':
+          return Inbox.fromJson(value);
+        case 'InboxItemsInner':
+          return InboxItemsInner.fromJson(value);
         case 'Manifest':
           return Manifest.fromJson(value);
         case 'ManifestDeparture':
@@ -311,6 +345,8 @@ class ApiClient {
           return ManualBookingInputContact.fromJson(value);
         case 'ManualBookingInputPayment':
           return ManualBookingInputPayment.fromJson(value);
+        case 'MarkReadInput':
+          return MarkReadInput.fromJson(value);
         case 'Me':
           return Me.fromJson(value);
         case 'MeStaff':
@@ -321,6 +357,10 @@ class ApiClient {
           return MealChoiceOptionsInner.fromJson(value);
         case 'Membership':
           return Membership.fromJson(value);
+        case 'Metrics':
+          return Metrics.fromJson(value);
+        case 'MetricsTopSearchesInner':
+          return MetricsTopSearchesInner.fromJson(value);
         case 'Notice':
           return Notice.fromJson(value);
         case 'NoticeInput':
@@ -337,6 +377,8 @@ class ApiClient {
           return PassengersInput.fromJson(value);
         case 'PassengersInputPassengersInner':
           return PassengersInputPassengersInner.fromJson(value);
+        case 'PayRefundInput':
+          return PayRefundInput.fromJson(value);
         case 'Payment':
           return Payment.fromJson(value);
         case 'PaymentList':
@@ -425,6 +467,8 @@ class ApiClient {
           return ProviderQueue.fromJson(value);
         case 'ProviderQueueItem':
           return ProviderQueueItem.fromJson(value);
+        case 'ProviderReport':
+          return ProviderReport.fromJson(value);
         case 'ProviderReview':
           return ProviderReview.fromJson(value);
         case 'ProviderRole':
@@ -465,16 +509,36 @@ class ApiClient {
           return ReasonInput.fromJson(value);
         case 'RecoverInput':
           return RecoverInput.fromJson(value);
+        case 'Refund':
+          return Refund.fromJson(value);
+        case 'RefundList':
+          return RefundList.fromJson(value);
         case 'RegisterInput':
           return RegisterInput.fromJson(value);
         case 'RejectPaymentInput':
           return RejectPaymentInput.fromJson(value);
         case 'RenewInput':
           return RenewInput.fromJson(value);
+        case 'ReplyInput':
+          return ReplyInput.fromJson(value);
         case 'ReportPaymentInput':
           return ReportPaymentInput.fromJson(value);
+        case 'Reputation':
+          return Reputation.fromJson(value);
         case 'ResetInput':
           return ResetInput.fromJson(value);
+        case 'Review':
+          return Review.fromJson(value);
+        case 'ReviewAspects':
+          return ReviewAspects.fromJson(value);
+        case 'ReviewInput':
+          return ReviewInput.fromJson(value);
+        case 'ReviewInputAspects':
+          return ReviewInputAspects.fromJson(value);
+        case 'ReviewList':
+          return ReviewList.fromJson(value);
+        case 'ReviewModeration':
+          return ReviewModeration.fromJson(value);
         case 'SaveProductInput':
           return SaveProductInput.fromJson(value);
         case 'ScheduleDeparturesInput':
@@ -487,6 +551,10 @@ class ApiClient {
           return Settings.fromJson(value);
         case 'SettingsInput':
           return SettingsInput.fromJson(value);
+        case 'Settlement':
+          return Settlement.fromJson(value);
+        case 'SettlementLinesInner':
+          return SettlementLinesInner.fromJson(value);
         case 'SignInInput':
           return SignInInput.fromJson(value);
         case 'SignedIn':

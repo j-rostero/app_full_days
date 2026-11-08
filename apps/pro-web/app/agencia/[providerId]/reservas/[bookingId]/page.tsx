@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import { BOOKING_STATUS_LABELS, PASSENGER_TYPES } from '@fulldays/shared';
+import { ActionForm } from '@fulldays/web-session/action-form';
 import { read } from '../../../../../lib/api';
+import { cancelBooking } from '../../posttrip-actions';
+
+const CANCELLABLE = ['held', 'in_review', 'deposit_paid', 'paid'];
+const BY = { traveler: 'el viajero', agency: 'la agencia', system: 'FullDays por saldo vencido' };
 
 export default async function ProviderBookingPage({
   params,
@@ -57,6 +62,22 @@ export default async function ProviderBookingPage({
           </li>
         ))}
       </ol>
+      {b.status === 'cancelled' ? (
+        <p>
+          Cancelada por {b.cancelledBy ? BY[b.cancelledBy] : '—'}.{' '}
+          {b.refund
+            ? `Reembolso de ${b.refund.amountUsd.toFixed(2)} USD: ${b.refund.status === 'paid' ? `pagado${b.refund.reference ? ` (ref. ${b.refund.reference})` : ''}` : 'por pagar'}.`
+            : 'Sin reembolso.'}
+        </p>
+      ) : null}
+      {CANCELLABLE.includes(b.status) ? (
+        <ActionForm
+          action={cancelBooking.bind(null, providerId, b.id)}
+          submit="Cancelar reserva"
+          submitClassName="fd-button fd-button-secundario"
+          confirm={`¿Cancelar ${b.code}? Si cancela la agencia se devuelve todo lo pagado (${b.paidUsd.toFixed(2)} USD) y se avisa al viajero.`}
+        />
+      ) : null}
     </section>
   );
 }

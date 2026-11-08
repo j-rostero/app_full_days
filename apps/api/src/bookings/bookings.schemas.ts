@@ -84,6 +84,18 @@ export const BookingSchema = z
     balanceUsd: z.number(),
     balanceDueDate: z.iso.date(),
     heldUntil: z.iso.datetime().nullable(),
+    cancelledBy: z.enum(['traveler', 'agency', 'system']).nullable(),
+    refund: z
+      .object({
+        id: z.uuid(),
+        amountUsd: z.number(),
+        rule: z.string(),
+        status: z.enum(['pending', 'paid']),
+        reference: z.string().nullable(),
+      })
+      .nullable(),
+    /** Si el viajero ya puede reseñar esta reserva. */
+    canReview: z.boolean(),
     contact: z
       .object({
         name: z.string().nullable(),
@@ -136,3 +148,12 @@ export const ManualBookingInput = z
   .meta({ id: 'ManualBookingInput' });
 
 export type BookingView = z.infer<typeof BookingSchema>;
+
+export const CancellationSchema = z
+  .object({
+    allowed: z.boolean(),
+    amountUsd: z.number(),
+    rule: z.string(),
+    daysBefore: z.number().int(),
+  })
+  .meta({ id: 'Cancellation' });

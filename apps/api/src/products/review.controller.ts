@@ -18,6 +18,7 @@ import {
   ProductQueueSchema,
   ProductReviewSchema,
 } from './products.schemas.ts';
+import { NotificationsService } from '../notifications/notifications.service.ts';
 import { ProductsService, sheetOf } from './products.service.ts';
 
 const TAG = ['central'];
@@ -28,6 +29,7 @@ export class ReviewController {
   constructor(
     @Inject(DB) private readonly db: PrismaClient,
     @Inject(ProductsService) private readonly products: ProductsService,
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
   ) {}
 
   @Get()
@@ -184,6 +186,12 @@ export class ReviewController {
     });
     if (count === 0)
       throw conflict(`No se puede: el producto está «${PRODUCT_STATUS_LABELS[before.status]}».`);
+    await this.notifications.tellTeam(
+      before.providerId,
+      `«${sheetOf(before).general.title || 'Tu viaje'}» quedó «${PRODUCT_STATUS_LABELS[to]}»` +
+        (reason ? `: ${reason}` : '.'),
+      `producto:${id}`,
+    );
     return this.products.detail(await this.find(id));
   }
 

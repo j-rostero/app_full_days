@@ -3,7 +3,9 @@ import 'package:fulldays_api/api.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../session/session.dart';
+import 'claims_screen.dart';
 import 'common.dart';
+import 'review_screen.dart';
 import 'uploader.dart';
 import 'vouchers_screen.dart';
 
@@ -17,7 +19,7 @@ class TripScreen extends StatelessWidget {
   final SessionController session;
   final String bookingId;
 
-  Future<(Booking, PaymentList, Settings, Rate?, NoticeList?)> _load() async {
+  Future<(Booking, PaymentList, Settings, Rate?, NoticeList?, Cancellation?, ClaimList?)> _load() async {
     final client = session.client;
     final booking = await call(() => ReservasApi(client).getMyBooking(bookingId));
     final payments = await call(() => PagosApi(client).listBookingPayments(bookingId));
@@ -34,17 +36,25 @@ class TripScreen extends StatelessWidget {
     } on Object {
       rate = null;
     }
-    return (booking, payments, settings, rate, notices);
+    Cancellation? quote;
+    ClaimList? claims;
+    try {
+      quote = await ReservasApi(client).previewCancellation(bookingId);
+      claims = booking.paidUsd > 0 ? await ReclamosApi(client).listMyClaims(reserva: bookingId) : null;
+    } on Object {
+      // Sin esto la reserva igual se muestra.
+    }
+    return (booking, payments, settings, rate, notices, quote, claims);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mi reserva')),
-      body: Loader<(Booking, PaymentList, Settings, Rate?, NoticeList?)>(
+      body: Loader<(Booking, PaymentList, Settings, Rate?, NoticeList?, Cancellation?, ClaimList?)>(
         load: _load,
         builder: (context, data, reload) {
-          final (b, payments, settings, rate, notices) = data;
+          final (b, payments, settings, rate, notices, quote, claims) = data;
           final theme = Theme.of(context);
           final due = (b.totalUsd - b.paidUsd - b.pendingUsd).clamp(0, double.infinity);
           final toDeposit = (b.depositUsd - b.paidUsd - b.pendingUsd).clamp(0, double.infinity);
@@ -127,6 +137,49 @@ class TripScreen extends StatelessWidget {
                         _ => 'Por revisar',
                       }),
                     ),
+                ],
+                if (b.status == BookingStatus.cancelled) ...[
+                  const Divider(height: 32),
+                  Text('Cancelación', style: theme.textTheme.titleMedium),
+                  Text(refundText(b.refund)),
+                ],
+                if (b.canReview) ...[
+                  const Divider(height: 32),
+                  FilledButton.icon(
+                    icon: const Icon(Icons.rate_review_outlined),
+                    label: const Text('Reseñar este viaje'),
+                    onPressed: () async {
+                      final done = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (_) => ReviewScreen(session: session, bookingId: b.id, title: b.product.title),
+                        ),
+                      );
+                      if (done == true) await reload();
+                    },
+                  ),
+                ],
+                if (b.paidUsd > 0) ...[
+                  const Divider(height: 32),
+                  Text('Reclamos', style: theme.textTheme.titleMedium),
+                  for (final c in claims?.items ?? <Claim>[])
+                    ClaimThread(session: session, claim: c, onChanged: reload),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.report_problem_outlined),
+                    label: const Text('Abrir un reclamo'),
+                    onPressed: () async {
+                      if (await openClaimDialog(context, session, b.id)) await reload();
+                    },
+                  ),
+                ],
+                if (quote != null && quote.allowed) ...[
+                  const Divider(height: 32),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.cancel_outlined),
+                    label: const Text('Cancelar reserva'),
+                    onPressed: () async {
+                      if (await confirmCancel(context, session, b, quote)) await reload();
+                    },
+                  ),
                 ],
               ],
             ),
@@ -278,5 +331,36 @@ class _PaymentFormState extends State<PaymentForm> {
         FilledButton(onPressed: _busy ? null : _submit, child: Text(_busy ? 'Enviando…' : 'Reportar pago')),
       ],
     );
+  }
+}
+
+String refundText(BookingRefund? refund) {
+  if (refund == null) return 'Esta reserva no tiene reembolso.';
+  final paid = refund.status == BookingRefundStatusEnum.paid;
+  return 'Te corresponden ${usd(refund.amountUsd)}. ${refund.rule} '
+      '${paid ? 'La agencia ya te los devolvió${refund.reference != null ? ' (ref. ${refund.reference})' : ''}.' : 'La agencia te los devolverá.'}';
+}
+
+/// Muestra cuánto se devuelve y cancela solo si el viajero confirma.
+Future<bool> confirmCancel(BuildContext context, SessionController session, Booking b, Cancellation quote) async {
+  final yes = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('¿Cancelar ${b.code}?'),
+      content: Text('Te devolverán ${usd(quote.amountUsd)}. ${quote.rule}\n\nNo se puede deshacer.'),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Volver')),
+        FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Sí, cancelar')),
+      ],
+    ),
+  );
+  if (yes != true) return false;
+  try {
+    await call(() => ReservasApi(session.client).cancelBooking(b.id));
+    if (context.mounted) showMessage(context, 'Reserva cancelada.');
+    return true;
+  } on FdError catch (e) {
+    if (context.mounted) showMessage(context, e.message);
+    return false;
   }
 }

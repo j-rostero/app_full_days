@@ -25,6 +25,8 @@ import { BookingsService } from '../bookings/bookings.service.ts';
 import {
   PaymentListSchema,
   PaymentQuery,
+  PayRefundInput,
+  RefundListSchema,
   PaymentSchema,
   type PaymentView,
   RejectPaymentInput,
@@ -236,5 +238,65 @@ export class ProPaymentsController {
       await this.db.payment.findUniqueOrThrow({ where: { id }, include: PAYMENT_INCLUDE }),
     ]);
     return view!;
+  }
+
+  @Get('reembolsos')
+  @Can('payments')
+  @Endpoint({
+    operationId: 'listRefunds',
+    summary: 'Reembolsos de la agencia, pendientes primero (máximo 200)',
+    tags: TAG,
+    responses: { 200: RefundListSchema },
+  })
+  async refunds(@Membership() m: MembershipContext) {
+    const rows = await this.db.refund.findMany({
+      where: { providerId: m.providerId },
+      include: {
+        booking: {
+          include: {
+            departure: { select: { date: true, sheet: true } },
+            user: { select: { name: true, email: true } },
+          },
+        },
+      },
+      orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+      take: 200,
+    });
+    return {
+      items: rows.map((r) => ({
+        id: r.id,
+        bookingId: r.bookingId,
+        bookingCode: r.booking.code,
+        title: (r.booking.departure.sheet as { general: { title: string } }).general.title,
+        departureDate: r.booking.departure.date.toISOString().slice(0, 10),
+        traveler: r.booking.user?.name ?? r.booking.user?.email ?? r.booking.contactName,
+        amountUsd: Number(r.amountUsd),
+        rule: r.rule,
+        status: r.status,
+        reference: r.reference,
+        createdAt: r.createdAt.toISOString(),
+        paidAt: r.paidAt?.toISOString() ?? null,
+      })),
+    };
+  }
+
+  @Post('reembolsos/:refundId/pagar')
+  @HttpCode(204)
+  @Can('payments')
+  @Endpoint({
+    operationId: 'payRefund',
+    summary: 'Registra que se envió el reembolso (referencia opcional) y lo asienta en el libro',
+    tags: TAG,
+    body: PayRefundInput,
+    responses: { 204: null },
+  })
+  async payRefund(
+    @Membership() m: MembershipContext,
+    @Auth() auth: AuthContext,
+    @Param('refundId') refundId: string,
+    @Body(new ZodPipe(PayRefundInput)) input: z.infer<typeof PayRefundInput>,
+  ): Promise<void> {
+    if (!isUuid(refundId)) throw notFound();
+    await this.payments.payRefund(m.providerId, refundId, auth.userId, input.reference);
   }
 }

@@ -25,6 +25,8 @@ import {
   ScheduleDeparturesInput,
 } from './departures.schemas.ts';
 import { departureFacets } from './facets.ts';
+import { BookingsService } from '../bookings/bookings.service.ts';
+import { NotificationsService } from '../notifications/notifications.service.ts';
 
 const TAG = ['salidas'];
 type Row = Departure & {
@@ -37,7 +39,11 @@ const INCLUDE = {
 /** Fechas en que corre cada producto, con cupo, mínimo, precio y guías. */
 @Controller('pro/:providerId/salidas')
 export class DeparturesController {
-  constructor(@Inject(DB) private readonly db: PrismaClient) {}
+  constructor(
+    @Inject(DB) private readonly db: PrismaClient,
+    @Inject(BookingsService) private readonly bookings: BookingsService,
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
+  ) {}
 
   @Get()
   @Can('departures')
@@ -207,7 +213,29 @@ export class DeparturesController {
       });
       await this.db.booking.updateMany({ where: paid, data: { status: 'no_show' } });
     }
-    // Las fases siguientes enganchan aquí: cancelar devuelve el dinero de las reservas y terminar abre las reseñas.
+    if (input.status === 'cancelled' && departure.status !== 'cancelled') {
+      // Cancela cada reserva viva como agencia (reembolso total) y avisa a cada viajero.
+      const live = await this.db.booking.findMany({
+        where: {
+          departureId: departure.id,
+          status: { in: ['held', 'in_review', 'deposit_paid', 'paid'] },
+        },
+        include: { departure: { select: { date: true, sheet: true } } },
+      });
+      for (const b of live) await this.bookings.cancel(b, 'agency', 'cancel', false);
+      const title = sheetOf({ type: departure.productType, sheet: departure.sheet }).general.title;
+      await this.notifications.enqueue(
+        live
+          .filter((b) => b.userId)
+          .map((b) => ({
+            userId: b.userId!,
+            event: 'departure_cancelled' as const,
+            body: `La agencia canceló la salida del ${departure.date.toISOString().slice(0, 10)} de ${title}. Te devolverá todo lo pagado.`,
+            link: `reserva:${b.id}`,
+            dedupeKey: `departure_cancelled:${b.id}`,
+          })),
+      );
+    }
     const updated = await db.departure.findFirstOrThrow({
       where: { id: departure.id },
       include: INCLUDE,

@@ -26,3 +26,13 @@ En iOS todos los entornos usan hoy `com.jrostero.fulldays`; los esquemas por ent
 ## Cliente de la API
 
 `packages/api_dart` se genera desde el contrato OpenAPI (`pnpm api:client`); no se edita a mano.
+
+## Push
+
+La app pide permiso y registra el token del teléfono en la cuenta (`PUT /v1/yo/dispositivos`); al cerrar sesión lo quita. Para activarlo hace falta un proyecto de Firebase:
+
+1. Crea el proyecto y registra las apps Android (`com.jrostero.fulldays`, con `.dev` y `.stg` para esos flavors) e iOS.
+2. Corre `flutterfire configure` en `apps/mobile` o copia `google-services.json` a `android/app/` y `GoogleService-Info.plist` a `ios/Runner/`. En iOS sube la llave APNs a Firebase y activa «Push Notifications» y «Background Modes → Remote notifications» en Xcode.
+3. En la API, pon la cuenta de servicio en `FCM_SERVICE_ACCOUNT`.
+
+Sin esos archivos la app funciona igual: no registra token y los avisos se leen en «Mis viajes → Avisos».

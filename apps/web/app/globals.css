@@ -355,3 +355,49 @@ section > h2 {
   border-top: 1px solid var(--fd-color-borde);
   margin-top: 0.75rem;
 }
+
+.resenas {
+  margin-top: var(--fd-space-l);
+}
+.resena {
+  border-top: 1px solid var(--fd-color-borde);
+  padding-block: var(--fd-space-s);
+}
+.mensajes {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--fd-space-s);
+}
+.mensajes li {
+  border-left: 3px solid var(--fd-color-borde);
+  padding-left: var(--fd-space-s);
+}
+.mensajes .de-traveler {
+  border-left-color: var(--fd-color-primario);
+}
+.bandeja {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--fd-space-s);
+}
+.bandeja li {
+  padding: var(--fd-space-s);
+  border-radius: var(--fd-radius-m);
+  border: 1px solid var(--fd-color-borde);
+}
+.bandeja .sin-leer {
+  border-left: 4px solid var(--fd-color-primario);
+}
+.contador-avisos {
+  display: inline-block;
+  min-width: 1.4em;
+  margin-left: 0.25em;
+  padding: 0 0.35em;
+  border-radius: var(--fd-radius-pildora);
+  background: var(--fd-color-primario);
+  color: var(--fd-color-sobre-primario);
+  font-size: 0.8em;
+  text-align: center;
+}

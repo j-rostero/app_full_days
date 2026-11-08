@@ -18,6 +18,7 @@ import {
   ProviderReviewSchema,
   ReasonInput,
 } from './providers.schemas.ts';
+import { NotificationsService } from '../notifications/notifications.service.ts';
 import { ProvidersService } from './providers.service.ts';
 
 const TAG = ['central'];
@@ -28,6 +29,7 @@ export class VerificationController {
   constructor(
     @Inject(DB) private readonly db: PrismaClient,
     @Inject(ProvidersService) private readonly providers: ProvidersService,
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
   ) {}
 
   @Get()
@@ -167,6 +169,12 @@ export class VerificationController {
     });
     if (count === 0)
       throw conflict(`No se puede: la agencia está «${PROVIDER_STATUS_LABELS[before.status]}».`);
+    await this.notifications.tellTeam(
+      id,
+      `FullDays dejó tu agencia «${PROVIDER_STATUS_LABELS[rule.to]}»` +
+        (reason ? `: ${reason}` : '.'),
+      `agencia:${id}`,
+    );
     return this.providers.company(await this.find(id));
   }
 

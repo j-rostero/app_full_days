@@ -30,6 +30,9 @@ class Booking {
     required this.balanceUsd,
     required this.balanceDueDate,
     required this.heldUntil,
+    required this.cancelledBy,
+    required this.refund,
+    required this.canReview,
     required this.contact,
     this.passengers = const [],
     this.mealChoices = const [],
@@ -72,6 +75,12 @@ class Booking {
 
   DateTime? heldUntil;
 
+  BookingCancelledByEnum? cancelledBy;
+
+  BookingRefund? refund;
+
+  bool canReview;
+
   BookingContact? contact;
 
   List<BookingPassenger> passengers;
@@ -99,6 +108,9 @@ class Booking {
     other.balanceUsd == balanceUsd &&
     other.balanceDueDate == balanceDueDate &&
     other.heldUntil == heldUntil &&
+    other.cancelledBy == cancelledBy &&
+    other.refund == refund &&
+    other.canReview == canReview &&
     other.contact == contact &&
     _deepEquality.equals(other.passengers, passengers) &&
     _deepEquality.equals(other.mealChoices, mealChoices) &&
@@ -124,13 +136,16 @@ class Booking {
     (balanceUsd.hashCode) +
     (balanceDueDate.hashCode) +
     (heldUntil == null ? 0 : heldUntil!.hashCode) +
+    (cancelledBy == null ? 0 : cancelledBy!.hashCode) +
+    (refund == null ? 0 : refund!.hashCode) +
+    (canReview.hashCode) +
     (contact == null ? 0 : contact!.hashCode) +
     (passengers.hashCode) +
     (mealChoices.hashCode) +
     (createdAt.hashCode);
 
   @override
-  String toString() => 'Booking[id=$id, code=$code, status=$status, source_=$source_, departure=$departure, product=$product, provider=$provider, selection=$selection, lines=$lines, seats=$seats, totalUsd=$totalUsd, depositUsd=$depositUsd, paidUsd=$paidUsd, pendingUsd=$pendingUsd, balanceUsd=$balanceUsd, balanceDueDate=$balanceDueDate, heldUntil=$heldUntil, contact=$contact, passengers=$passengers, mealChoices=$mealChoices, createdAt=$createdAt]';
+  String toString() => 'Booking[id=$id, code=$code, status=$status, source_=$source_, departure=$departure, product=$product, provider=$provider, selection=$selection, lines=$lines, seats=$seats, totalUsd=$totalUsd, depositUsd=$depositUsd, paidUsd=$paidUsd, pendingUsd=$pendingUsd, balanceUsd=$balanceUsd, balanceDueDate=$balanceDueDate, heldUntil=$heldUntil, cancelledBy=$cancelledBy, refund=$refund, canReview=$canReview, contact=$contact, passengers=$passengers, mealChoices=$mealChoices, createdAt=$createdAt]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -159,6 +174,17 @@ class Booking {
     } else {
       json[r'heldUntil'] = null;
     }
+    if (this.cancelledBy != null) {
+      json[r'cancelledBy'] = this.cancelledBy;
+    } else {
+      json[r'cancelledBy'] = null;
+    }
+    if (this.refund != null) {
+      json[r'refund'] = this.refund;
+    } else {
+      json[r'refund'] = null;
+    }
+      json[r'canReview'] = this.canReview;
     if (this.contact != null) {
       json[r'contact'] = this.contact;
     } else {
@@ -216,6 +242,10 @@ class Booking {
         assert(json.containsKey(r'balanceDueDate'), 'Required key "Booking[balanceDueDate]" is missing from JSON.');
         assert(json[r'balanceDueDate'] != null, 'Required key "Booking[balanceDueDate]" has a null value in JSON.');
         assert(json.containsKey(r'heldUntil'), 'Required key "Booking[heldUntil]" is missing from JSON.');
+        assert(json.containsKey(r'cancelledBy'), 'Required key "Booking[cancelledBy]" is missing from JSON.');
+        assert(json.containsKey(r'refund'), 'Required key "Booking[refund]" is missing from JSON.');
+        assert(json.containsKey(r'canReview'), 'Required key "Booking[canReview]" is missing from JSON.');
+        assert(json[r'canReview'] != null, 'Required key "Booking[canReview]" has a null value in JSON.');
         assert(json.containsKey(r'contact'), 'Required key "Booking[contact]" is missing from JSON.');
         assert(json.containsKey(r'passengers'), 'Required key "Booking[passengers]" is missing from JSON.');
         assert(json[r'passengers'] != null, 'Required key "Booking[passengers]" has a null value in JSON.');
@@ -244,6 +274,9 @@ class Booking {
         balanceUsd: num.parse('${json[r'balanceUsd']}'),
         balanceDueDate: mapDateTime(json, r'balanceDueDate', r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$/')!,
         heldUntil: mapDateTime(json, r'heldUntil', r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$/'),
+        cancelledBy: BookingCancelledByEnum.fromJson(json[r'cancelledBy']),
+        refund: BookingRefund.fromJson(json[r'refund']),
+        canReview: mapValueOfType<bool>(json, r'canReview')!,
         contact: BookingContact.fromJson(json[r'contact']),
         passengers: BookingPassenger.listFromJson(json[r'passengers']),
         mealChoices: MealChoice.listFromJson(json[r'mealChoices']),
@@ -312,6 +345,9 @@ class Booking {
     'balanceUsd',
     'balanceDueDate',
     'heldUntil',
+    'cancelledBy',
+    'refund',
+    'canReview',
     'contact',
     'passengers',
     'mealChoices',
@@ -394,6 +430,86 @@ class BookingSource_EnumTypeTransformer {
 
   /// The singleton instance of this transformer.
   static BookingSource_EnumTypeTransformer? _instance;
+}
+
+
+
+enum BookingCancelledByEnum {
+  traveler._(r'traveler'),
+  agency._(r'agency'),
+  system._(r'system'),
+  ;
+
+  /// Instantiate a new enum with the provided value.
+  const BookingCancelledByEnum._(this._value);
+
+  /// The underlying value of this enum member.
+  final String _value;
+
+  @override
+  String toString() => _value;
+
+  /// Encodes this enum as a value suitable for JSON.
+  String toJson() => _value;
+
+  /// Returns the instance of [BookingCancelledByEnum] that was successfully decoded
+  /// from the passed [value] on success, null otherwise.
+  static BookingCancelledByEnum? fromJson(dynamic value) => BookingCancelledByEnumTypeTransformer().decode(value);
+
+  /// Returns a [List] containing instances of [BookingCancelledByEnum]
+  /// that were successfully decoded from the passed [JSON][json].
+  static List<BookingCancelledByEnum> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <BookingCancelledByEnum>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = BookingCancelledByEnum.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+}
+
+/// Transformation class that can [encode] an instance of [BookingCancelledByEnum] to String,
+/// and [decode] dynamic data back to [BookingCancelledByEnum].
+class BookingCancelledByEnumTypeTransformer {
+  factory BookingCancelledByEnumTypeTransformer() => _instance ??= const BookingCancelledByEnumTypeTransformer._();
+
+  const BookingCancelledByEnumTypeTransformer._();
+
+  String encode(BookingCancelledByEnum data) => data._value;
+
+  /// Returns the instance of [BookingCancelledByEnum] that was successfully decoded
+  /// from the passed [data] value on success, null otherwise.
+  ///
+  /// If [allowNull] is true and the [dynamic value][data] cannot be decoded successfully,
+  /// then null is returned. However, if [allowNull] is false and the [dynamic value][data]
+  /// cannot be decoded successfully, then an [UnimplementedError] is thrown.
+  ///
+  /// The [allowNull] is very handy when an API changes and a new enum value is added or removed,
+  /// and users are still using an old app with the old code.
+  BookingCancelledByEnum? decode(dynamic data, {bool allowNull = true}) {
+    if (data is BookingCancelledByEnum) {
+      return data;
+    }
+    if (data != null) {
+      switch (data) {
+        case r'traveler': return BookingCancelledByEnum.traveler;
+        case r'agency': return BookingCancelledByEnum.agency;
+        case r'system': return BookingCancelledByEnum.system;
+        default:
+          if (!allowNull) {
+            throw ArgumentError('Unknown enum value to decode: $data');
+          }
+      }
+    }
+    return null;
+  }
+
+  /// The singleton instance of this transformer.
+  static BookingCancelledByEnumTypeTransformer? _instance;
 }
 
 
