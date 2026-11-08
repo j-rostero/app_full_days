@@ -237,6 +237,10 @@ class ApiClient {
           return BookingStatusTypeTransformer().decode(value);
         case 'ChangeTeamRoleInput':
           return ChangeTeamRoleInput.fromJson(value);
+        case 'CheckinSyncInput':
+          return CheckinSyncInput.fromJson(value);
+        case 'CheckinSyncInputEventsInner':
+          return CheckinSyncInputEventsInner.fromJson(value);
         case 'CommissionInput':
           return CommissionInput.fromJson(value);
         case 'Company':
@@ -293,6 +297,14 @@ class ApiClient {
           return HoldInput.fromJson(value);
         case 'ImageUrls':
           return ImageUrls.fromJson(value);
+        case 'Manifest':
+          return Manifest.fromJson(value);
+        case 'ManifestDeparture':
+          return ManifestDeparture.fromJson(value);
+        case 'ManifestDiscardedInner':
+          return ManifestDiscardedInner.fromJson(value);
+        case 'ManifestPassenger':
+          return ManifestPassenger.fromJson(value);
         case 'ManualBookingInput':
           return ManualBookingInput.fromJson(value);
         case 'ManualBookingInputContact':
@@ -303,8 +315,18 @@ class ApiClient {
           return Me.fromJson(value);
         case 'MeStaff':
           return MeStaff.fromJson(value);
+        case 'MealChoice':
+          return MealChoice.fromJson(value);
+        case 'MealChoiceOptionsInner':
+          return MealChoiceOptionsInner.fromJson(value);
         case 'Membership':
           return Membership.fromJson(value);
+        case 'Notice':
+          return Notice.fromJson(value);
+        case 'NoticeInput':
+          return NoticeInput.fromJson(value);
+        case 'NoticeList':
+          return NoticeList.fromJson(value);
         case 'Passenger':
           return Passenger.fromJson(value);
         case 'PassengerInput':
@@ -371,6 +393,22 @@ class ApiClient {
           return ProductSummary.fromJson(value);
         case 'ProductType':
           return ProductTypeTypeTransformer().decode(value);
+        case 'Production':
+          return Production.fromJson(value);
+        case 'ProductionDeparture':
+          return ProductionDeparture.fromJson(value);
+        case 'ProductionItemsInner':
+          return ProductionItemsInner.fromJson(value);
+        case 'ProductionMealsInner':
+          return ProductionMealsInner.fromJson(value);
+        case 'ProductionMealsInnerOptionsInner':
+          return ProductionMealsInnerOptionsInner.fromJson(value);
+        case 'ProductionPassengersInner':
+          return ProductionPassengersInner.fromJson(value);
+        case 'ProductionRestrictionsInner':
+          return ProductionRestrictionsInner.fromJson(value);
+        case 'ProductionRoomsInner':
+          return ProductionRoomsInner.fromJson(value);
         case 'ProfileUpdateInput':
           return ProfileUpdateInput.fromJson(value);
         case 'ProviderDocument':
@@ -473,6 +511,10 @@ class ApiClient {
           return ThemeList.fromJson(value);
         case 'ThemeUpdateInput':
           return ThemeUpdateInput.fromJson(value);
+        case 'TodayDeparture':
+          return TodayDeparture.fromJson(value);
+        case 'TodayList':
+          return TodayList.fromJson(value);
         case 'Tokens':
           return Tokens.fromJson(value);
         case 'TravelTheme':
@@ -481,10 +523,10 @@ class ApiClient {
           return VerifyInput.fromJson(value);
         case 'Voucher':
           return Voucher.fromJson(value);
+        case 'VoucherKey':
+          return VoucherKey.fromJson(value);
         case 'VoucherKeys':
           return VoucherKeys.fromJson(value);
-        case 'VoucherKeysItemsInner':
-          return VoucherKeysItemsInner.fromJson(value);
         case 'VoucherList':
           return VoucherList.fromJson(value);
         default:

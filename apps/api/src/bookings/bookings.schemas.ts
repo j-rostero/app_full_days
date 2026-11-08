@@ -2,6 +2,7 @@ import {
   BOOKING_STATUSES,
   BookingSelectionSchema,
   DEPARTURE_STATUSES,
+  MealPicksSchema,
   PassengerInputSchema,
   PASSENGER_TYPES,
 } from '@fulldays/shared';
@@ -38,8 +39,21 @@ export const BookingPassengerSchema = z
     cedula: z.string().nullable(),
     birthDate: z.iso.date().nullable(),
     restrictions: z.string().nullable(),
+    /** Platos escogidos: id de la comida → ids de las opciones. */
+    mealPicks: z.record(z.string(), z.array(z.string())),
+    checkin: z.enum(['boarded', 'no_show']).nullable(),
   })
   .meta({ id: 'BookingPassenger' });
+
+/** Comida con platos a escoger, tal como se vendió la salida. */
+export const MealChoiceSchema = z
+  .object({
+    mealId: z.uuid(),
+    name: z.string(),
+    picksPerPassenger: z.number().int(),
+    options: z.array(z.object({ id: z.uuid(), name: z.string(), isDefault: z.boolean() })),
+  })
+  .meta({ id: 'MealChoice' });
 
 export const BookingSchema = z
   .object({
@@ -78,6 +92,7 @@ export const BookingSchema = z
       })
       .nullable(),
     passengers: z.array(BookingPassengerSchema),
+    mealChoices: z.array(MealChoiceSchema),
     createdAt: z.iso.datetime(),
   })
   .meta({ id: 'Booking' });
@@ -86,7 +101,12 @@ export const BookingListSchema = z
   .meta({ id: 'BookingList' });
 
 export const PassengersInput = z
-  .strictObject({ passengers: z.array(PassengerInputSchema).min(1).max(40) })
+  .strictObject({
+    passengers: z
+      .array(PassengerInputSchema.extend({ mealPicks: MealPicksSchema }))
+      .min(1)
+      .max(40),
+  })
   .meta({ id: 'PassengersInput' });
 
 export const ProBookingQuery = z.strictObject({

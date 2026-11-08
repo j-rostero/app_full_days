@@ -347,3 +347,11 @@ section > h2 {
     grid-column: span 2;
   }
 }
+
+.avisos {
+  border-left: 4px solid var(--fd-color-aviso);
+}
+.avisos article + article {
+  border-top: 1px solid var(--fd-color-borde);
+  margin-top: 0.75rem;
+}

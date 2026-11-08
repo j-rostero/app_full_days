@@ -195,6 +195,18 @@ export class DeparturesController {
         data: [...new Set(input.guideIds)].map((userId) => ({ departureId: departure.id, userId })),
       });
     }
+    if (input.status === 'finished' && departure.status !== 'finished') {
+      // Al cerrar la salida, cada reserva confirmada queda realizada si alguien abordó, o sin presentarse.
+      const paid = {
+        departureId: departure.id,
+        status: { in: ['deposit_paid' as const, 'paid' as const] },
+      };
+      await this.db.booking.updateMany({
+        where: { ...paid, passengers: { some: { checkin: 'boarded' } } },
+        data: { status: 'completed' },
+      });
+      await this.db.booking.updateMany({ where: paid, data: { status: 'no_show' } });
+    }
     // Las fases siguientes enganchan aquí: cancelar devuelve el dinero de las reservas y terminar abre las reseñas.
     const updated = await db.departure.findFirstOrThrow({
       where: { id: departure.id },

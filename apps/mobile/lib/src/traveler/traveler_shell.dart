@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../operator/operator_screen.dart';
 import '../screens/home_screen.dart';
 import '../session/session.dart';
 import 'explore_screen.dart';
@@ -21,26 +22,43 @@ class _TravelerShellState extends State<TravelerShell> {
 
   @override
   Widget build(BuildContext context) {
+    // Quien trabaja en una agencia con check-in ve además la pestaña para pasar lista.
+    final operates = checkinMemberships(widget.session.me).isNotEmpty;
     final pages = [
       ExploreScreen(session: widget.session),
       FavoritesScreen(session: widget.session),
       TripsScreen(session: widget.session),
+      if (operates) OperatorScreen(session: widget.session),
       HomeScreen(session: widget.session),
     ];
     return Scaffold(
-      body: IndexedStack(index: _tab, children: pages),
+      body: IndexedStack(index: _tab.clamp(0, pages.length - 1), children: pages),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _tab,
+        selectedIndex: _tab.clamp(0, pages.length - 1),
         onDestinationSelected: (i) => setState(() => _tab = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.search), label: 'Explorar'),
-          NavigationDestination(icon: Icon(Icons.star_border), selectedIcon: Icon(Icons.star), label: 'Guardados'),
-          NavigationDestination(
+        destinations: [
+          const NavigationDestination(icon: Icon(Icons.search), label: 'Explorar'),
+          const NavigationDestination(
+            icon: Icon(Icons.star_border),
+            selectedIcon: Icon(Icons.star),
+            label: 'Guardados',
+          ),
+          const NavigationDestination(
             icon: Icon(Icons.luggage_outlined),
             selectedIcon: Icon(Icons.luggage),
             label: 'Mis viajes',
           ),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Cuenta'),
+          if (operates)
+            const NavigationDestination(
+              icon: Icon(Icons.fact_check_outlined),
+              selectedIcon: Icon(Icons.fact_check),
+              label: 'Operar',
+            ),
+          const NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Cuenta',
+          ),
         ],
       ),
     );

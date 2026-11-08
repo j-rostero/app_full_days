@@ -31,6 +31,7 @@ export default async function ProviderLayout({
       <nav className="fd-nav" aria-label="Secciones de la agencia">
         {can('company') ? <Link href={`${base}/empresa`}>Empresa</Link> : null}
         {can('fulldays') ? <Link href={`${base}/productos`}>Productos</Link> : null}
+        {can('checkin') ? <Link href={`${base}/hoy`}>Hoy</Link> : null}
         {can('departures') ? <Link href={`${base}/salidas`}>Salidas</Link> : null}
         {can('bookings') ? <Link href={`${base}/reservas`}>Reservas</Link> : null}
         {can('payments') ? <Link href={`${base}/pagos`}>Pagos</Link> : null}

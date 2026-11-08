@@ -10,9 +10,9 @@
 
 part of openapi.api;
 
-class VoucherKeysItemsInner {
-  /// Returns a new [VoucherKeysItemsInner] instance.
-  VoucherKeysItemsInner({
+class VoucherKey {
+  /// Returns a new [VoucherKey] instance.
+  VoucherKey({
     required this.id,
     required this.publicKey,
     required this.retired,
@@ -25,7 +25,7 @@ class VoucherKeysItemsInner {
   bool retired;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is VoucherKeysItemsInner &&
+  bool operator ==(Object other) => identical(this, other) || other is VoucherKey &&
     other.id == id &&
     other.publicKey == publicKey &&
     other.retired == retired;
@@ -38,7 +38,7 @@ class VoucherKeysItemsInner {
     (retired.hashCode);
 
   @override
-  String toString() => 'VoucherKeysItemsInner[id=$id, publicKey=$publicKey, retired=$retired]';
+  String toString() => 'VoucherKey[id=$id, publicKey=$publicKey, retired=$retired]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -48,10 +48,10 @@ class VoucherKeysItemsInner {
     return json;
   }
 
-  /// Returns a new [VoucherKeysItemsInner] instance and imports its values from
+  /// Returns a new [VoucherKey] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static VoucherKeysItemsInner? fromJson(dynamic value) {
+  static VoucherKey? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -59,16 +59,16 @@ class VoucherKeysItemsInner {
       // Note 1: the values aren't checked for validity beyond being non-null.
       // Note 2: this code is stripped in release mode!
       assert(() {
-        assert(json.containsKey(r'id'), 'Required key "VoucherKeysItemsInner[id]" is missing from JSON.');
-        assert(json[r'id'] != null, 'Required key "VoucherKeysItemsInner[id]" has a null value in JSON.');
-        assert(json.containsKey(r'publicKey'), 'Required key "VoucherKeysItemsInner[publicKey]" is missing from JSON.');
-        assert(json[r'publicKey'] != null, 'Required key "VoucherKeysItemsInner[publicKey]" has a null value in JSON.');
-        assert(json.containsKey(r'retired'), 'Required key "VoucherKeysItemsInner[retired]" is missing from JSON.');
-        assert(json[r'retired'] != null, 'Required key "VoucherKeysItemsInner[retired]" has a null value in JSON.');
+        assert(json.containsKey(r'id'), 'Required key "VoucherKey[id]" is missing from JSON.');
+        assert(json[r'id'] != null, 'Required key "VoucherKey[id]" has a null value in JSON.');
+        assert(json.containsKey(r'publicKey'), 'Required key "VoucherKey[publicKey]" is missing from JSON.');
+        assert(json[r'publicKey'] != null, 'Required key "VoucherKey[publicKey]" has a null value in JSON.');
+        assert(json.containsKey(r'retired'), 'Required key "VoucherKey[retired]" is missing from JSON.');
+        assert(json[r'retired'] != null, 'Required key "VoucherKey[retired]" has a null value in JSON.');
         return true;
       }());
 
-      return VoucherKeysItemsInner(
+      return VoucherKey(
         id: mapValueOfType<String>(json, r'id')!,
         publicKey: mapValueOfType<String>(json, r'publicKey')!,
         retired: mapValueOfType<bool>(json, r'retired')!,
@@ -77,11 +77,11 @@ class VoucherKeysItemsInner {
     return null;
   }
 
-  static List<VoucherKeysItemsInner> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <VoucherKeysItemsInner>[];
+  static List<VoucherKey> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <VoucherKey>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = VoucherKeysItemsInner.fromJson(row);
+        final value = VoucherKey.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -90,12 +90,12 @@ class VoucherKeysItemsInner {
     return result.toList(growable: growable);
   }
 
-  static Map<String, VoucherKeysItemsInner> mapFromJson(dynamic json) {
-    final map = <String, VoucherKeysItemsInner>{};
+  static Map<String, VoucherKey> mapFromJson(dynamic json) {
+    final map = <String, VoucherKey>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = VoucherKeysItemsInner.fromJson(entry.value);
+        final value = VoucherKey.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -104,14 +104,14 @@ class VoucherKeysItemsInner {
     return map;
   }
 
-  // maps a json object with a list of VoucherKeysItemsInner-objects as value to a dart map
-  static Map<String, List<VoucherKeysItemsInner>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<VoucherKeysItemsInner>>{};
+  // maps a json object with a list of VoucherKey-objects as value to a dart map
+  static Map<String, List<VoucherKey>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<VoucherKey>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = VoucherKeysItemsInner.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = VoucherKey.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;

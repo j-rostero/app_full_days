@@ -7,14 +7,26 @@ import { revalidatePath } from 'next/cache';
 export async function savePassengers(
   bookingId: string,
   count: number,
+  mealIds: string[],
   _: ActionState,
   form: FormData,
 ): Promise<ActionState> {
+  const picks = (i: number) => {
+    const out: Record<string, string[]> = {};
+    for (const mealId of mealIds) {
+      const ids = form
+        .getAll(`meal.${i}.${mealId}`)
+        .filter((v): v is string => typeof v === 'string' && v !== '');
+      if (ids.length) out[mealId] = ids;
+    }
+    return out;
+  };
   const passengers = Array.from({ length: count }, (_, i) => ({
     name: text(form, `name.${i}`),
     cedula: optional(form, `cedula.${i}`),
     birthDate: text(form, `birthDate.${i}`),
     restrictions: optional(form, `restrictions.${i}`),
+    mealPicks: picks(i),
   }));
   const api = await sessionApi();
   return act(

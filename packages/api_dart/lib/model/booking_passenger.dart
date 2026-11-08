@@ -20,6 +20,8 @@ class BookingPassenger {
     required this.cedula,
     required this.birthDate,
     required this.restrictions,
+    this.mealPicks = const {},
+    required this.checkin,
   });
 
   String id;
@@ -38,6 +40,10 @@ class BookingPassenger {
 
   String? restrictions;
 
+  Map<String, List<String>> mealPicks;
+
+  BookingPassengerCheckinEnum? checkin;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is BookingPassenger &&
     other.id == id &&
@@ -46,7 +52,9 @@ class BookingPassenger {
     other.name == name &&
     other.cedula == cedula &&
     other.birthDate == birthDate &&
-    other.restrictions == restrictions;
+    other.restrictions == restrictions &&
+    _deepEquality.equals(other.mealPicks, mealPicks) &&
+    other.checkin == checkin;
 
   @override
   int get hashCode =>
@@ -57,10 +65,12 @@ class BookingPassenger {
     (name == null ? 0 : name!.hashCode) +
     (cedula == null ? 0 : cedula!.hashCode) +
     (birthDate == null ? 0 : birthDate!.hashCode) +
-    (restrictions == null ? 0 : restrictions!.hashCode);
+    (restrictions == null ? 0 : restrictions!.hashCode) +
+    (mealPicks.hashCode) +
+    (checkin == null ? 0 : checkin!.hashCode);
 
   @override
-  String toString() => 'BookingPassenger[id=$id, position=$position, type=$type, name=$name, cedula=$cedula, birthDate=$birthDate, restrictions=$restrictions]';
+  String toString() => 'BookingPassenger[id=$id, position=$position, type=$type, name=$name, cedula=$cedula, birthDate=$birthDate, restrictions=$restrictions, mealPicks=$mealPicks, checkin=$checkin]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -89,6 +99,12 @@ class BookingPassenger {
     } else {
       json[r'restrictions'] = null;
     }
+      json[r'mealPicks'] = this.mealPicks;
+    if (this.checkin != null) {
+      json[r'checkin'] = this.checkin;
+    } else {
+      json[r'checkin'] = null;
+    }
     return json;
   }
 
@@ -113,6 +129,9 @@ class BookingPassenger {
         assert(json.containsKey(r'cedula'), 'Required key "BookingPassenger[cedula]" is missing from JSON.');
         assert(json.containsKey(r'birthDate'), 'Required key "BookingPassenger[birthDate]" is missing from JSON.');
         assert(json.containsKey(r'restrictions'), 'Required key "BookingPassenger[restrictions]" is missing from JSON.');
+        assert(json.containsKey(r'mealPicks'), 'Required key "BookingPassenger[mealPicks]" is missing from JSON.');
+        assert(json[r'mealPicks'] != null, 'Required key "BookingPassenger[mealPicks]" has a null value in JSON.');
+        assert(json.containsKey(r'checkin'), 'Required key "BookingPassenger[checkin]" is missing from JSON.');
         return true;
       }());
 
@@ -124,6 +143,10 @@ class BookingPassenger {
         cedula: mapValueOfType<String>(json, r'cedula'),
         birthDate: mapDateTime(json, r'birthDate', r'/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$/'),
         restrictions: mapValueOfType<String>(json, r'restrictions'),
+        mealPicks: json[r'mealPicks'] == null
+          ? const {}
+            : (json[r'mealPicks'] as Map<String, dynamic>).map((k, v) => MapEntry(k, v == null ? const <String>[] : (v as List).map((value) => value as String).toList(growable: false))),
+        checkin: BookingPassengerCheckinEnum.fromJson(json[r'checkin']),
       );
     }
     return null;
@@ -178,6 +201,8 @@ class BookingPassenger {
     'cedula',
     'birthDate',
     'restrictions',
+    'mealPicks',
+    'checkin',
   };
 }
 
@@ -260,6 +285,84 @@ class BookingPassengerTypeEnumTypeTransformer {
 
   /// The singleton instance of this transformer.
   static BookingPassengerTypeEnumTypeTransformer? _instance;
+}
+
+
+
+enum BookingPassengerCheckinEnum {
+  boarded._(r'boarded'),
+  noShow._(r'no_show'),
+  ;
+
+  /// Instantiate a new enum with the provided value.
+  const BookingPassengerCheckinEnum._(this._value);
+
+  /// The underlying value of this enum member.
+  final String _value;
+
+  @override
+  String toString() => _value;
+
+  /// Encodes this enum as a value suitable for JSON.
+  String toJson() => _value;
+
+  /// Returns the instance of [BookingPassengerCheckinEnum] that was successfully decoded
+  /// from the passed [value] on success, null otherwise.
+  static BookingPassengerCheckinEnum? fromJson(dynamic value) => BookingPassengerCheckinEnumTypeTransformer().decode(value);
+
+  /// Returns a [List] containing instances of [BookingPassengerCheckinEnum]
+  /// that were successfully decoded from the passed [JSON][json].
+  static List<BookingPassengerCheckinEnum> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <BookingPassengerCheckinEnum>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = BookingPassengerCheckinEnum.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+}
+
+/// Transformation class that can [encode] an instance of [BookingPassengerCheckinEnum] to String,
+/// and [decode] dynamic data back to [BookingPassengerCheckinEnum].
+class BookingPassengerCheckinEnumTypeTransformer {
+  factory BookingPassengerCheckinEnumTypeTransformer() => _instance ??= const BookingPassengerCheckinEnumTypeTransformer._();
+
+  const BookingPassengerCheckinEnumTypeTransformer._();
+
+  String encode(BookingPassengerCheckinEnum data) => data._value;
+
+  /// Returns the instance of [BookingPassengerCheckinEnum] that was successfully decoded
+  /// from the passed [data] value on success, null otherwise.
+  ///
+  /// If [allowNull] is true and the [dynamic value][data] cannot be decoded successfully,
+  /// then null is returned. However, if [allowNull] is false and the [dynamic value][data]
+  /// cannot be decoded successfully, then an [UnimplementedError] is thrown.
+  ///
+  /// The [allowNull] is very handy when an API changes and a new enum value is added or removed,
+  /// and users are still using an old app with the old code.
+  BookingPassengerCheckinEnum? decode(dynamic data, {bool allowNull = true}) {
+    if (data is BookingPassengerCheckinEnum) {
+      return data;
+    }
+    if (data != null) {
+      switch (data) {
+        case r'boarded': return BookingPassengerCheckinEnum.boarded;
+        case r'no_show': return BookingPassengerCheckinEnum.noShow;
+        default:
+          if (!allowNull) {
+            throw ArgumentError('Unknown enum value to decode: $data');
+          }
+      }
+    }
+    return null;
+  }
+
+  /// The singleton instance of this transformer.
+  static BookingPassengerCheckinEnumTypeTransformer? _instance;
 }
 
 

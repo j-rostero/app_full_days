@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   canMoveDeparture,
   DEPARTURE_STATUS_LABELS,
@@ -89,7 +90,10 @@ export default async function DeparturesPage({
             <summary>
               {d.date} · {d.title} ·{' '}
               <span className="fd-pill">{DEPARTURE_STATUS_LABELS[d.status]}</span> · {d.reserved}/
-              {d.capacity} puestos · {d.priceUsd} USD
+              {d.capacity} puestos · {d.priceUsd} USD ·{' '}
+              <Link prefetch={false} href={`/agencia/${providerId}/salidas/${d.id}`}>
+                Operar
+              </Link>
             </summary>
             <ActionForm
               action={updateDeparture.bind(null, providerId, d.id)}

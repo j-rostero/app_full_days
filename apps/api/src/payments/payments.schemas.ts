@@ -57,10 +57,12 @@ export const VoucherListSchema = z
   })
   .meta({ id: 'VoucherList' });
 
+/** Llave pública Ed25519 (32 bytes en base64url) para validar vouchers sin conexión. */
+export const VoucherKeySchema = z
+  .object({ id: z.string(), publicKey: z.string(), retired: z.boolean() })
+  .meta({ id: 'VoucherKey' });
 export const VoucherKeysSchema = z
-  .object({
-    items: z.array(z.object({ id: z.string(), publicKey: z.string(), retired: z.boolean() })),
-  })
+  .object({ items: z.array(VoucherKeySchema) })
   .meta({ id: 'VoucherKeys' });
 
 export type PaymentView = z.infer<typeof PaymentSchema>;

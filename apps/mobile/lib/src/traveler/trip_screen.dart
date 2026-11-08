@@ -17,10 +17,16 @@ class TripScreen extends StatelessWidget {
   final SessionController session;
   final String bookingId;
 
-  Future<(Booking, PaymentList, Settings, Rate?)> _load() async {
+  Future<(Booking, PaymentList, Settings, Rate?, NoticeList?)> _load() async {
     final client = session.client;
     final booking = await call(() => ReservasApi(client).getMyBooking(bookingId));
     final payments = await call(() => PagosApi(client).listBookingPayments(bookingId));
+    NoticeList? notices;
+    try {
+      notices = await DiaDelViajeApi(client).listBookingNotices(bookingId);
+    } on Object {
+      notices = null;
+    }
     final settings = await call(() => CatalogosApi(client).getSettings());
     Rate? rate;
     try {
@@ -28,17 +34,17 @@ class TripScreen extends StatelessWidget {
     } on Object {
       rate = null;
     }
-    return (booking, payments, settings, rate);
+    return (booking, payments, settings, rate, notices);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mi reserva')),
-      body: Loader<(Booking, PaymentList, Settings, Rate?)>(
+      body: Loader<(Booking, PaymentList, Settings, Rate?, NoticeList?)>(
         load: _load,
         builder: (context, data, reload) {
-          final (b, payments, settings, rate) = data;
+          final (b, payments, settings, rate, notices) = data;
           final theme = Theme.of(context);
           final due = (b.totalUsd - b.paidUsd - b.pendingUsd).clamp(0, double.infinity);
           final toDeposit = (b.depositUsd - b.paidUsd - b.pendingUsd).clamp(0, double.infinity);
@@ -57,6 +63,15 @@ class TripScreen extends StatelessWidget {
                     'Tus puestos están apartados hasta las ${TimeOfDay.fromDateTime(b.heldUntil!.toLocal()).format(context)}. Reporta el pago antes.',
                   ),
                 if (b.status == BookingStatus.inReview) const Text('La agencia está revisando tu pago.'),
+                for (final n in notices?.items ?? <Notice>[])
+                  Card(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: ListTile(
+                      leading: const Icon(Icons.campaign_outlined),
+                      title: Text(n.body),
+                      subtitle: Text('Aviso de la agencia · ${shortDate(n.createdAt.toLocal())}'),
+                    ),
+                  ),
                 if (_confirmed.contains(b.status))
                   Padding(
                     padding: const EdgeInsets.only(top: 8),

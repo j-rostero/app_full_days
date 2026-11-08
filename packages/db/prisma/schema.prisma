@@ -37,6 +37,7 @@ model User {
   guiding     DepartureGuide[]
   bookings    Booking[]
   favorites   Favorite[]
+  notices     DepartureNotice[]
 
   @@map("users")
 }
@@ -348,11 +349,12 @@ model Departure {
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
 
-  provider Provider         @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  product  Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  provider Provider          @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  product  Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
   guides   DepartureGuide[]
   bookings Booking[]
   quotas   DepartureQuota[]
+  notices  DepartureNotice[]
 
   @@unique([productId, date])
   @@index([providerId, date])
@@ -566,9 +568,12 @@ model BookingPassenger {
   cedula       String?
   birthDate    DateTime?     @map("birth_date") @db.Date
   restrictions String?
+  /// Platos escogidos: id de la comida → ids de las opciones.
+  mealPicks    Json          @default("{}") @map("meal_picks")
   checkin      Checkin?
   /// Hora del teléfono de la última marca; gana la más reciente.
   checkinAt    DateTime?     @map("checkin_at")
+  checkinById  String?       @map("checkin_by_id") @db.Uuid
 
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
@@ -664,4 +669,20 @@ model SearchLog {
 
   @@index([createdAt])
   @@map("search_log")
+}
+
+/// Aviso de la agencia a los viajeros de una salida (cambio de hora, punto de encuentro, clima).
+model DepartureNotice {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  providerId  String   @map("provider_id") @db.Uuid
+  departureId String   @map("departure_id") @db.Uuid
+  authorId    String   @map("author_id") @db.Uuid
+  body        String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  departure Departure @relation(fields: [departureId], references: [id], onDelete: Cascade)
+  author    User      @relation(fields: [authorId], references: [id])
+
+  @@index([departureId, createdAt])
+  @@map("departure_notices")
 }
